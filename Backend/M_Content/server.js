@@ -1,7 +1,7 @@
-const express = require('express')
-const upload = require('express-fileupload')
-const cors = require('cors')
-const dotenv = require('dotenv')
+import express from 'express'
+import upload from 'express-fileupload'
+import cors from 'cors'
+import dotenv from 'dotenv'
 
 const PORT = process.env.PORT || 3000
 
