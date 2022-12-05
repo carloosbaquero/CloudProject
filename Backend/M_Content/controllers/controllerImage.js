@@ -37,7 +37,7 @@ controllerImages.updateImage = async (req, res) => {
       fields: ['description']
     })
     const updateImage = await Images.findByPk(req.params.id)
-    res.status(200).send(updateImage)
+    res.status(200).json(updateImage)
   } catch (error) {
     console.error(error)
     res.status(400).send(error)

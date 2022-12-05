@@ -3,6 +3,7 @@ import upload from 'express-fileupload'
 import cors from 'cors'
 import { PORT } from './config/config.js'
 import { routesImages } from './routes/routesImage.js'
+import { routesVideos } from './routes/routesVideo.js'
 
 const app = express()
 
@@ -20,3 +21,4 @@ app.listen(PORT, () => {
 })
 
 app.use(routesImages)
+app.use(routesVideos)
