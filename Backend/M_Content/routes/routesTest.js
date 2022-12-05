@@ -1,8 +1,9 @@
 import express from 'express'
 import { controller } from '../controllers/controllerTest.js'
 
-const routes = express()
+const routesTest = express()
 
-routes.get('/index', controller.index)
+routesTest.get('/index', controller.index)
+routesTest.get('/create', controller.create)
 
-export { routes }
+export { routesTest }

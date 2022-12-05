@@ -1,12 +1,18 @@
 import { Sequelize } from 'sequelize'
-import { DATABASE_HOST, DATABASE_PORT, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_NAME } from './config.js'
+import {
+  DATABASE_HOST,
+  DATABASE_PORT,
+  DATABASE_USERNAME,
+  DATABASE_PASSWORD,
+  DATABASE_NAME
+} from './config.js'
 
-const initDatabase = new Sequelize(DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD, {
+const database = new Sequelize(DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD, {
   host: DATABASE_HOST,
   port: DATABASE_PORT,
   dialect: 'mariadb'
 })
 
-initDatabase.sync()
+database.sync({ force: true })
 
-export { initDatabase }
+export { database }
