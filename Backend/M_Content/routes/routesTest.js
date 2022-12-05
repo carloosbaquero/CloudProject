@@ -1,5 +1,5 @@
 import express from 'express'
-import { controller } from '../controllerTest.js'
+import { controller } from '../controllers/controllerTest.js'
 
 const routes = express()
 
