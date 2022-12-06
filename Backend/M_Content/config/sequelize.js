@@ -10,7 +10,8 @@ import {
 const database = new Sequelize(DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD, {
   host: DATABASE_HOST,
   port: DATABASE_PORT,
-  dialect: 'mariadb'
+  dialect: 'mariadb',
+  logging: false
 })
 
 database.sync({ force: true })

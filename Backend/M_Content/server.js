@@ -12,12 +12,8 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cors())
 
-app.get('/', (req, res) => {
-  res.send('Hello World!!')
-})
-
 app.listen(PORT, () => {
-  console.log(`App Content MicroService listening on port: ${PORT}`)
+  console.log(`App Content MicroService listening on http://localhost:${PORT}`)
 })
 
 app.use(routesImages)

@@ -71,4 +71,11 @@ controllerImages.getImage = async (req, res) => {
   }
 }
 
+controllerImages.saveImageFile = (req, res) => {
+  res.send('Work in progress!!')
+}
+
+controllerImages.deleteImageFile = (req, res) => {
+  res.send('Work in progress!!')
+}
 export { controllerImages }

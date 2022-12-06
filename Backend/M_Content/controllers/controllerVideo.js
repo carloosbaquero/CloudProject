@@ -70,4 +70,13 @@ controllerVideos.getVideo = async (req, res) => {
     res.status(400).send(error)
   }
 }
+
+controllerVideos.saveVideoFile = (req, res) => {
+  res.send('Work in progress!!')
+}
+
+controllerVideos.deleteVideoFile = (req, res) => {
+  res.send('Work in progress!!')
+}
+
 export { controllerVideos }
