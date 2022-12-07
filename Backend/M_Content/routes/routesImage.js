@@ -1,5 +1,5 @@
 import express from 'express'
-import { controllerImages } from '../controllers/controllerImage.js'
+import controllerImages from '../controllers/controllerImage.js'
 
 const routesImages = express()
 
@@ -12,4 +12,4 @@ routesImages.post('/images/file', controllerImages.saveImageFile)
 routesImages.delete('/images/file/:id', controllerImages.deleteImageFile)
 routesImages.get('/images/file/:id', controllerImages.getImageFile)
 
-export { routesImages }
+export default routesImages

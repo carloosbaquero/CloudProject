@@ -16,4 +16,4 @@ const database = new Sequelize(DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWO
 
 database.sync({ force: true })
 
-export { database }
+export default database

@@ -1,4 +1,4 @@
-import { Images } from '../models/Image.js'
+import Images from '../models/Image.js'
 import { uploadFile, deleteFile, getFile } from '../helpers/Google.js'
 const controllerImages = {}
 
@@ -109,4 +109,4 @@ controllerImages.getImageFile = async (req, res) => {
   res.send('Work in process')
 }
 
-export { controllerImages }
+export default controllerImages

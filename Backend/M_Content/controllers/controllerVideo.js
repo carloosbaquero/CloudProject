@@ -1,4 +1,4 @@
-import { Videos } from '../models/Video.js'
+import Videos from '../models/Video.js'
 import { uploadFile, deleteFile, getFile } from '../helpers/Google.js'
 const controllerVideos = {}
 
@@ -101,4 +101,4 @@ controllerVideos.getVideoFIle = async (req, res) => {
   res.send('Work in progress')
 }
 
-export { controllerVideos }
+export default controllerVideos

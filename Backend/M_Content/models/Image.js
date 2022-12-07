@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize'
-import { database } from '../helpers/sequelize.js'
+import database from '../helpers/sequelize.js'
 
 const Images = database.define('images', {
   id: {
@@ -17,4 +17,4 @@ const Images = database.define('images', {
   proUser: Sequelize.BOOLEAN
 })
 
-export { Images }
+export default Images

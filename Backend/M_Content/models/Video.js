@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize'
-import { database } from '../helpers/sequelize.js'
+import database from '../helpers/sequelize.js'
 
 const Videos = database.define('videos', {
   id: {
@@ -14,7 +14,7 @@ const Videos = database.define('videos', {
   },
   userId: Sequelize.INTEGER,
   description: Sequelize.TEXT,
-  proUSer: Sequelize.BOOLEAN
+  proUser: Sequelize.BOOLEAN
 })
 
-export { Videos }
+export default Videos
