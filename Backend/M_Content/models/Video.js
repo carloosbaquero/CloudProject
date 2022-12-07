@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize'
-import { database } from '../config/sequelize.js'
+import { database } from '../helpers/sequelize.js'
 
 const Videos = database.define('videos', {
   id: {

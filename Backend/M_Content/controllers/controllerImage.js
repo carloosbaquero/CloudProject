@@ -1,4 +1,5 @@
 import { Images } from '../models/Image.js'
+import { uploadImage } from '../helpers/Google.js'
 const controllerImages = {}
 
 controllerImages.indexImages = async (req, res) => {
@@ -71,8 +72,14 @@ controllerImages.getImage = async (req, res) => {
   }
 }
 
-controllerImages.saveImageFile = (req, res) => {
-  res.send('Work in progress!!')
+controllerImages.saveImageFile = async (req, res) => {
+  try {
+    uploadImage(req.files.image)
+    res.status(201).send('Success')
+  } catch (error) {
+    console.error(error)
+    res.status(400).send(error)
+  }
 }
 
 controllerImages.deleteImageFile = (req, res) => {

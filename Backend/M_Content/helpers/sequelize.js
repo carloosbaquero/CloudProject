@@ -5,7 +5,7 @@ import {
   DATABASE_USERNAME,
   DATABASE_PASSWORD,
   DATABASE_NAME
-} from './config.js'
+} from '../config.js'
 
 const database = new Sequelize(DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD, {
   host: DATABASE_HOST,

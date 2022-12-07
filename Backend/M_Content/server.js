@@ -1,7 +1,7 @@
 import express from 'express'
 import upload from 'express-fileupload'
 import cors from 'cors'
-import { PORT } from './config/config.js'
+import { PORT } from './config.js'
 import { routesImages } from './routes/routesImage.js'
 import { routesVideos } from './routes/routesVideo.js'
 
