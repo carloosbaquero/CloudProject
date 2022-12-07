@@ -1,15 +1,15 @@
 import express from 'express'
-import controllerImages from '../controllers/controllerImage.js'
+import controllerSocialContent from '../controllers/controllerSocialContent.js'
 
 const routesImages = express()
 
-routesImages.get('/images', controllerImages.indexImages)
-routesImages.get('/images/:id', controllerImages.getImage)
-routesImages.post('/images', controllerImages.createImage)
-routesImages.put('/images/:id', controllerImages.updateImage)
-routesImages.delete('/images/:id', controllerImages.deleteImage)
-routesImages.post('/images/file', controllerImages.saveImageFile)
-routesImages.delete('/images/file/:id', controllerImages.deleteImageFile)
-routesImages.get('/images/file/:id', controllerImages.getImageFile)
+routesImages.get('/images', controllerSocialContent.indexImageContents)
+routesImages.get('/images/:id', controllerSocialContent.getContent)
+routesImages.post('/images', controllerSocialContent.createImageContent)
+routesImages.put('/images/:id', controllerSocialContent.updateContent)
+routesImages.delete('/images/:id', controllerSocialContent.deleteContent)
+routesImages.post('/images/file', controllerSocialContent.saveImageContentFile)
+routesImages.delete('/images/file/:id', controllerSocialContent.deleteContentImageFile)
+routesImages.get('/images/file/:id', controllerSocialContent.getContentImageFile)
 
 export default routesImages

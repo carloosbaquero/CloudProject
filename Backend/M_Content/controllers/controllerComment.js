@@ -1,6 +1,4 @@
 import Comments from '../models/Comment.js'
-/* import Images from '../models/Image.js'
-import Videos from '../models/Video.js' */
 
 const controllerComments = {}
 

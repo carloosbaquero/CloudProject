@@ -1,11 +1,16 @@
 import { Sequelize } from 'sequelize'
 import database from '../helpers/sequelize.js'
 
-const Videos = database.define('videos', {
+const SocialContent = database.define('socialcontents', {
   id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
     autoIncrement: true
+  },
+  contentType: {
+    type: Sequelize.ENUM,
+    values: ['image', 'video'],
+    allowNull: false
   },
   name: {
     type: Sequelize.STRING,
@@ -17,4 +22,4 @@ const Videos = database.define('videos', {
   proUser: Sequelize.BOOLEAN
 })
 
-export default Videos
+export default SocialContent
