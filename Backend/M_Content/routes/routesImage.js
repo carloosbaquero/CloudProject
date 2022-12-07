@@ -8,7 +8,8 @@ routesImages.get('/images/:id', controllerImages.getImage)
 routesImages.post('/images', controllerImages.createImage)
 routesImages.put('/images/:id', controllerImages.updateImage)
 routesImages.delete('/images/:id', controllerImages.deleteImage)
-routesImages.post('/images/file', controllerImages.saveImageFile) // AL FINAL ESTO VA A SER UN POST
-routesImages.get('/images/file/:id', controllerImages.deleteImageFile) // AL FINAL ESTA VA A SER DEL
+routesImages.post('/images/file', controllerImages.saveImageFile)
+routesImages.delete('/images/file/:id', controllerImages.deleteImageFile)
+routesImages.get('/images/file/:id', controllerImages.getImageFile)
 
 export { routesImages }

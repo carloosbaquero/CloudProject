@@ -1,4 +1,5 @@
 import { Videos } from '../models/Video.js'
+import { uploadFile, deleteFile, getFile } from '../helpers/Google.js'
 const controllerVideos = {}
 
 controllerVideos.indexVideos = async (req, res) => {
@@ -71,12 +72,33 @@ controllerVideos.getVideo = async (req, res) => {
   }
 }
 
-controllerVideos.saveVideoFile = (req, res) => {
-  res.send('Work in progress!!')
+controllerVideos.saveVideoFile = async (req, res) => {
+  if (typeof req.files === 'undefined') res.status(400).send('The request must have an video to upload')
+  else if (typeof req.files.video === 'undefined') res.status(400).send('The file to upload must be in the field called video')
+  else {
+    try {
+      await uploadFile(req.files.video, 'videos')
+      res.status(201).send('Success')
+    } catch (error) {
+      console.error(error)
+      res.status(500).send(error)
+    }
+  }
 }
 
-controllerVideos.deleteVideoFile = (req, res) => {
-  res.send('Work in progress!!')
+controllerVideos.deleteVideoFile = async (req, res) => {
+  try {
+    const video = await Videos.findByPk(req.params.id)
+    await deleteFile(video.dataValues.name, 'video')
+    res.status(200).send('Success')
+  } catch (error) {
+    console.error(error)
+    res.status(404).send(error)
+  }
+}
+
+controllerVideos.getVideoFIle = async (req, res) => {
+  res.send('Work in progress')
 }
 
 export { controllerVideos }

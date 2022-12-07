@@ -1,5 +1,5 @@
 import { Images } from '../models/Image.js'
-import { uploadImage } from '../helpers/Google.js'
+import { uploadFile, deleteFile, getFile } from '../helpers/Google.js'
 const controllerImages = {}
 
 controllerImages.indexImages = async (req, res) => {
@@ -73,16 +73,40 @@ controllerImages.getImage = async (req, res) => {
 }
 
 controllerImages.saveImageFile = async (req, res) => {
-  try {
-    uploadImage(req.files.image)
-    res.status(201).send('Success')
-  } catch (error) {
-    console.error(error)
-    res.status(400).send(error)
+  if (typeof req.files === 'undefined') res.status(400).send('The request must have an image to upload')
+  else if (typeof req.files.image === 'undefined') res.status(400).send('The file to upload must be in the field called image')
+  else {
+    try {
+      await uploadFile(req.files.image, 'images')
+      res.status(201).send('Success')
+    } catch (error) {
+      console.error(error)
+      res.status(500).send(error)
+    }
   }
 }
 
-controllerImages.deleteImageFile = (req, res) => {
-  res.send('Work in progress!!')
+controllerImages.deleteImageFile = async (req, res) => {
+  try {
+    const image = await Images.findByPk(req.params.id)
+    await deleteFile(image.dataValues.name, 'images')
+    res.status(200).send('Success')
+  } catch (error) {
+    console.error(error)
+    res.status(404).send(error)
+  }
 }
+
+controllerImages.getImageFile = async (req, res) => {
+/*   try {
+    const image = await Images.findByPk(req.params.id)
+    await getFile(image.dataValues.name, 'images')
+    res.status(200).send('Success')
+  } catch (error) {
+    console.error(error)
+    res.status(404).send(error)
+  } */
+  res.send('Work in process')
+}
+
 export { controllerImages }
