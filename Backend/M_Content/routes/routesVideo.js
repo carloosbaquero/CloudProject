@@ -10,6 +10,6 @@ routesVideos.put('/videos/:id', controllerSocialContent.updateContent)
 routesVideos.delete('/videos/:id', controllerSocialContent.deleteContent)
 routesVideos.post('/videos/file', controllerSocialContent.saveVideoContentFile)
 routesVideos.delete('/videos/file/:id', controllerSocialContent.deleteContentVideoFile)
-routesVideos.get('/videos/file/:id', controllerSocialContent.getContentVideoFile)
+routesVideos.get('/videos/file/:id', controllerSocialContent.getPublicURLVideoFile)
 
 export default routesVideos

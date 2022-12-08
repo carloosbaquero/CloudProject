@@ -10,6 +10,6 @@ routesImages.put('/images/:id', controllerSocialContent.updateContent)
 routesImages.delete('/images/:id', controllerSocialContent.deleteContent)
 routesImages.post('/images/file', controllerSocialContent.saveImageContentFile)
 routesImages.delete('/images/file/:id', controllerSocialContent.deleteContentImageFile)
-routesImages.get('/images/file/:id', controllerSocialContent.getContentImageFile)
+routesImages.get('/images/file/:id', controllerSocialContent.getPublicURLImageFile)
 
 export default routesImages

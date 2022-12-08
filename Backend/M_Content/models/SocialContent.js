@@ -19,7 +19,8 @@ const SocialContent = database.define('socialcontents', {
   },
   userId: Sequelize.INTEGER,
   description: Sequelize.TEXT,
-  proUser: Sequelize.BOOLEAN
+  proUser: Sequelize.BOOLEAN,
+  publicURL: Sequelize.STRING
 })
 
 export default SocialContent

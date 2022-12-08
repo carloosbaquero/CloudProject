@@ -1,6 +1,5 @@
 import SocialContent from '../models/SocialContent.js'
-// eslint-disable-next-line no-unused-vars
-import { uploadFile, deleteFile, getFile } from '../helpers/Google.js'
+import { uploadFile, deleteFile, getPublicURL } from '../helpers/Google.js'
 import database from '../helpers/sequelize.js'
 const controllerSocialContent = {}
 
@@ -135,12 +134,23 @@ controllerSocialContent.saveImageContentFile = async (req, res) => {
   if (typeof req.files === 'undefined') res.status(400).send('The request must have an image to upload')
   else if (typeof req.files.image === 'undefined') res.status(400).send('The file to upload must be in the field called image')
   else {
+    await uploadFile(req.files.image, 'images')
+    const t = await database.transaction()
     try {
-      await uploadFile(req.files.image, 'images')
+      const imageName = req.files.image.name
+      const URL = getPublicURL(imageName, 'images')
+      await SocialContent.update({ publicURL: URL }, {
+        where: {
+          name: imageName
+        },
+        fields: ['publicURL']
+      }, { transaction: t })
+      await t.commit()
       res.status(201).send('Success')
     } catch (error) {
+      await t.rollback()
       console.error(error)
-      res.status(500).send(error)
+      res.status(400).send(error)
     }
   }
 }
@@ -149,12 +159,23 @@ controllerSocialContent.saveVideoContentFile = async (req, res) => {
   if (typeof req.files === 'undefined') res.status(400).send('The request must have an video to upload')
   else if (typeof req.files.video === 'undefined') res.status(400).send('The file to upload must be in the field called video')
   else {
+    await uploadFile(req.files.video, 'videos')
+    const t = await database.transaction()
     try {
-      await uploadFile(req.files.video, 'videos')
+      const videoName = req.files.video.name
+      const URL = getPublicURL(videoName, 'videos')
+      await SocialContent.update({ publicURL: URL }, {
+        where: {
+          name: videoName
+        },
+        fields: ['publicURL']
+      }, { transaction: t })
+      await t.commit()
       res.status(201).send('Success')
     } catch (error) {
+      await t.rollback()
       console.error(error)
-      res.status(500).send(error)
+      res.status(400).send(error)
     }
   }
 }
@@ -181,28 +202,26 @@ controllerSocialContent.deleteContentVideoFile = async (req, res) => {
   }
 }
 
-controllerSocialContent.getContentImageFile = async (req, res) => {
-/*   try {
-    const image = await Images.findByPk(req.params.id)
-    await getFile(image.dataValues.name, 'images')
-    res.status(200).send('Success')
+controllerSocialContent.getPublicURLImageFile = async (req, res) => {
+  try {
+    const image = await SocialContent.findByPk(req.params.id)
+    const publicUrl = getPublicURL(image.dataValues.name, 'images')
+    res.status(200).send(publicUrl)
   } catch (error) {
     console.error(error)
     res.status(404).send(error)
-  } */
-  res.send('Work in process')
+  }
 }
 
-controllerSocialContent.getContentVideoFile = async (req, res) => {
-/*   try {
-    const image = await Images.findByPk(req.params.id)
-    await getFile(image.dataValues.name, 'images')
-    res.status(200).send('Success')
+controllerSocialContent.getPublicURLVideoFile = async (req, res) => {
+  try {
+    const video = await SocialContent.findByPk(req.params.id)
+    const publicUrl = getPublicURL(video.dataValues.name, 'videos')
+    res.status(200).send(publicUrl)
   } catch (error) {
     console.error(error)
     res.status(404).send(error)
-  } */
-  res.send('Work in process')
+  }
 }
 
 export default controllerSocialContent

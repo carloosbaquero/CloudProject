@@ -26,8 +26,9 @@ async function deleteFile (fileName, dir) {
   console.log(`File ${dir}/${fileName} deleted`)
 }
 
-async function getFile (fileName, dir) {
-
+function getPublicURL (fileName, dir) {
+  const result = bucket.file(`${dir}/${fileName}`).publicUrl()
+  return result
 }
 
-export { uploadFile, deleteFile, getFile }
+export { uploadFile, deleteFile, getPublicURL }
