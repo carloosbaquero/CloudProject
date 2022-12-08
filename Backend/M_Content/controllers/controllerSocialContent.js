@@ -181,22 +181,40 @@ controllerSocialContent.saveVideoContentFile = async (req, res) => {
 }
 
 controllerSocialContent.deleteContentImageFile = async (req, res) => {
+  const t = await database.transaction()
   try {
     const content = await SocialContent.findByPk(req.params.id)
     await deleteFile(content.dataValues.name, 'images')
-    res.status(200).send('Success')
+    await SocialContent.update({ publicURL: null }, {
+      where: {
+        id: req.params.id
+      },
+      fields: ['publicURL']
+    }, { transaction: t })
+    await t.commit()
+    res.status(201).send('Success')
   } catch (error) {
+    await t.rollback()
     console.error(error)
     res.status(404).send(error)
   }
 }
 
 controllerSocialContent.deleteContentVideoFile = async (req, res) => {
+  const t = await database.transaction()
   try {
     const content = await SocialContent.findByPk(req.params.id)
     await deleteFile(content.dataValues.name, 'video')
-    res.status(200).send('Success')
+    await SocialContent.update({ publicURL: null }, {
+      where: {
+        id: req.params.id
+      },
+      fields: ['publicURL']
+    }, { transaction: t })
+    await t.commit()
+    res.status(201).send('Success')
   } catch (error) {
+    await t.rollback()
     console.error(error)
     res.status(404).send(error)
   }
