@@ -13,25 +13,38 @@ const Header = () => {
 
         const navigate = useNavigate();
  
-        const handleClick = () => {
+        const handleClickUpload = () => {
             navigate('/upload');
         } 
 
+        const handleClickSignIn = () => {
+            navigate('/signin');
+        } 
+
+
         return (
-            <nav className="Nav">
-                <div className="Nav-menus">
-                <div className="Nav-brand">
-                    {/* <a className="Nav-brand-logo" href="/"> */}
-                    FreeSpace
-                    {/* </a> */}
+            <header className="header">
+                <div className="logo">
+                    <h2 className="border">Free Space</h2>
+                    <h2 className="wave">Free Space</h2>
                 </div>
                 
-                <Button onClick={handleClick}>
+                <div className="header">
+                <nav className="uploadbutton">
+                <Button onClick={handleClickUpload}>
                     Upload Post
                 </Button>
-                
+                </nav>
+
+                <nav className="uploadbutton">
+                <Button onClick={handleClickSignIn}>
+                    Sign In
+                </Button>
+                </nav>
                 </div>
-            </nav>
+                
+            
+            </header>
         );   
 }
 
@@ -41,6 +54,7 @@ const Button = styled.button`
   font-size: 20px;
   padding: 10px 60px;
   border-radius: 5px;
+  border-color: white;
   margin: 10px 0px;
   cursor: pointer;
   &:disabled {
