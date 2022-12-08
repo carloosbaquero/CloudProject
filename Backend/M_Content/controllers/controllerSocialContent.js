@@ -1,6 +1,7 @@
 import SocialContent from '../models/SocialContent.js'
 // eslint-disable-next-line no-unused-vars
 import { uploadFile, deleteFile, getFile } from '../helpers/Google.js'
+import database from '../helpers/sequelize.js'
 const controllerSocialContent = {}
 
 controllerSocialContent.indexSocialContents = async (req, res) => {
@@ -42,39 +43,46 @@ controllerSocialContent.indexVideoContents = async (req, res) => {
 }
 
 controllerSocialContent.createImageContent = async (req, res) => {
+  const t = await database.transaction()
   try {
-    const imageContent = SocialContent.build()
+    const imageContent = SocialContent.build({ transaction: t })
     const data = req.body
     imageContent.name = data.name
     imageContent.userId = Number(data?.userId)
     imageContent.description = data?.description
     imageContent.proUser = Boolean(data?.proUser)
     imageContent.contentType = 'image'
-    const result = await imageContent.save()
+    const result = await imageContent.save({ transaction: t })
+    await t.commit()
     res.status(201).json(result)
   } catch (error) {
+    await t.rollback()
     console.error(error)
     res.status(400).send(error)
   }
 }
 
 controllerSocialContent.createVideoContent = async (req, res) => {
+  const t = await database.transaction()
   try {
-    const videoContent = SocialContent.build()
+    const videoContent = SocialContent.build({ transaction: t })
     const data = req.body
     videoContent.name = data.name
     videoContent.userId = Number(data?.userId)
     videoContent.description = data?.description
     videoContent.proUser = Boolean(data?.proUser)
     videoContent.contentType = 'video'
-    const result = await videoContent.save()
+    const result = await videoContent.save({ transaction: t })
+    await t.commit()
     res.status(201).json(result)
   } catch (error) {
+    await t.rollback()
     console.error(error)
     res.status(400).send(error)
   }
 }
 controllerSocialContent.updateContent = async (req, res) => {
+  const t = await database.transaction()
   try {
     const data = req.body
     await SocialContent.update(data, {
@@ -82,27 +90,32 @@ controllerSocialContent.updateContent = async (req, res) => {
         id: req.params.id
       },
       fields: ['description']
-    })
-    const updateImage = await SocialContent.findByPk(req.params.id)
+    }, { transaction: t })
+    const updateImage = await SocialContent.findByPk(req.params.id, { transaction: t })
+    t.commit()
     res.status(200).json(updateImage)
   } catch (error) {
+    t.rollback()
     console.error(error)
     res.status(400).send(error)
   }
 }
 
 controllerSocialContent.deleteContent = async (req, res) => {
+  const t = await database.transaction()
   try {
     const result = await SocialContent.destroy({
       where: {
         id: req.params.id
       }
-    })
+    }, { transaction: t })
     let message
     if (result === 1) message = `File with id = ${req.params.id} delete sucessfully.`
     else message = 'Could not delete file'
+    await t.commit()
     res.status(200).json(message)
   } catch (error) {
+    await t.rollback()
     console.error(error)
     res.status(400).send(error)
   }

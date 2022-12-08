@@ -1,4 +1,5 @@
 import Comments from '../models/Comment.js'
+import database from '../helpers/sequelize.js'
 
 const controllerComments = {}
 
@@ -13,22 +14,26 @@ controllerComments.indexComments = async (req, res) => {
 }
 
 controllerComments.createComment = async (req, res) => {
+  const t = await database.transaction()
   try {
-    const comment = Comments.build()
+    const comment = Comments.build({ transaction: t })
     const data = req.body
     comment.text = data.text
     comment.userId = Number(data.userId)
     comment.imageId = Number(data?.imageId)
     comment.videoId = Number(data?.videoId)
-    const result = await comment.save()
+    const result = await comment.save({ transaction: t })
+    await t.commit()
     res.status(201).json(result)
   } catch (error) {
+    await t.rollback()
     console.error(error)
     res.status(400).send(error)
   }
 }
 
 controllerComments.updateComment = async (req, res) => {
+  const t = await database.transaction()
   try {
     const data = req.body
     await Comments.update(data, {
@@ -36,27 +41,32 @@ controllerComments.updateComment = async (req, res) => {
         id: req.params.id
       },
       fields: ['text']
-    })
-    const updateComment = await Comments.findByPk(req.params.id)
+    }, { transaction: t })
+    const updateComment = await Comments.findByPk(req.params.id, { transaction: t })
+    await t.commit()
     res.status(200).json(updateComment)
   } catch (error) {
+    await t.rollback()
     console.error(error)
     res.status(400).send(error)
   }
 }
 
 controllerComments.deleteComment = async (req, res) => {
+  const t = await database.transaction()
   try {
     const result = await Comments.destroy({
       where: {
         id: req.params.id
       }
-    })
+    }, { transaction: t })
     let message
     if (result === 1) message = `Comment with id = ${req.params.id} delete sucessfully.`
     else message = 'Could not delete comment'
+    await t.commit()
     res.status(200).json(message)
   } catch (error) {
+    await t.rollback()
     console.error(error)
     res.status(400).send(error)
   }
