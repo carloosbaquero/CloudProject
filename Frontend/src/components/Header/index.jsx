@@ -1,15 +1,22 @@
 import React from "react";
+import {useNavigate} from 'react-router-dom'
+
 import "./Header.css";
 import styled from 'styled-components'
 
-// const [buttonClicked, setButtonClicked] = useState(false);
 
-// const handdleButtonClick = () => {
-//     setButtonClicked(true);
-// }
 
-class Header extends React.Component{
-    render(){
+    
+ 
+
+const Header = () => {
+
+        const navigate = useNavigate();
+ 
+        const handleClick = () => {
+            navigate('/upload');
+        } 
+
         return (
             <nav className="Nav">
                 <div className="Nav-menus">
@@ -19,14 +26,13 @@ class Header extends React.Component{
                     {/* </a> */}
                 </div>
                 
-                <Button onClick={alert(1)}>
+                <Button onClick={handleClick}>
                     Upload Post
                 </Button>
                 
                 </div>
             </nav>
-        );
-    }   
+        );   
 }
 
 const Button = styled.button`
