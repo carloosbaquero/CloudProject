@@ -19,7 +19,7 @@ render() {
 
     const caption = this.props.caption;
 
-    return <article className="Post" ref="Post">
+    return <article className="Post">
 
         <header>
 
