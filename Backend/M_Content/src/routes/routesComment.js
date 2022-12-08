@@ -8,7 +8,7 @@ routesComments.get('/comments/:id', controllerComments.getComment)
 routesComments.post('/comments', controllerComments.createComment)
 routesComments.put('/comments/:id', controllerComments.updateComment)
 routesComments.delete('/comments/:id', controllerComments.deleteComment)
-routesComments.get('/comments/image/:id', controllerComments.getCommentsImage)
-routesComments.get('/comments/video/:id', controllerComments.getCommentsVideo)
+routesComments.get('/comments/images/:imageId', controllerComments.getCommentsImage)
+routesComments.get('/comments/videos/:videoId', controllerComments.getCommentsVideo)
 
 export default routesComments
