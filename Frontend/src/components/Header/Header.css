@@ -31,9 +31,9 @@ i.Nav {
 
     background-color: black;
 
-    display: block;
+    display: flex;
 
-    align-items: stretch;
+    align-items: center;
 
     flex-direction: row;
 
@@ -48,6 +48,8 @@ i.Nav {
     transition: height 0.2s ease-in-out;
 
     overflow-y: hidden;
+
+    position: fixed;
 
   }
 
@@ -65,12 +67,22 @@ i.Nav {
     padding: 10px;
     justify-content: space-between;
     align-items: center;
+    margin: 0px;
+    position: sticky;
+  }
 
+  .buttons{
+    display: flex;
+    align-items: center;
+    position: sticky;
+    background-color: black;
+    height: 70px;
   }
 
   .logo {
     display: flex;
     align-items: center;
+
   }
 
   .border {

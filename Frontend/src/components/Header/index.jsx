@@ -29,7 +29,7 @@ const Header = () => {
                     <h2 className="wave">Free Space</h2>
                 </div>
                 
-                <div className="header">
+                <div className="buttons">
                 <nav className="uploadbutton">
                 <Button onClick={handleClickUpload}>
                     Upload Post
