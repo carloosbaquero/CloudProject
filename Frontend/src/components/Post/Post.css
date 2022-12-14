@@ -2,9 +2,9 @@
 
     border-radius: 10px;
 
-    border: 1px solid #e6e6e6;
+    border: 1px solid #09f;
 
-    background-color: #fff;
+    background-color: #09f;
 
     margin-bottom: 60px;
 
@@ -77,8 +77,14 @@
 
   .Post-caption {
 
+    background-color: #efefef;
+
+    height: 30px;
+
     padding: 16px 16px;
 
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
   }
 
   .Post-caption strong {

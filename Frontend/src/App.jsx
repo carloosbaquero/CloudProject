@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {BrowserRouter, Routes, Route, Link} from 'react-router-dom'
-import './App.css';
 import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
 import { Home } from './screens/Home';
 import { SignIn } from './screens/SignIn';

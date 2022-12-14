@@ -26,29 +26,36 @@ export const Home = () => {
 
     return (
         <Div>
-            <h2>
+            <Div>
                 <Header/>
-            </h2>
-            <Body>
+            </Div>
+            <DivPost>
                 {characters.map(item => (
                     <div key={item.id}>
                     <Post id={item.id} nickname= {item.name} image = {item.image}/>
                     </div>
                 ))}
-            </Body>    
+            </DivPost>    
             
         </Div>
         
     );
 }
 
-const Body = styled.body`
+
+const DivPost = styled.div`
   background-color: #09f;
- 
+  margin-top: 10px;
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-bottom: 0px;
 `;
 const Div = styled.div`
   background-color: #09f;
- 
+  margin-top: 0px;
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-bottom: 0px;
 `;
     
 

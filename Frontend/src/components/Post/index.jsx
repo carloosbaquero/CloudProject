@@ -1,13 +1,27 @@
 import React, { Component } from "react";
 import "./Post.css";
 
+const IsImage = (image) => {
+    let res = false
+    const array = image.toString().split('.')
+    const extension = array[array.length -1]
+    if(extension == 'jpeg' || extension == 'jpg'){
+        res = true
+    }
+    return res
+}
+
+
 class Post extends Component {
+
+
 
 constructor(props){
 
     super(props);
 
 }
+
 
 render() {
 
@@ -48,7 +62,10 @@ render() {
 
             <div className="Post-image-bg">
 
-            <img alt="Icon Living" src={image} />
+            
+
+            {IsImage(image) && <img alt={nickname} src={image}/>}
+            {!IsImage(image) && <video alt={nickname} src={image} type="video/mp4"/>}
 
             </div>
 

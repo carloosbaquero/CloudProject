@@ -5,7 +5,11 @@
     align-items: center;
     justify-content: center;
     color: white;
-    background-image: linear-gradient(79deg, #7439db, #C66FBC 48%, #F7944D);
+    background-color: #09f;
+  }
+  
+  .tittle {
+    margin-top: 50px;
   }
   
   .auth-form-container, .login-form, .register-form {
@@ -19,6 +23,7 @@
       border: 1px solid white;
       border-radius: 10px;
       margin: 0.5rem;
+      background-color: black;
     }
   }
   
