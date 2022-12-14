@@ -5,7 +5,7 @@ const IsImage = (image) => {
     let res = false
     const array = image.toString().split('.')
     const extension = array[array.length -1]
-    if(extension == 'jpeg' || extension == 'jpg'){
+    if(extension == 'jpeg' || extension == 'jpg'|| extension == 'png'){
         res = true
     }
     return res
@@ -28,6 +28,8 @@ render() {
     const id = this.props.id;
 
     const nickname = this.props.nickname;
+
+    const description = this.props.description;
 
     const profilepicture= this.props.profilepicture;
 
@@ -73,7 +75,7 @@ render() {
 
         <div className="Post-caption">
 
-            <strong>{nickname} </strong> Loving Educative!
+            <strong>{nickname} </strong> {description}
 
         </div>
 
