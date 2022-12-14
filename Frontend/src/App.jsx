@@ -24,9 +24,9 @@ function App () {
       <Navigation/>
 
       <Routes>
-        <Route element={<ProtectedRoute user={user}/>}>
+        {/*<Route element={<ProtectedRoute user={user}/>}>*/}
         <Route path='/upload' element={<Upload/>}/>
-        </Route>
+        {/* </Route> */}
         <Route index element={<Home/>}/>
         <Route path='/home' element={<Home/>}/>
         <Route path='/signIn' element={<SignIn/>}/>
