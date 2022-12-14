@@ -1,0 +1,9 @@
+node_modules/
+Dockerfile
+.dockerignore
+.env.development
+.env.production
+.env.example
+.gitignore
+.git
+package.json
