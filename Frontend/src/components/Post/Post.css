@@ -1,6 +1,6 @@
 .Post {
 
-    border-radius: 3px;
+    border-radius: 10px;
 
     border: 1px solid #e6e6e6;
 
@@ -12,6 +12,8 @@
 
     margin-right: 20%;
 
+    border-color: #09f;
+
 }
 
 .Post-user {
@@ -22,6 +24,11 @@
 
     align-items: center;
 
+    background-color: black;
+
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-color: #09f;
 }
 
 .Post-user-profilepicture {
@@ -49,6 +56,8 @@
     font-family: 'PT Sans', sans-serif;
 
     font-weight: bold;
+
+    color: #fff;
 
   }
 
@@ -88,4 +97,10 @@
 
     opacity: 0;
 
+  }
+
+  .head {
+    background-color: #09f;
+    background-size: 100%;
+    border-color: #09f;
   }
