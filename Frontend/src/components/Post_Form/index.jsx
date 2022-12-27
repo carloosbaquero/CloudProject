@@ -2,18 +2,20 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Post from "../Post";
 
-const viewPost = (image) => {
-    if(image != ''){
-        const arrayImage = image.toString().split('/')
-    const name = arrayImage[arrayImage.length -1]
-    const URL = ('http://localhost:8080/'+ encodeURIComponent(name))
-    window.open(URL)
-    }  
-}
 
 export default function Post_Form() {
+
     const [description, setDescription] = useState('')
     const [image, setImage] = useState('')
+
+    const handleImage = (e) => {
+        const file = e.currentTarget.files[0]
+        const url = URL.createObjectURL(file)
+        console.log(file)
+        console.log(url)
+        setImage({url,
+            file})
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -41,8 +43,8 @@ export default function Post_Form() {
                 <input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="description" id="description" name="description"/>
                 
                 {/* INPUT IMAGES */}
-                <label htmlFor="description">Select Image or Video:</label>
-                <input value={image} onChange={(e) => setImage(e.target.value)} placeholder="image" id="image" name="image" type="file" accept='.jpg, .jpeg, .png' required></input>
+                <label htmlFor="image">Select Image or Video:</label>
+                <input onChange={(e) => handleImage(e)} placeholder="image" id="image" name="image" type="file" accept='.jpg, .jpeg, .png' required></input>
 
                 {/* SEND IMAGES TO BACKEND */}
                 <div>
@@ -52,7 +54,8 @@ export default function Post_Form() {
             <button className="link-btn" onClick={handleClick}>Go Back </button>
         </div>
       {/* VIEW POST */}
-      <Post image={image} nickname='User' description={description}/>
+      {image == '' && <Post image={image} nickname='User' description={description}/>}
+      {image != '' && <Post image={image.url} nickname='User' description={description}/>}
     </div>
     );
 

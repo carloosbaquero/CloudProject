@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "proyectoentregableapiones",
+  "private_key_id": "08aab09a01ac0198912e684acc0ced4ed1244155",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCN+wSnIk4MgWIa\nQWNGIsSt2/H/92X9xD6H3aWrW0TsMadfGGU5OmTvoEMvk9OUQ+05BC8TLxdl5yhQ\npmAkNLUwFnaHbkI0B3CvewxlynTdW0zui3xl/VJLgMKdM8tP5uSY5HjCgzOZ79Qe\nvpkE/npV+vO6nG9Df3fIeP2h0bwI/0Ksb1k/1emo+ug+9PSK/zZXhhAgv+1XISSI\nEyNC0vg2Ay+7MOUurKTUn2bxtd24vlo2pYiamrhfvUs47RM4JDoX5+NN2j5DvK9u\nR9NJxxTAVBFTSQrH/gxeG1zVuptiH6rjnBcm0u02VhpRRY/sDB7/CZtQ1ZPPbDMt\n57BpufENAgMBAAECggEAD0N0oRklhd+k8cikyQX02fICxq9MlibyR/3ykQTrWG8Q\nHL+NJkVaU46JmoRMYyyYRKBoBSpzW/+pTF5OiKXn8qb/kBiw4lIIcb0LPKgyvxdR\nInX5ZieBIN/TTD4ktc7PNYaeWt7q/boUNkfsQGaxNSwY5q9poLqD4JftQGfBTMAn\nZye8qLDoLG8OEkk6vATEafkC/r1r9+aWFic024Gp0mfGlT0N3KcesvsDuhoAlBw2\nQ82a9trm0A8m5dgrqLuz1ocVUx8DGHrazl41Yb4pyl8zOfhJknz2KaNUo5yvMh9e\ngQJd1ygI4Qv9XY8ZUlxP2FR5p6R7RyV44umEO+E7EQKBgQDAAN5auzf1hcxrS0Ya\nYBfhACiusiHCYE72WMy40fOqcGLMs7xHFlYmlZCastZoXbodTPlyUtsxJRyC56ik\n6skJCgvi3igC3ZNdTpoIO600NJPN+Hn3TtzmTpRh2VUKxClbL0p7TUQ4ALkm1QCw\nKq9ehhTa7jxv26mH3SgudWuM+QKBgQC9TdWjZFAE/A7y64hx8vco6ac3CbMgLdSi\nLR7h9T2njcs5/OnQMaC7P+LAgU22EITL7YKjEAhtxxCpCG5J+G13NYpTT0E4teai\nncxJnM5fC7lfvppoFoOvNFXKY72YEqHdFti1bdP2J91uYzw/ro3QrD/yppOVg2vB\nDFBs64OttQKBgAxYgfOnkiORZOGJR4qunxpynisNfSo4cxtX/mHr7hUJgPDUpciU\nYRm+CDxKP4saa7syld+KAFoansi0CJ4CEscoBDekPUJh6PXY9gKNg8eVkeNulLkY\nMxAEAXqBNPyqPFaGpe1jvH01XrJmg9LQC9KyIGkrZGt03mPEDq9eEXpRAoGAKaky\nhiXyclZil9V8Ds/Q0yEw2qz4zfEoJZTWghXtvq0294kQj/AMFomFxqXuS04xW4vm\nvyotILO5l+myE/dnZ9/RlGoRyYBGxK0Do4Ot6z7ySf7xjky+KFXVN5hhxlD7bGO1\nx5/nEPpPAhc20DEDJtRxsl40hqgIk9C49m+SaC0CgYEArZUJjlr5Em2MwqUrZpts\n/8s/lRTPCfMrKAAbimPbAzMGE7Nb9hRNiUDKLSsAGQUbhSl7jHldHgdUbA+66010\nIKKqNhQS+xtO9UaBIqiXBkXg3iZHLwngnb7N69Yf6ZA4AEkVpfkWWNSX4m4ZPMEp\n3jxdIHpO/gASANTt6Yil38s=\n-----END PRIVATE KEY-----\n",
+  "client_email": "proyecto-cloud-app@proyectoentregableapiones.iam.gserviceaccount.com",
+  "client_id": "100046687944170423072",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/proyecto-cloud-app%40proyectoentregableapiones.iam.gserviceaccount.com"
+}
