@@ -55,16 +55,13 @@ controllerComments.updateComment = async (req, res) => {
 controllerComments.deleteComment = async (req, res) => {
   const t = await database.transaction()
   try {
-    const result = await Comments.destroy({
+    await Comments.destroy({
       where: {
         id: req.params.id
       }
     }, { transaction: t })
-    let message
-    if (result === 1) message = `Comment with id = ${req.params.id} delete sucessfully.`
-    else message = 'Could not delete comment'
     await t.commit()
-    res.status(200).json(message)
+    res.sendStatus(201)
   } catch (error) {
     await t.rollback()
     console.error(error)

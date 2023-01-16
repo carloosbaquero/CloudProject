@@ -9,3 +9,11 @@ if (process.env.NODE_ENV !== 'production') {
 
 export const NODE_ENV = process.env.NODE_ENV || 'development'
 export const PORT = process.env.PORT || 3002
+export const DATABASE_HOST = process.env.DATABASE_HOST || 'localhost'
+export const DATABASE_PORT = process.env.DATABASE_PORT || 3306
+export const DATABASE_USERNAME = process.env.DATABASE_USERNAME || 'user'
+export const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD || 'password'
+export const DATABASE_NAME = process.env.DATABASE_NAME || 'free_space_users'
+export const DATABASE_DIALECT = process.env.DATABASE_DIALECT || 'mariadb'
+export const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET
+export const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET
