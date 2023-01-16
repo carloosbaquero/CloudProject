@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "m_content",
   "version": "1.0.0",
   "description": "",
   "main": "src/server.js",
@@ -7,7 +7,7 @@
   "scripts": { 
     "start": "node src/server.js",
     "dev": "set NODE_ENV=development&& nodemon src/server.js",
-    "lint": "eslint ."
+    "lint": "eslint src/"
   },
   "keywords": [],
   "author": "",

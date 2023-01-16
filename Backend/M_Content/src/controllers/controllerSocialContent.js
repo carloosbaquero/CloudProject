@@ -1,5 +1,5 @@
 import SocialContent from '../models/SocialContent.js'
-import { uploadFile, deleteFile, getPublicURL } from '../helpers/Google.js'
+import { uploadFile, deleteFile, getPublicURL } from '../helpers/google.js'
 import database from '../helpers/sequelize.js'
 const controllerSocialContent = {}
 
