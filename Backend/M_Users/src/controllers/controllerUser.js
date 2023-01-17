@@ -44,11 +44,29 @@ controllerUser.createUser = async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(data.password, 10)
     const newUser = User.build({ transaction: t })
+    newUser.proUser = false
     newUser.name = data.name
     newUser.password = hashedPassword
     await newUser.save()
     await t.commit()
     res.sendStatus(201)
+  } catch (error) {
+    await t.rollback()
+    console.error(error)
+    res.status(500).send(error)
+  }
+}
+
+controllerUser.updateUserToPro = async (req, res) => {
+  const t = await database.transaction()
+  try {
+    await User.update({ proUser: true }, {
+      where: {
+        name: req.user.name
+      }
+    }, { transaction: t })
+    await t.commit()
+    res.sendStatus(204)
   } catch (error) {
     await t.rollback()
     console.error(error)
@@ -166,7 +184,7 @@ controllerUser.saveProfileImageFile = async (req, res) => {
     }
   }
 }
-// NO FUNCIONA BIEN
+// NO ELIMINA LOS ARCHIVOS QUE ESTAN GUARDADOS EN GOOGLE CLOUD
 controllerUser.deleteProfileImageFile = async (req, res) => {
   const t = await database.transaction()
   try {

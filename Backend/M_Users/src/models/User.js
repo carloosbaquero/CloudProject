@@ -7,7 +7,8 @@ const User = database.define('user', {
     primaryKey: true,
     autoIncrement: true
   },
-  name: {
+  name:
+  {
     type: Sequelize.STRING,
     allowNull: false,
     unique: true
@@ -15,6 +16,9 @@ const User = database.define('user', {
   password: {
     type: Sequelize.STRING,
     allowNull: false
+  },
+  proUser: {
+    type: Sequelize.BOOLEAN
   },
   refreshToken: Sequelize.STRING,
   publicUrl: Sequelize.STRING,
