@@ -103,16 +103,13 @@ controllerSocialContent.updateContent = async (req, res) => {
 controllerSocialContent.deleteContent = async (req, res) => {
   const t = await database.transaction()
   try {
-    const result = await SocialContent.destroy({
+    await SocialContent.destroy({
       where: {
         id: req.params.id
       }
     }, { transaction: t })
-    let message
-    if (result === 1) message = `File with id = ${req.params.id} delete sucessfully.`
-    else message = 'Could not delete file'
     await t.commit()
-    res.status(200).json(message)
+    res.sendStatus(204)
   } catch (error) {
     await t.rollback()
     console.error(error)
@@ -134,9 +131,9 @@ controllerSocialContent.saveImageContentFile = async (req, res) => {
   if (typeof req.files === 'undefined') res.status(400).send('The request must have an image to upload')
   else if (typeof req.files.image === 'undefined') res.status(400).send('The file to upload must be in the field called image')
   else {
-    await uploadFile(req.files.image, 'images')
     const t = await database.transaction()
     try {
+      await uploadFile(req.files.image, 'images')
       const imageName = req.files.image.name
       const URL = getPublicURL(imageName, 'images')
       await SocialContent.update({ publicURL: URL }, {
@@ -159,9 +156,9 @@ controllerSocialContent.saveVideoContentFile = async (req, res) => {
   if (typeof req.files === 'undefined') res.status(400).send('The request must have an video to upload')
   else if (typeof req.files.video === 'undefined') res.status(400).send('The file to upload must be in the field called video')
   else {
-    await uploadFile(req.files.video, 'videos')
     const t = await database.transaction()
     try {
+      await uploadFile(req.files.video, 'videos')
       const videoName = req.files.video.name
       const URL = getPublicURL(videoName, 'videos')
       await SocialContent.update({ publicURL: URL }, {

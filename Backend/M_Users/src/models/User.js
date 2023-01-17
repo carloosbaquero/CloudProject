@@ -16,9 +16,9 @@ const User = database.define('user', {
     type: Sequelize.STRING,
     allowNull: false
   },
-  refreshToken: {
-    type: Sequelize.STRING
-  }
+  refreshToken: Sequelize.STRING,
+  publicUrl: Sequelize.STRING,
+  profilePicture: Sequelize.STRING
 })
 
 export default User
