@@ -14,7 +14,7 @@ controllerUser.getUserAuthenticated = async (req, res) => {
       where: {
         name: req.user.name
       },
-      attributes: ['name', 'publicUrl', 'profilePictureName']
+      attributes: ['name', 'email', 'publicUrl', 'profilePictureName']
     })
     res.status(200).json(user)
   } catch (error) {
@@ -26,7 +26,7 @@ controllerUser.getUserAuthenticated = async (req, res) => {
 controllerUser.getUserById = async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id, {
-      attributes: ['name', 'publicUrl', 'profilePictureName']
+      attributes: ['name', 'email', 'publicUrl', 'profilePictureName']
     })
     res.status(200).json(user)
   } catch (error) {
@@ -37,7 +37,7 @@ controllerUser.getUserById = async (req, res) => {
 
 controllerUser.createUser = async (req, res) => {
   const data = req.body
-  if (!(data.name && data.password)) {
+  if (!(data.name && data.password && data.email)) {
     res.sendStatus(401)
   }
   const t = await database.transaction()
@@ -46,6 +46,7 @@ controllerUser.createUser = async (req, res) => {
     const newUser = User.build({ transaction: t })
     newUser.proUser = false
     newUser.name = data.name
+    newUser.email = data.email
     newUser.password = hashedPassword
     await newUser.save()
     await t.commit()
@@ -76,14 +77,23 @@ controllerUser.updateUserToPro = async (req, res) => {
 
 controllerUser.updateUserAuthenticated = async (req, res) => {
   const t = await database.transaction()
-  const newName = req.body.name
+  let newName = req.body?.name
+  let newEmail = req.body?.email
   if (typeof newName === 'undefined' || newName === null) res.sendStatus(401)
   try {
-    await User.update({ name: newName }, {
+    const user = await User.findOne({
       where: {
         name: req.user.name
       },
-      fields: ['name']
+      attributes: ['name', 'email']
+    })
+    if (typeof newName === 'undefined') newName = user.name
+    if (typeof newEmail === 'undefined') newEmail = user.email
+    await User.update({ name: newName, email: newEmail }, {
+      where: {
+        name: req.user.name
+      },
+      fields: ['name', 'email']
     }, { transaction: t })
     res.sendStatus(204)
   } catch (error) {
