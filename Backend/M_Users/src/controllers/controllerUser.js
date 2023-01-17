@@ -37,11 +37,11 @@ controllerUser.getUserById = async (req, res) => {
 
 controllerUser.createUser = async (req, res) => {
   const data = req.body
-  if (!(data.name && data.password && data.email)) {
-    res.sendStatus(401)
-  }
   const t = await database.transaction()
   try {
+    if (!(data.name && data.password && data.email)) {
+      throw (new Error('Fail first check'))
+    }
     const hashedPassword = await bcrypt.hash(data.password, 10)
     const newUser = User.build({ transaction: t })
     newUser.proUser = false
@@ -54,7 +54,8 @@ controllerUser.createUser = async (req, res) => {
   } catch (error) {
     await t.rollback()
     console.error(error)
-    res.status(500).send(error)
+    if (error.message === 'Fail first check') res.sendStatus(401)
+    else res.status(500).send(error)
   }
 }
 
@@ -79,7 +80,6 @@ controllerUser.updateUserAuthenticated = async (req, res) => {
   const t = await database.transaction()
   let newName = req.body?.name
   let newEmail = req.body?.email
-  if (typeof newName === 'undefined' || newName === null) res.sendStatus(401)
   try {
     const user = await User.findOne({
       where: {
@@ -224,9 +224,8 @@ controllerUser.deleteProfileImageFile = async (req, res) => {
 
 controllerUser.logIn = async (req, res) => {
   const data = req.body
-  if (!(data.name && data.password)) {
-    res.sendStatus(401)
-  } else {
+  if (!(data.name && data.password)) res.sendStatus(401)
+  else {
     const t = await database.transaction()
     try {
       const user = await User.findOne({
@@ -260,8 +259,10 @@ controllerUser.logIn = async (req, res) => {
 controllerUser.token = async (req, res) => {
   const data = req.body
   const refreshToken = data.token
-  if (typeof refreshToken === 'undefined' || refreshToken === null) res.sendStatus(401)
   try {
+    if (typeof refreshToken === 'undefined' || refreshToken === null) {
+      throw (new Error('RefreshToken missing'))
+    }
     const user = await User.findOne({
       where: {
         name: data.name
@@ -275,19 +276,18 @@ controllerUser.token = async (req, res) => {
     })
   } catch (error) {
     console.error(error)
-    if (error.message === 'Forbiden') res.sendStatus(403)
+    if (error.message === 'RefreshToken missing') res.sendStatus(401)
+    else if (error.message === 'Forbiden') res.sendStatus(403)
     else res.status(500).send(error)
   }
 }
 
 controllerUser.logOut = async (req, res) => {
   const t = await database.transaction()
-  const userName = req.user.name
-  if (typeof userName === 'undefined' || userName === null) res.sendStatus(401)
   try {
     await User.update({ refreshToken: null }, {
       where: {
-        name: userName
+        name: req.user.name
       },
       fields: ['refreshToken']
     }, { transaction: t })
