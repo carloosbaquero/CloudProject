@@ -67,11 +67,11 @@ controllerUser.updateUserToPro = async (req, res) => {
     if (!data.numMonths) throw (new Error('Fields missing'))
     const numMonths = Number(data.numMonths)
     if (numMonths <= 0) throw (new Error('Incorrect field'))
-    await User.update({ proUser: true, numMonthsPro: numMonths }, {
+    await User.update({ proUser: true, proDate: Date.now(), numMonthsPro: numMonths }, {
       where: {
         name: req.user.name
       },
-      fields: ['proUser', 'numMontsPro']
+      fields: ['proUser', 'proDate', 'numMonthsPro']
     }, { transaction: t })
     await t.commit()
     res.sendStatus(204)
