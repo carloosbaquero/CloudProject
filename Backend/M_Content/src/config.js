@@ -17,3 +17,6 @@ export const DATABASE_NAME = process.env.DATABASE_NAME || 'socialcontent'
 export const DATABASE_DIALECT = process.env.DATABASE_DIALECT || 'mariadb'
 export const BUCKET_NAME = process.env.BUCKET_NAME
 export const GOOGLE_KEYFILE = process.env.GOOGLE_KEYFILE
+export const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET
+export const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET
+export const TOKEN_EXPIRATION_TIME = process.env.TOKEN_EXPIRATION_TIME || '30m'

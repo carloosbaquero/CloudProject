@@ -24,6 +24,8 @@ const User = database.define('user', {
   proUser: {
     type: Sequelize.BOOLEAN
   },
+  proDate: Sequelize.DATE,
+  numMonthsPro: Sequelize.INTEGER,
   refreshToken: Sequelize.STRING,
   publicUrl: Sequelize.STRING,
   profilePicture: Sequelize.STRING

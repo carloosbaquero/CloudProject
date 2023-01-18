@@ -7,8 +7,7 @@ const routesUser = express()
 routesUser.post('/users', controllerUser.createUser)
 routesUser.put('/users', middlewareUser.authenticateToken, controllerUser.updateUserAuthenticated)
 routesUser.put('/users/pro', middlewareUser.authenticateToken, controllerUser.updateUserToPro)
-// GUARDAR CUANDO SE HA COMVERTIDO EN PRO EL USUARIO
-// HACER UNA RUTA QUE COMPRUEBE QUE NO SE HA TERMINADO SU PERIODO DE PRO
+routesUser.put('/users/pro/check', middlewareUser.authenticateToken, controllerUser.checkProStatus)
 routesUser.delete('/users', middlewareUser.authenticateToken, controllerUser.deleteUserAuthenticated)
 routesUser.delete('/users/:id', controllerUser.deleteUserById)
 routesUser.post('/users/login', controllerUser.logIn)

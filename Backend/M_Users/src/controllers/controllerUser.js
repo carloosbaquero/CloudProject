@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import jsonwebtoken from 'jsonwebtoken'
+import datefns from 'date-fns'
 import User from '../models/User.js'
 import database from '../helpers/sequelize.js'
 import { REFRESH_TOKEN_SECRET } from '../config.js'
@@ -48,7 +49,7 @@ controllerUser.createUser = async (req, res) => {
     newUser.name = data.name
     newUser.email = data.email
     newUser.password = hashedPassword
-    await newUser.save()
+    await newUser.save({ transaction: t })
     await t.commit()
     res.sendStatus(201)
   } catch (error) {
@@ -60,15 +61,54 @@ controllerUser.createUser = async (req, res) => {
 }
 
 controllerUser.updateUserToPro = async (req, res) => {
+  const data = req.body
   const t = await database.transaction()
   try {
-    await User.update({ proUser: true }, {
+    if (!data.numMonths) throw (new Error('Fields missing'))
+    const numMonths = Number(data.numMonths)
+    if (numMonths <= 0) throw (new Error('Incorrect field'))
+    await User.update({ proUser: true, numMonthsPro: numMonths }, {
       where: {
         name: req.user.name
-      }
+      },
+      fields: ['proUser', 'numMontsPro']
     }, { transaction: t })
     await t.commit()
     res.sendStatus(204)
+  } catch (error) {
+    await t.rollback()
+    console.error(error)
+    if (error.message === 'Fields missing') res.sendStatus(401)
+    else if (error.message === 'Incorrect field') res.sendStatus(404)
+    else res.status(500).send(error)
+  }
+}
+
+controllerUser.checkProStatus = async (req, res) => {
+  const t = await database.transaction()
+  try {
+    const now = Date.now()
+    const user = await User.findOne({
+      where: {
+        name: req.user.name
+      },
+      attributes: ['proDate', 'numMonthsPro']
+    })
+    const limitDate = datefns.addMonths(user.proDate, user.numMonthsPro)
+    const check = datefns.isBefore(now, limitDate)
+    if (!check) {
+      await User.update({ proUser: false, numMonthsPro: null }, {
+        where: {
+          name: req.user.name
+        },
+        fields: ['proUser', 'numMontsPro']
+      }, { transaction: t })
+      await t.commit()
+      res.sendStatus(201)
+    } else {
+      await t.commit()
+      res.status(200).send('The date is correct')
+    }
   } catch (error) {
     await t.rollback()
     console.error(error)
@@ -95,6 +135,7 @@ controllerUser.updateUserAuthenticated = async (req, res) => {
       },
       fields: ['name', 'email']
     }, { transaction: t })
+    await t.commit()
     res.sendStatus(204)
   } catch (error) {
     await t.rollback()
@@ -119,7 +160,6 @@ controllerUser.updateProfileImageFile = async (req, res) => {
       await deleteFile(oldFileName)
       await uploadFile(req.files.image, newFileName)
       const urlProfilePicture = getPublicURL(newFileName)
-      console.log(urlProfilePicture)
       await User.update({ publicUrl: urlProfilePicture, profilePicture: newFileName }, {
         where: {
           name: req.user.name
