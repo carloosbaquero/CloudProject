@@ -15,7 +15,7 @@ controllerUser.getUserAuthenticated = async (req, res) => {
       where: {
         name: req.user.name
       },
-      attributes: ['name', 'email', 'publicUrl', 'profilePictureName']
+      attributes: ['id', 'name', 'email', 'publicUrl', 'profilePicture']
     })
     res.status(200).json(user)
   } catch (error) {
@@ -27,7 +27,7 @@ controllerUser.getUserAuthenticated = async (req, res) => {
 controllerUser.getUserById = async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id, {
-      attributes: ['name', 'email', 'publicUrl', 'profilePictureName']
+      attributes: ['id', 'name', 'email', 'publicUrl', 'profilePicture']
     })
     res.status(200).json(user)
   } catch (error) {
@@ -107,7 +107,7 @@ controllerUser.checkProStatus = async (req, res) => {
       res.sendStatus(201)
     } else {
       await t.commit()
-      res.status(200).send('The date is correct')
+      res.senStatus(200)
     }
   } catch (error) {
     await t.rollback()

@@ -1,6 +1,8 @@
 import SocialContent from '../models/SocialContent.js'
 import { uploadFile, deleteFile, getPublicURL } from '../helpers/google.js'
 import database from '../helpers/sequelize.js'
+import { getUserAuthenticated } from '../helpers/mUsers.js'
+
 const controllerSocialContent = {}
 
 controllerSocialContent.indexSocialContents = async (req, res) => {
@@ -86,6 +88,14 @@ controllerSocialContent.updateContent = async (req, res) => {
   const t = await database.transaction()
   try {
     const data = req.body
+    const user = await getUserAuthenticated(req.headers.authorization)
+    const contentOfUser = await SocialContent.findAll({
+      where: {
+        userId: user.id
+      }
+    })
+    const check = contentOfUser.some(content => content.userId === req.params.id)
+    if (!check) throw (new Error('Fail check'))
     await SocialContent.update(data, {
       where: {
         id: req.params.id
@@ -97,7 +107,8 @@ controllerSocialContent.updateContent = async (req, res) => {
   } catch (error) {
     t.rollback()
     console.error(error)
-    res.status(500).send(error)
+    if (error.message === 'Fail check') res.sendStatus(403)
+    else res.status(500).send(error)
   }
 }
 
@@ -169,7 +180,7 @@ controllerSocialContent.saveVideoContentFile = async (req, res) => {
         fields: ['publicURL']
       }, { transaction: t })
       await t.commit()
-      res.status(201).send('Success')
+      res.senStatus(201)
     } catch (error) {
       await t.rollback()
       console.error(error)
@@ -221,22 +232,26 @@ controllerSocialContent.deleteContentVideoFile = async (req, res) => {
 controllerSocialContent.getPublicURLImageFile = async (req, res) => {
   try {
     const image = await SocialContent.findByPk(req.params.id)
-    const publicUrl = getPublicURL(image.dataValues.name, 'images')
-    res.status(200).send(publicUrl)
+    const publicUrl = image.publicURL
+    if (publicUrl === null) throw (new Error('Url not found'))
+    res.status(200).json({ URL: publicUrl })
   } catch (error) {
     console.error(error)
-    res.status(500).send(error)
+    if (error.message === 'Url not found') res.sendStatus(404)
+    else res.status(500).send(error)
   }
 }
 
 controllerSocialContent.getPublicURLVideoFile = async (req, res) => {
   try {
     const video = await SocialContent.findByPk(req.params.id)
-    const publicUrl = getPublicURL(video.dataValues.name, 'videos')
-    res.status(200).send(publicUrl)
+    const publicUrl = video.publicURL
+    if (publicUrl === null) throw (new Error('Url not found'))
+    res.status(200).json({ URL: publicUrl })
   } catch (error) {
     console.error(error)
-    res.status(500).send(error)
+    if (error.message === 'Url not found') res.sendStatus(404)
+    else res.status(500).send(error)
   }
 }
 
