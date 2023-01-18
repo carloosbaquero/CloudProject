@@ -97,11 +97,11 @@ controllerUser.checkProStatus = async (req, res) => {
     const limitDate = datefns.addMonths(user.proDate, user.numMonthsPro)
     const check = datefns.isBefore(now, limitDate)
     if (!check) {
-      await User.update({ proUser: false, numMonthsPro: null }, {
+      await User.update({ proUser: false, proDate: null, numMonthsPro: null }, {
         where: {
           name: req.user.name
         },
-        fields: ['proUser', 'numMontsPro']
+        fields: ['proUser', 'proDate', 'numMontsPro']
       }, { transaction: t })
       await t.commit()
       res.sendStatus(201)
