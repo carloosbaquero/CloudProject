@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import jsonwebtoken from 'jsonwebtoken'
+import datefns from 'date-fns'
 import User from '../models/User.js'
 import database from '../helpers/sequelize.js'
 import { REFRESH_TOKEN_SECRET } from '../config.js'
@@ -14,7 +15,7 @@ controllerUser.getUserAuthenticated = async (req, res) => {
       where: {
         name: req.user.name
       },
-      attributes: ['name', 'email', 'publicUrl', 'profilePictureName']
+      attributes: ['id', 'name', 'email', 'publicUrl', 'profilePicture']
     })
     res.status(200).json(user)
   } catch (error) {
@@ -26,7 +27,7 @@ controllerUser.getUserAuthenticated = async (req, res) => {
 controllerUser.getUserById = async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id, {
-      attributes: ['name', 'email', 'publicUrl', 'profilePictureName']
+      attributes: ['id', 'name', 'email', 'publicUrl', 'profilePicture']
     })
     res.status(200).json(user)
   } catch (error) {
@@ -37,37 +38,77 @@ controllerUser.getUserById = async (req, res) => {
 
 controllerUser.createUser = async (req, res) => {
   const data = req.body
-  if (!(data.name && data.password && data.email)) {
-    res.sendStatus(401)
-  }
   const t = await database.transaction()
   try {
+    if (!(data.name && data.password && data.email)) {
+      throw (new Error('Fail first check'))
+    }
     const hashedPassword = await bcrypt.hash(data.password, 10)
     const newUser = User.build({ transaction: t })
     newUser.proUser = false
     newUser.name = data.name
     newUser.email = data.email
     newUser.password = hashedPassword
-    await newUser.save()
+    await newUser.save({ transaction: t })
     await t.commit()
     res.sendStatus(201)
   } catch (error) {
     await t.rollback()
     console.error(error)
-    res.status(500).send(error)
+    if (error.message === 'Fail first check') res.sendStatus(401)
+    else res.status(500).send(error)
   }
 }
 
 controllerUser.updateUserToPro = async (req, res) => {
+  const data = req.body
   const t = await database.transaction()
   try {
-    await User.update({ proUser: true }, {
+    if (!data.numMonths) throw (new Error('Fields missing'))
+    const numMonths = Number(data.numMonths)
+    if (numMonths <= 0) throw (new Error('Incorrect field'))
+    await User.update({ proUser: true, proDate: Date.now(), numMonthsPro: numMonths }, {
       where: {
         name: req.user.name
-      }
+      },
+      fields: ['proUser', 'proDate', 'numMonthsPro']
     }, { transaction: t })
     await t.commit()
     res.sendStatus(204)
+  } catch (error) {
+    await t.rollback()
+    console.error(error)
+    if (error.message === 'Fields missing') res.sendStatus(401)
+    else if (error.message === 'Incorrect field') res.sendStatus(404)
+    else res.status(500).send(error)
+  }
+}
+
+controllerUser.checkProStatus = async (req, res) => {
+  const t = await database.transaction()
+  try {
+    const now = Date.now()
+    const user = await User.findOne({
+      where: {
+        name: req.user.name
+      },
+      attributes: ['proDate', 'numMonthsPro']
+    })
+    const limitDate = datefns.addMonths(user.proDate, user.numMonthsPro)
+    const check = datefns.isBefore(now, limitDate)
+    if (!check) {
+      await User.update({ proUser: false, proDate: null, numMonthsPro: null }, {
+        where: {
+          name: req.user.name
+        },
+        fields: ['proUser', 'proDate', 'numMontsPro']
+      }, { transaction: t })
+      await t.commit()
+      res.sendStatus(201)
+    } else {
+      await t.commit()
+      res.senStatus(200)
+    }
   } catch (error) {
     await t.rollback()
     console.error(error)
@@ -79,7 +120,6 @@ controllerUser.updateUserAuthenticated = async (req, res) => {
   const t = await database.transaction()
   let newName = req.body?.name
   let newEmail = req.body?.email
-  if (typeof newName === 'undefined' || newName === null) res.sendStatus(401)
   try {
     const user = await User.findOne({
       where: {
@@ -95,6 +135,7 @@ controllerUser.updateUserAuthenticated = async (req, res) => {
       },
       fields: ['name', 'email']
     }, { transaction: t })
+    await t.commit()
     res.sendStatus(204)
   } catch (error) {
     await t.rollback()
@@ -119,7 +160,6 @@ controllerUser.updateProfileImageFile = async (req, res) => {
       await deleteFile(oldFileName)
       await uploadFile(req.files.image, newFileName)
       const urlProfilePicture = getPublicURL(newFileName)
-      console.log(urlProfilePicture)
       await User.update({ publicUrl: urlProfilePicture, profilePicture: newFileName }, {
         where: {
           name: req.user.name
@@ -224,9 +264,8 @@ controllerUser.deleteProfileImageFile = async (req, res) => {
 
 controllerUser.logIn = async (req, res) => {
   const data = req.body
-  if (!(data.name && data.password)) {
-    res.sendStatus(401)
-  } else {
+  if (!(data.name && data.password)) res.sendStatus(401)
+  else {
     const t = await database.transaction()
     try {
       const user = await User.findOne({
@@ -260,8 +299,10 @@ controllerUser.logIn = async (req, res) => {
 controllerUser.token = async (req, res) => {
   const data = req.body
   const refreshToken = data.token
-  if (typeof refreshToken === 'undefined' || refreshToken === null) res.sendStatus(401)
   try {
+    if (typeof refreshToken === 'undefined' || refreshToken === null) {
+      throw (new Error('RefreshToken missing'))
+    }
     const user = await User.findOne({
       where: {
         name: data.name
@@ -275,19 +316,18 @@ controllerUser.token = async (req, res) => {
     })
   } catch (error) {
     console.error(error)
-    if (error.message === 'Forbiden') res.sendStatus(403)
+    if (error.message === 'RefreshToken missing') res.sendStatus(401)
+    else if (error.message === 'Forbiden') res.sendStatus(403)
     else res.status(500).send(error)
   }
 }
 
 controllerUser.logOut = async (req, res) => {
   const t = await database.transaction()
-  const userName = req.user.name
-  if (typeof userName === 'undefined' || userName === null) res.sendStatus(401)
   try {
     await User.update({ refreshToken: null }, {
       where: {
-        name: userName
+        name: req.user.name
       },
       fields: ['refreshToken']
     }, { transaction: t })

@@ -1,9 +1,9 @@
 import jsonwebtoken from 'jsonwebtoken'
 import { ACCESS_TOKEN_SECRET } from '../config.js'
 
-const middlewareUser = {}
+const middlewareContent = {}
 
-middlewareUser.authenticateToken = (req, res, next) => {
+middlewareContent.authenticateToken = (req, res, next) => {
   const authHeader = req.headers.authorization
   const token = authHeader && authHeader.split(' ')[1]
   if (typeof token === 'undefined') return res.sendStatus(401)
@@ -14,4 +14,4 @@ middlewareUser.authenticateToken = (req, res, next) => {
   })
 }
 
-export default middlewareUser
+export default middlewareContent

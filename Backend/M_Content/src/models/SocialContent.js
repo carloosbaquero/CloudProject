@@ -17,9 +17,11 @@ const SocialContent = database.define('socialcontents', {
     unique: true,
     allowNull: false
   },
-  userId: Sequelize.INTEGER,
+  userId: {
+    type: Sequelize.INTEGER,
+    allowNull: false
+  },
   description: Sequelize.TEXT,
-  proUser: Sequelize.BOOLEAN,
   publicURL: Sequelize.STRING
 })
 

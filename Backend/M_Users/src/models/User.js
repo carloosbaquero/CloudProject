@@ -22,8 +22,11 @@ const User = database.define('user', {
     allowNull: false
   },
   proUser: {
-    type: Sequelize.BOOLEAN
+    type: Sequelize.BOOLEAN,
+    allowNull: false
   },
+  proDate: Sequelize.DATE,
+  numMonthsPro: Sequelize.INTEGER,
   refreshToken: Sequelize.STRING,
   publicUrl: Sequelize.STRING,
   profilePicture: Sequelize.STRING
