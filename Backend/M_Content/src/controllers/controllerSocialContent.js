@@ -194,8 +194,14 @@ controllerSocialContent.saveVideoContentFile = async (req, res) => {
   else {
     const t = await database.transaction()
     try {
-      await uploadFile(req.files.video, 'videos')
       const videoName = req.files.video.name
+      const videoContent = await SocialContent.findOne({
+        where: {
+          name: videoName
+        }
+      })
+      if (!videoContent) throw new Error('Image not found')
+      await uploadFile(req.files.video, 'videos')
       const URL = getPublicURL(videoName, 'videos')
       await SocialContent.update({ publicURL: URL }, {
         where: {
@@ -208,7 +214,8 @@ controllerSocialContent.saveVideoContentFile = async (req, res) => {
     } catch (error) {
       await t.rollback()
       console.error(error)
-      res.status(500).send(error)
+      if (error.message !== 'Image not found') res.sendStatus(404)
+      else res.status(500).send(error)
     }
   }
 }
@@ -217,6 +224,7 @@ controllerSocialContent.deleteContentImageFile = async (req, res) => {
   const t = await database.transaction()
   try {
     const content = await SocialContent.findByPk(req.params.id)
+    if (!content) throw new Error('Not found')
     await deleteFile(content.dataValues.name, 'images')
     await SocialContent.update({ publicURL: null }, {
       where: {
@@ -229,7 +237,8 @@ controllerSocialContent.deleteContentImageFile = async (req, res) => {
   } catch (error) {
     await t.rollback()
     console.error(error)
-    res.status(500).send(error)
+    if (error.message === 'Not found') res.sendStatus(404)
+    else res.status(500).send(error)
   }
 }
 
@@ -237,6 +246,7 @@ controllerSocialContent.deleteContentVideoFile = async (req, res) => {
   const t = await database.transaction()
   try {
     const content = await SocialContent.findByPk(req.params.id)
+    if (!content) throw new Error('Not found')
     await deleteFile(content.dataValues.name, 'video')
     await SocialContent.update({ publicURL: null }, {
       where: {
@@ -249,19 +259,21 @@ controllerSocialContent.deleteContentVideoFile = async (req, res) => {
   } catch (error) {
     await t.rollback()
     console.error(error)
-    res.status(500).send(error)
+    if (error.message === 'Not found') res.sendStatus(404)
+    else res.status(500).send(error)
   }
 }
 
 controllerSocialContent.getPublicURLImageFile = async (req, res) => {
   try {
     const image = await SocialContent.findByPk(req.params.id)
+    if (!image) throw new Error('Not found')
     const publicUrl = image.publicURL
-    if (publicUrl === null) throw new Error('Url not found')
+    if (publicUrl === null) throw new Error('Not found')
     res.status(200).json({ URL: publicUrl })
   } catch (error) {
     console.error(error)
-    if (error.message === 'Url not found') res.sendStatus(404)
+    if (error.message === 'Not found') res.sendStatus(404)
     else res.status(500).send(error)
   }
 }
@@ -269,12 +281,13 @@ controllerSocialContent.getPublicURLImageFile = async (req, res) => {
 controllerSocialContent.getPublicURLVideoFile = async (req, res) => {
   try {
     const video = await SocialContent.findByPk(req.params.id)
+    if (!video) throw new Error('Not found')
     const publicUrl = video.publicURL
-    if (publicUrl === null) throw new Error('Url not found')
+    if (publicUrl === null) throw new Error('Not found')
     res.status(200).json({ URL: publicUrl })
   } catch (error) {
     console.error(error)
-    if (error.message === 'Url not found') res.sendStatus(404)
+    if (error.message === 'Not found') res.sendStatus(404)
     else res.status(500).send(error)
   }
 }

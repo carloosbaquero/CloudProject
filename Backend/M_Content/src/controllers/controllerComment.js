@@ -1,4 +1,5 @@
 import Comments from '../models/Comment.js'
+import SocialContent from '../models/SocialContent.js'
 import database from '../helpers/sequelize.js'
 
 const controllerComments = {}
@@ -17,13 +18,18 @@ controllerComments.createComment = async (req, res) => {
   const data = req.body
   const t = await database.transaction()
   try {
-    if (!(data.text && data.userId)) throw (new Error('Fields missing'))
+    if (typeof data?.text !== 'string' || typeof data?.userId !== 'number') throw new Error('Fields missing')
+    const imageId = typeof data?.imageId !== 'number' ? null : Number(data.imageId)
+    const videoId = typeof data?.videoId !== 'number' ? null : Number(data.videoId)
+    if (imageId === null && videoId === null) throw new Error('Comment must belong one image or video')
+    const id = imageId === null ? videoId : imageId
+    const content = await SocialContent.findByPk(id)
+    if (!content) throw new Error('Content not found')
     const comment = Comments.build({ transaction: t })
     comment.text = data.text
     comment.userId = Number(data.userId)
-    comment.imageId = typeof data?.imageId === 'undefined' ? null : Number(data.imageId)
-    comment.videoId = typeof data?.videoId === 'undefined' ? null : Number(data.videoId)
-    if (comment.imageId === null && comment.videoId === null) throw (new Error('Comment must belong one image or video'))
+    comment.imageId = imageId
+    comment.videoId = videoId
     await comment.save({ transaction: t })
     await t.commit()
     res.sendStatus(201)
@@ -31,6 +37,7 @@ controllerComments.createComment = async (req, res) => {
     await t.rollback()
     console.error(error)
     if (error.message === 'Fields missing') res.sendStatus(401)
+    else if (error.message === 'Content not found') res.sendStatus(404)
     else if (error.message === 'Comment must belong one image or video') res.sendStatus(403)
     else res.status(500).send(error)
   }
@@ -39,9 +46,9 @@ controllerComments.createComment = async (req, res) => {
 controllerComments.updateComment = async (req, res) => {
   const t = await database.transaction()
   try {
-    const data = req.body
-    if (!data.text) throw (new Error('Missing text'))
-    await Comments.update(data, {
+    const newText = req.body?.text
+    if (typeof newText !== 'string') throw new Error('Missing text')
+    await Comments.update({ text: newText }, {
       where: {
         id: req.params.id
       },

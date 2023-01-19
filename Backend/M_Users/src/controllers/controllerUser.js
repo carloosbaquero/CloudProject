@@ -325,7 +325,7 @@ controllerUser.token = async (req, res) => {
     jsonwebtoken.verify(refreshToken, REFRESH_TOKEN_SECRET, (err, user) => {
       if (err) return res.sendStatus(403)
       const accessToken = generateAccessToken({ name: user.name })
-      res.status(200).json({ expired: true, token: accessToken })
+      res.status(200).json({ expired: true, token: accessToken, name: data.name })
     })
   } catch (error) {
     if (error.message !== 'Token valid') console.error(error)
@@ -337,7 +337,7 @@ controllerUser.token = async (req, res) => {
         res.sendStatus(401)
         break
       case 'Token valid':
-        res.status(200).json({ expired: false, token: null })
+        res.status(200).json({ expired: false, token: null, name: req.body.name })
         break
       default:
         res.status(500).send(error)
