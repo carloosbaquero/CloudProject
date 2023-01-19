@@ -1,9 +1,7 @@
 import express from 'express'
 import controllerSocialContent from '../controllers/controllerSocialContent.js'
 import middlewareContent from '../middlewares/middlewareContent.js'
-
 const routesImages = express()
-
 routesImages.get('/images', controllerSocialContent.indexImageContents)
 routesImages.get('/images/:id', controllerSocialContent.getContent)
 routesImages.post('/images',

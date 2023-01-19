@@ -2,6 +2,7 @@ import SocialContent from '../models/SocialContent.js'
 import { uploadFile, deleteFile, getPublicURL } from '../helpers/google.js'
 import database from '../helpers/sequelize.js'
 import { getUserAuthenticated } from '../helpers/mUsers.js'
+import { checkNameExtensionContent } from '../helpers/utilities.js'
 
 const controllerSocialContent = {}
 
@@ -47,11 +48,18 @@ controllerSocialContent.createImageContent = async (req, res) => {
   const data = req.body
   const t = await database.transaction()
   try {
-    if (!(data.name && data.userId)) throw (new Error('Missing fields'))
+    if (!data.name) throw new Error('Missing fields')
+    const user = await getUserAuthenticated(req.headers.authorization)
+    const description = typeof data?.description === 'undefined'
+      ? null
+      : data.description
+    const name = data.name
+    if (typeof description !== 'string' || typeof name !== 'string') throw new Error('Invalid fields')
+    if (!checkNameExtensionContent('image', name)) throw new Error('Invalid fields')
     const imageContent = SocialContent.build({ transaction: t })
-    imageContent.name = data.name
-    imageContent.userId = Number(data.userId)
-    imageContent.description = typeof data?.description === 'undefined' ? null : data.description
+    imageContent.name = name
+    imageContent.userId = user.id
+    imageContent.description = description
     imageContent.contentType = 'image'
     await imageContent.save({ transaction: t })
     await t.commit()
@@ -60,6 +68,7 @@ controllerSocialContent.createImageContent = async (req, res) => {
     await t.rollback()
     console.error(error)
     if (error.message === 'Missing fields') res.sendStatus(401)
+    else if (error.message === 'Invalid fields') res.sendStatus(403)
     else res.status(500).send(error)
   }
 }
@@ -68,19 +77,27 @@ controllerSocialContent.createVideoContent = async (req, res) => {
   const data = req.body
   const t = await database.transaction()
   try {
-    if (!(data.name && data.userId)) throw (new Error('Missing fields'))
+    if (!data.name) throw new Error('Missing fields')
+    const user = await getUserAuthenticated(req.headers.authorization)
+    const description = typeof data?.description === 'undefined'
+      ? null
+      : data.description
+    const name = data.name
+    if (typeof description !== 'string' || typeof name !== 'string') throw (new Error('Invalid fields'))
+    if (!checkNameExtensionContent('video', name)) throw new Error('Invalid fields')
     const videoContent = SocialContent.build({ transaction: t })
-    videoContent.name = data.name
-    videoContent.userId = Number(data.userId)
-    videoContent.description = typeof data?.description === 'undefined' ? null : data.description
+    videoContent.name = name
+    videoContent.userId = user.id
+    videoContent.description = description
     videoContent.contentType = 'video'
-    const result = await videoContent.save({ transaction: t })
+    await videoContent.save({ transaction: t })
     await t.commit()
-    res.status(201).json(result)
+    res.sendStatus(201)
   } catch (error) {
     await t.rollback()
     console.error(error)
     if (error.message === 'Missing fields') res.sendStatus(401)
+    else if (error.message === 'Invalid fields') res.sendStatus(403)
     else res.status(500).send(error)
   }
 }
@@ -89,13 +106,11 @@ controllerSocialContent.updateContent = async (req, res) => {
   try {
     const data = req.body
     const user = await getUserAuthenticated(req.headers.authorization)
-    const contentOfUser = await SocialContent.findAll({
-      where: {
-        userId: user.id
-      }
-    })
-    const check = contentOfUser.some(content => content.userId === req.params.id)
-    if (!check) throw (new Error('Fail check'))
+    const content = await SocialContent.findByPk(req.params.id)
+    if (!content) throw new Error('Content not found')
+    const check = content.userId === user.id
+    if (!check) throw new Error('User dont owe content')
+    if (typeof data?.description !== 'string') throw new Error('Invalid fields')
     await SocialContent.update(data, {
       where: {
         id: req.params.id
@@ -107,7 +122,9 @@ controllerSocialContent.updateContent = async (req, res) => {
   } catch (error) {
     t.rollback()
     console.error(error)
-    if (error.message === 'Fail check') res.sendStatus(403)
+    if (error.message === 'Content not found') res.sendStatus(404)
+    else if (error.message === 'User dont owe content') res.sendStatus(403)
+    else if (error.message === 'Invalid fields') res.sendStatus(403)
     else res.status(500).send(error)
   }
 }
@@ -145,8 +162,14 @@ controllerSocialContent.saveImageContentFile = async (req, res) => {
   else {
     const t = await database.transaction()
     try {
-      await uploadFile(req.files.image, 'images')
       const imageName = req.files.image.name
+      const imageContent = await SocialContent.findOne({
+        where: {
+          name: imageName
+        }
+      })
+      if (!imageContent) throw new Error('Image not found')
+      await uploadFile(req.files.image, 'images')
       const URL = getPublicURL(imageName, 'images')
       await SocialContent.update({ publicURL: URL }, {
         where: {
@@ -159,7 +182,8 @@ controllerSocialContent.saveImageContentFile = async (req, res) => {
     } catch (error) {
       await t.rollback()
       console.error(error)
-      res.status(500).send(error)
+      if (error.message !== 'Image not found') res.sendStatus(404)
+      else res.status(500).send(error)
     }
   }
 }
@@ -233,7 +257,7 @@ controllerSocialContent.getPublicURLImageFile = async (req, res) => {
   try {
     const image = await SocialContent.findByPk(req.params.id)
     const publicUrl = image.publicURL
-    if (publicUrl === null) throw (new Error('Url not found'))
+    if (publicUrl === null) throw new Error('Url not found')
     res.status(200).json({ URL: publicUrl })
   } catch (error) {
     console.error(error)
@@ -246,7 +270,7 @@ controllerSocialContent.getPublicURLVideoFile = async (req, res) => {
   try {
     const video = await SocialContent.findByPk(req.params.id)
     const publicUrl = video.publicURL
-    if (publicUrl === null) throw (new Error('Url not found'))
+    if (publicUrl === null) throw new Error('Url not found')
     res.status(200).json({ URL: publicUrl })
   } catch (error) {
     console.error(error)

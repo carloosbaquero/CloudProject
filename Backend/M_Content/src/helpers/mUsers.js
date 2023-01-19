@@ -3,7 +3,7 @@ import { M_USERS_HOST } from '../config.js'
 
 export function getUserAuthenticated (token) {
   const myHeaders = new Headers()
-  myHeaders.append('Authorization', `Bearer ${token}`)
+  myHeaders.append('Authorization', token)
   const requestOptions = {
     method: 'GET',
     headers: myHeaders,

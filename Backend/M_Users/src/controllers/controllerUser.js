@@ -3,7 +3,7 @@ import jsonwebtoken from 'jsonwebtoken'
 import datefns from 'date-fns'
 import User from '../models/User.js'
 import database from '../helpers/sequelize.js'
-import { REFRESH_TOKEN_SECRET } from '../config.js'
+import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from '../config.js'
 import generateAccessToken from '../helpers/authorization.js'
 import { deleteFile, getPublicURL, uploadFile } from '../helpers/google.js'
 
@@ -295,30 +295,53 @@ controllerUser.logIn = async (req, res) => {
     }
   }
 }
-// NECESITO EL TOKEN Y EL NAME EN EL BODY
+
 controllerUser.token = async (req, res) => {
   const data = req.body
-  const refreshToken = data.token
+  const refreshToken = data?.refreshToken
+  const accessToken = data?.accessToken
+  const userName = data?.name
   try {
-    if (typeof refreshToken === 'undefined' || refreshToken === null) {
-      throw (new Error('RefreshToken missing'))
-    }
+    if (typeof refreshToken !== 'string' || typeof accessToken !== 'string' || typeof userName !== 'string') throw new Error('Missing fields')
+    const checkExpired = { err: false, name: null }
+    jsonwebtoken.verify(accessToken, ACCESS_TOKEN_SECRET, (err, user) => {
+      if (err && err.name !== 'TokenExpiredError') {
+        checkExpired.err = true
+        checkExpired.name = err.name
+      }
+      if (!err) {
+        checkExpired.err = false
+      }
+    })
+    console.log(checkExpired)
+    if (checkExpired.err && checkExpired.name !== 'TokenExpiredError') throw new Error('Forbiden')
+    if (!checkExpired.err) throw new Error('Token valid')
     const user = await User.findOne({
       where: {
         name: data.name
       }
     })
-    if (!user || user.refreshToken === null) throw (new Error('Forbiden'))
+    if (!user || user.refreshToken === null) throw new Error('Forbiden')
     jsonwebtoken.verify(refreshToken, REFRESH_TOKEN_SECRET, (err, user) => {
       if (err) return res.sendStatus(403)
       const accessToken = generateAccessToken({ name: user.name })
-      res.status(200).json(accessToken)
+      res.status(200).json({ expired: true, token: accessToken })
     })
   } catch (error) {
-    console.error(error)
-    if (error.message === 'RefreshToken missing') res.sendStatus(401)
-    else if (error.message === 'Forbiden') res.sendStatus(403)
-    else res.status(500).send(error)
+    if (error.message !== 'Token valid') console.error(error)
+    switch (error.message) {
+      case 'Forbiden':
+        res.sendStatus(403)
+        break
+      case 'Missing fields':
+        res.sendStatus(401)
+        break
+      case 'Token valid':
+        res.status(200).json({ expired: false, token: null })
+        break
+      default:
+        res.status(500).send(error)
+    }
   }
 }
 
