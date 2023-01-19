@@ -53,3 +53,8 @@
     color: white;
     text-decoration: underline;
   }
+
+  .error {
+    color: red;
+    font-family: 'Shift', sans-serif;
+  }

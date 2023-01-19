@@ -4,18 +4,21 @@ import { Login } from '../components/Login';
 import {Register} from '../components/Register';
 
 
+
+
+
 export const SignIn = () => {
 
-    const [user, setUser] = useState(null)
+    
 
-    const login = () => {
-      setUser({
-        id:1,
-        name: "Admin"
-      })
-    }
+    // const login = () => {
+    //   setUser({
+    //     id:1,
+    //     name: "Admin"
+    //   })
+    // }
   
-    const logout = () => setUser(null)
+    // const logout = () => setUser(null)
 
     const [currentForm, setCurrentForm] = useState('login');
 

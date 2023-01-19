@@ -77,6 +77,8 @@
 
   .Post-caption {
 
+   
+
     background-color: #efefef;
 
     height: 30px;
@@ -85,6 +87,9 @@
 
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
+
+    justify-content: space-around;
+    
   }
 
   .Post-caption strong {
@@ -109,4 +114,23 @@
     background-color: #09f;
     background-size: 100%;
     border-color: #09f;
+  }
+
+  .comments {
+     color: white
+  }
+
+  .buttonComments {
+    background-color: black;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height:40px;
+    width:160px;
+  }
+
+  .end {
+    justify-content: end;
   }

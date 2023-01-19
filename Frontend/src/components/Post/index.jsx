@@ -29,7 +29,9 @@ render() {
 
     const nickname = this.props.nickname;
 
-    const description = this.props.description;
+    //const description = this.props.description;
+
+     const description = 'This is a description gqwgwyufgywegygeygwycgywgcyugyu';
 
     const profilepicture= this.props.profilepicture;
 
@@ -77,8 +79,14 @@ render() {
         <div className="Post-caption">
 
             <strong>{nickname} </strong> {description}
+            
+           
 
         </div>
+        
+        <div className="end">
+                <button type="button" className="buttonComments" ><strong className="comments">comments...</strong></button>
+            </div>
 
         </article>;
 

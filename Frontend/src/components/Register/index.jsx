@@ -1,14 +1,45 @@
 import React, {useState} from 'react'
 import './Register.css'
 
+function register(name, email, pass) {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+        "name": name,
+        "password": pass,
+        "email": email
+    });
+
+    const requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+    };
+
+    fetch("http://localhost:3002/users", requestOptions)
+    .then(response => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
+}
+
 export const Register = (props) => {
     const [email, setEmail] = useState('')
     const [pass, setPass] = useState('')
     const [name, setName] = useState('')
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         console.log(email);
+        console.log(name)
+        console.log(pass)
+        
+        try{
+            register(name, email, pass)
+        }catch(err){
+            console.log(err)
+        }
     }
     return (
         <div className="auth-form-container">
