@@ -5,22 +5,17 @@ import axios from 'axios'
 import jwt_decode from 'jwt-decode'
 
 
-// function login(name, pass) {
-//     const myHeaders = new Headers();
-//     myHeaders.append("Content-Type", "application/json");
-
-//     const raw = JSON.stringify({
-//         "name": name,
-//         "password": pass,
-//     });
-
-//     return {
-//         method: 'POST',
-//         headers: myHeaders,
-//         body: raw,
-//         redirect: 'follow'
-//     };
-// }
+const useLocalStorage = (storageKey, fallbackState) => {
+    const [value, setValue] = React.useState(
+      JSON.parse(localStorage.getItem(storageKey)) ?? fallbackState
+    );
+  
+    React.useEffect(() => {
+      localStorage.setItem(storageKey, JSON.stringify(value));
+    }, [value, storageKey]);
+  
+    return [value, setValue];
+  };
 
 
 
@@ -31,7 +26,8 @@ export const Login = (props) => {
 
     const navigate = useNavigate();
 
-    const [tokens, setTokens] = useState(null)
+    const [accessToken, setAccessToken] = useLocalStorage('accessToken', null)
+    const [refreshToken, setRefreshToken] = useLocalStorage('refreshToken', null)
 
     const [error, setError] = useState(null)
 
@@ -39,33 +35,33 @@ export const Login = (props) => {
     const [password, setPass] = useState('')
 
 
-    const refreshToken = async () => {
-        try{
-            const res = await axios.post("http://localhost:3002/token", { token: tokens.refreshToken})
-            setTokens({
-                ...tokens,
-                accessToken: res.data.accessToken,
-                refreshToken: res.data.refreshToken
-            })
-            return res.data
-        }catch(err){
-            console.log(err)
-        }
-    }
+    // const refreshToken = async () => {
+    //     try{
+    //         const res = await axios.post("http://localhost:3002/token", { token: tokens.refreshToken})
+    //         setTokens({
+    //             ...tokens,
+    //             accessToken: res.data.accessToken,
+    //             refreshToken: res.data.refreshToken
+    //         })
+    //         return res.data
+    //     }catch(err){
+    //         console.log(err)
+    //     }
+    // }
     
-    const axiosJWT = axios.create()
+    // const axiosJWT = axios.create()
 
-    axiosJWT.interceptors.request.use( async (config) => {
-        let currentDate = new Date();
-        const decodedToken = jwt_decode(tokens.accessToken);
-        if(decodedToken.exp *1000 < currentDate.getTime()){
-            const data = await refreshToken()
-            config.headers["authorization"] = "Bearer " + data.accessToken
-        }
-        return config   
-    }, (error) => {
-        return Promise.reject(error)
-    })
+    // axiosJWT.interceptors.request.use( async (config) => {
+    //     let currentDate = new Date();
+    //     const decodedToken = jwt_decode(tokens.accessToken);
+    //     if(decodedToken.exp *1000 < currentDate.getTime()){
+    //         const data = await refreshToken()
+    //         config.headers["authorization"] = "Bearer " + data.accessToken
+    //     }
+    //     return config   
+    // }, (error) => {
+    //     return Promise.reject(error)
+    // })
 
     
 
@@ -76,24 +72,24 @@ export const Login = (props) => {
 
         try{
             const res = await axios.post("http://localhost:3002/users/login", {name, password})
-            setTokens(res.data)
+            setAccessToken(res.data.accessToken)
+            setRefreshToken(res.data.refreshToken)
             console.log(res.data.accessToken)
         }catch(err){
+            console.log(err)
             setError(err.response.status)
             console.log(err.response.status)
         } 
     }
 
     const handleClicked = async () => {
-        accessToken = tokens.accessToken
-        refreshToken = tokens.refreshToken
         navigate('/')
     }
-    
+
     return (
         
         <div className="auth-form-container">
-            {tokens ? (
+            {accessToken ? (
                 <div>
                     <h2>You have succesfully logged</h2>
                     <button className='link-btn' onClick={handleClicked}>Go To Free Space</button>
@@ -127,7 +123,4 @@ export const Login = (props) => {
     )
 }
 
-
-
-
-
+export {useLocalStorage}

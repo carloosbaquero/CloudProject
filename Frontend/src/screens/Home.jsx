@@ -5,7 +5,11 @@ import Header from '../components/Header';
 import Post from '../components/Post';
 import styled from 'styled-components'
 
+
+
 function listCharacters() {
+    
+
     const [characters, setCharacters] = useState([])
     useEffect(() => {
         fetch("https://rickandmortyapi.com/api/character")
@@ -22,6 +26,13 @@ function listCharacters() {
 
 
 export const Home = () => {
+    const [accessToken, setAccessToken] = useState(()=>{
+        const saved = localStorage.getItem("accessToken");
+        const initialValue = JSON.parse(saved);
+        return initialValue || "";
+    })
+    
+    
     const characters = listCharacters()
 
     return (
