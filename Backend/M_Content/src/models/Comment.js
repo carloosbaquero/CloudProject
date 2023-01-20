@@ -15,8 +15,10 @@ const Comments = database.define('commets', {
     type: Sequelize.INTEGER,
     allowNull: false
   },
-  imageId: Sequelize.INTEGER,
-  videoId: Sequelize.INTEGER
+  contentId: {
+    type: Sequelize.INTEGER,
+    allowNull: false
+  }
 })
 
 export default Comments
