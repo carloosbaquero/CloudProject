@@ -2,7 +2,7 @@ import SocialContent from '../models/SocialContent.js'
 import { uploadFile, deleteFile, getPublicURL } from '../helpers/google.js'
 import database from '../helpers/sequelize.js'
 import { getUserAuthenticated, getUserById } from '../helpers/mUsers.js'
-import { checkNameExtensionContent, requestType } from '../helpers/utilities.js'
+import { checkNameExtensionContent, requestType, sortContentWithUsers } from '../helpers/utilities.js'
 
 const controllerSocialContent = {}
 
@@ -27,7 +27,7 @@ controllerSocialContent.indexSocialContentWithUser = async (req, res) => {
       element.profilePublicURL = user.publicURL
       result.push(element)
     }
-    result.sort()
+    result.sort((a, b) => sortContentWithUsers(a, b))
     res.status(200).json(result)
   } catch (error) {
     console.error(error)
@@ -217,8 +217,8 @@ controllerSocialContent.saveContentFile = async (req, res) => {
           name: contentName
         }
       })
-      if (!type.startsWith(content.contentType)) throw new Error('Invalid request')
       if (!content) throw new Error('Content not found')
+      if (!type.startsWith(content.contentType)) throw new Error('Invalid request')
       await uploadFile(req.files.newFile, type)
       const URL = getPublicURL(contentName, type)
       console.log(URL)
@@ -245,8 +245,8 @@ controllerSocialContent.deleteContentFile = async (req, res) => {
   try {
     const content = await SocialContent.findByPk(req.params.id)
     const type = requestType(req.url)
-    if (!type.startsWith(content.contentType)) throw new Error('Invalid request')
     if (!content) throw new Error('Not found')
+    if (!type.startsWith(content.contentType)) throw new Error('Invalid request')
     await deleteFile(content.dataValues.name, type)
     await SocialContent.update({ publicURL: null }, {
       where: {

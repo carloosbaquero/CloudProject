@@ -15,7 +15,7 @@ controllerUser.getUserAuthenticated = async (req, res) => {
       where: {
         name: req.user.name
       },
-      attributes: ['id', 'name', 'email', 'publicURL', 'profilePicture']
+      attributes: ['id', 'name', 'email', 'publicURL', 'profilePicture', 'proUser']
     })
     res.status(200).json(user)
   } catch (error) {
@@ -27,7 +27,7 @@ controllerUser.getUserAuthenticated = async (req, res) => {
 controllerUser.getUserById = async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id, {
-      attributes: ['id', 'name', 'email', 'publicURL', 'profilePicture']
+      attributes: ['id', 'name', 'email', 'publicURL', 'profilePicture', 'proUser']
     })
     res.status(200).json(user)
   } catch (error) {

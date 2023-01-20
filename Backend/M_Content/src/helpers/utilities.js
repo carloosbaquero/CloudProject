@@ -11,3 +11,15 @@ export function requestType (requestPath) {
   const pathElements = requestPath.split('/')
   return pathElements[1]
 }
+
+// THE ELEMENT WITH USER AND THE CONTENT IS SORTED FIRST BY PROUSER AND THEN BY CONTENT NAME
+export function sortContentWithUsers (elementLeft, elementRigh) {
+  let result = 0
+  if (elementLeft.proUser > elementRigh.proUser) result = -1
+  else if (elementLeft.proUser < elementRigh.proUser) result = 1
+  else {
+    if (elementLeft.name < elementRigh.name) result = -1
+    else if (elementLeft.name > elementRigh.name) result = 1
+  }
+  return result
+}
