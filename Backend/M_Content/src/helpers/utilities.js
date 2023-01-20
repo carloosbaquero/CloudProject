@@ -6,3 +6,8 @@ export function checkNameExtensionContent (contentType, name) {
   const extension = name.split('.').pop()
   return extensionsAllowed.some(ext => ext === extension)
 }
+
+export function requestType (requestPath) {
+  const pathElements = requestPath.split('/')
+  return pathElements[1]
+}

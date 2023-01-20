@@ -1,6 +1,7 @@
 import Comments from '../models/Comment.js'
 import SocialContent from '../models/SocialContent.js'
 import database from '../helpers/sequelize.js'
+import { getUserAuthenticated } from '../helpers/mUsers.js'
 
 const controllerComments = {}
 
@@ -18,18 +19,17 @@ controllerComments.createComment = async (req, res) => {
   const data = req.body
   const t = await database.transaction()
   try {
-    if (typeof data?.text !== 'string' || typeof data?.userId !== 'number') throw new Error('Fields missing')
-    const imageId = typeof data?.imageId !== 'number' ? null : Number(data.imageId)
-    const videoId = typeof data?.videoId !== 'number' ? null : Number(data.videoId)
-    if (imageId === null && videoId === null) throw new Error('Comment must belong one image or video')
-    const id = imageId === null ? videoId : imageId
-    const content = await SocialContent.findByPk(id)
+    const contentId = data?.contentId
+    const text = data?.text
+    if (typeof text !== 'string') throw new Error('Fields missing')
+    if (typeof contentId !== 'number') throw new Error('Comment must belong to one image or video')
+    const user = await getUserAuthenticated(req.headers.authorization)
+    const content = await SocialContent.findByPk(contentId)
     if (!content) throw new Error('Content not found')
     const comment = Comments.build({ transaction: t })
-    comment.text = data.text
-    comment.userId = Number(data.userId)
-    comment.imageId = imageId
-    comment.videoId = videoId
+    comment.contentId = contentId
+    comment.text = text
+    comment.userId = user.id
     await comment.save({ transaction: t })
     await t.commit()
     res.sendStatus(201)
@@ -38,16 +38,17 @@ controllerComments.createComment = async (req, res) => {
     console.error(error)
     if (error.message === 'Fields missing') res.sendStatus(401)
     else if (error.message === 'Content not found') res.sendStatus(404)
-    else if (error.message === 'Comment must belong one image or video') res.sendStatus(403)
+    else if (error.message === 'Comment must belong to one image or video') res.sendStatus(403)
     else res.status(500).send(error)
   }
 }
 
 controllerComments.updateComment = async (req, res) => {
+  const data = req.body
   const t = await database.transaction()
   try {
-    const newText = req.body?.text
-    if (typeof newText !== 'string') throw new Error('Missing text')
+    const newText = data?.text
+    if (typeof newText !== 'string') throw new Error('Missing fields')
     await Comments.update({ text: newText }, {
       where: {
         id: req.params.id
@@ -55,11 +56,11 @@ controllerComments.updateComment = async (req, res) => {
       fields: ['text']
     }, { transaction: t })
     await t.commit()
-    res.status(204)
+    res.sendStatus(204)
   } catch (error) {
     await t.rollback()
     console.error(error)
-    if (error.message === 'Missing text') res.sendStatus(401)
+    if (error.message === 'Missing fields') res.sendStatus(401)
     else res.status(500).send(error)
   }
 }
@@ -73,7 +74,7 @@ controllerComments.deleteComment = async (req, res) => {
       }
     }, { transaction: t })
     await t.commit()
-    res.sendStatus(201)
+    res.sendStatus(204)
   } catch (error) {
     await t.rollback()
     console.error(error)
@@ -91,25 +92,11 @@ controllerComments.getComment = async (req, res) => {
   }
 }
 
-controllerComments.getCommentsImage = async (req, res) => {
+controllerComments.getCommentsContent = async (req, res) => {
   try {
     const comments = await Comments.findAll({
       where: {
-        imageId: req.params.imageId
-      }
-    })
-    res.status(200).json(comments)
-  } catch (error) {
-    console.error(error)
-    res.status(500).send(error)
-  }
-}
-
-controllerComments.getCommentsVideo = async (req, res) => {
-  try {
-    const comments = await Comments.findAll({
-      where: {
-        videoId: req.params.videoId
+        contentId: req.params.contentId
       }
     })
     res.status(200).json(comments)

@@ -6,6 +6,7 @@ const routesVideos = express()
 
 routesVideos.get('/videos', controllerSocialContent.indexVideoContents)
 routesVideos.get('/videos/:id', controllerSocialContent.getContent)
+routesVideos.get('/videos/user/:userId', controllerSocialContent.indexVideoContentUser)
 routesVideos.post('/videos',
   middlewareContent.authenticateToken,
   controllerSocialContent.createVideoContent
@@ -20,15 +21,14 @@ routesVideos.delete('/videos/:id',
 )
 routesVideos.post('/videos/file',
   middlewareContent.authenticateToken,
-  controllerSocialContent.saveVideoContentFile
+  controllerSocialContent.saveContentFile
 )
 routesVideos.delete('/videos/file/:id',
   middlewareContent.authenticateToken,
-  controllerSocialContent.deleteContentVideoFile
+  controllerSocialContent.deleteContentFile
 )
 routesVideos.get('/videos/file/:id',
-  middlewareContent.authenticateToken,
-  controllerSocialContent.getPublicURLVideoFile
+  controllerSocialContent.getPublicURLFile
 )
 
 export default routesVideos

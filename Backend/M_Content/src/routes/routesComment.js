@@ -15,7 +15,8 @@ routesComments.put('/comments/:id',
 routesComments.delete('/comments/:id',
   middlewareContent.authenticateToken,
   controllerComments.deleteComment)
-routesComments.get('/comments/images/:imageId', controllerComments.getCommentsImage)
-routesComments.get('/comments/videos/:videoId', controllerComments.getCommentsVideo)
+routesComments.get('/comments/content/:contentId',
+  controllerComments.getCommentsContent
+)
 
 export default routesComments

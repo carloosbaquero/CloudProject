@@ -15,7 +15,7 @@ controllerUser.getUserAuthenticated = async (req, res) => {
       where: {
         name: req.user.name
       },
-      attributes: ['id', 'name', 'email', 'publicUrl', 'profilePicture']
+      attributes: ['id', 'name', 'email', 'publicURL', 'profilePicture']
     })
     res.status(200).json(user)
   } catch (error) {
@@ -27,7 +27,7 @@ controllerUser.getUserAuthenticated = async (req, res) => {
 controllerUser.getUserById = async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id, {
-      attributes: ['id', 'name', 'email', 'publicUrl', 'profilePicture']
+      attributes: ['id', 'name', 'email', 'publicURL', 'profilePicture']
     })
     res.status(200).json(user)
   } catch (error) {
@@ -40,7 +40,7 @@ controllerUser.createUser = async (req, res) => {
   const data = req.body
   const t = await database.transaction()
   try {
-    if (!(data.name && data.password && data.email)) {
+    if (typeof data.name !== 'string' || typeof data.email !== 'string' || typeof data.password !== 'string') {
       throw (new Error('Fail first check'))
     }
     const hashedPassword = await bcrypt.hash(data.password, 10)
@@ -160,11 +160,11 @@ controllerUser.updateProfileImageFile = async (req, res) => {
       await deleteFile(oldFileName)
       await uploadFile(req.files.image, newFileName)
       const urlProfilePicture = getPublicURL(newFileName)
-      await User.update({ publicUrl: urlProfilePicture, profilePicture: newFileName }, {
+      await User.update({ publicURL: urlProfilePicture, profilePicture: newFileName }, {
         where: {
           name: req.user.name
         },
-        fields: ['publicUrl', 'profilePicture']
+        fields: ['publicURL', 'profilePicture']
       }, { transaction: t })
       await t.commit()
       res.status(200).send('Profile picture updated')
@@ -219,11 +219,11 @@ controllerUser.saveProfileImageFile = async (req, res) => {
       const fileName = `${req.user.name}.${req.files.image.name.split('.').pop()}`
       await uploadFile(req.files.image, fileName)
       const urlProfilePicture = getPublicURL(fileName)
-      await User.update({ publicUrl: urlProfilePicture, profilePicture: fileName }, {
+      await User.update({ publicURL: urlProfilePicture, profilePicture: fileName }, {
         where: {
           name: req.user.name
         },
-        fields: ['publicUrl', 'profilePicture']
+        fields: ['publicURL', 'profilePicture']
       }, { transaction: t })
       await t.commit()
       res.status(200).send('Profile picture updated')
@@ -234,7 +234,7 @@ controllerUser.saveProfileImageFile = async (req, res) => {
     }
   }
 }
-// NO ELIMINA LOS ARCHIVOS QUE ESTAN GUARDADOS EN GOOGLE CLOUD
+
 controllerUser.deleteProfileImageFile = async (req, res) => {
   const t = await database.transaction()
   try {
@@ -242,16 +242,15 @@ controllerUser.deleteProfileImageFile = async (req, res) => {
       where: {
         name: req.user.name
       },
-      attributes: ['ProfilePicture']
+      attributes: ['profilePicture']
     })
-    const fileName = user.profilePicture
-    console.log(fileName)
+    const fileName = user.dataValues.profilePicture
     await deleteFile(fileName)
-    await User.update({ publicUrl: null, profilePicture: null }, {
+    await User.update({ publicURL: null, profilePicture: null }, {
       where: {
         name: req.user.name
       },
-      fields: ['publicUrl', 'profilePicture']
+      fields: ['publicURL', 'profilePicture']
     }, { transaction: t })
     await t.commit()
     res.sendStatus(204)

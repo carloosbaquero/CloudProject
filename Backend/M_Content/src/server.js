@@ -5,6 +5,7 @@ import { PORT } from './config.js'
 import routesImages from './routes/routesImage.js'
 import routesVideos from './routes/routesVideo.js'
 import routesComments from './routes/routesComment.js'
+import routesContents from './routes/routesContent.js'
 
 const app = express()
 
@@ -20,3 +21,4 @@ app.listen(PORT, () => {
 app.use(routesImages)
 app.use(routesVideos)
 app.use(routesComments)
+app.use(routesContents)

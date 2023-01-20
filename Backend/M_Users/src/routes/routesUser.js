@@ -28,15 +28,16 @@ routesUser.get('/users',
   controllerUser.getUserAuthenticated
 )
 routesUser.get('/users/:id', controllerUser.getUserById)
-routesUser.post('/users/profile',
+routesUser.post('/profile',
   middlewareUser.authenticateToken,
   controllerUser.saveProfileImageFile
 )
-routesUser.put('/users/profile',
+routesUser.put('/profile',
   middlewareUser.authenticateToken,
   controllerUser.updateProfileImageFile
 )
-routesUser.delete('users/profile',
+// NO SE PQ EXPRESS NO RECONOCE LAS PETICIONES A ESTA RUTA "/users/profile" PERO SI LE CAMBIO EL NOMBRE SI
+routesUser.delete('/profile',
   middlewareUser.authenticateToken,
   controllerUser.deleteProfileImageFile
 )

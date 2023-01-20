@@ -27,7 +27,8 @@ async function deleteFile (fileName, dir) {
 }
 
 function getPublicURL (fileName, dir) {
-  const result = bucket.file(`${dir}/${fileName}`).publicUrl()
+  const url = bucket.file(`${dir}/${fileName}`).publicUrl()
+  const result = url.replace('%2F', '/')
   return result
 }
 
