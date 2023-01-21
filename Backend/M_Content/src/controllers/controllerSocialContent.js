@@ -1,4 +1,5 @@
 import SocialContent from '../models/SocialContent.js'
+import Comments from '../models/Comment.js'
 import { uploadFile, deleteFile, getPublicURL } from '../helpers/google.js'
 import database from '../helpers/sequelize.js'
 import { getUserAuthenticated, getUserById } from '../helpers/mUsers.js'
@@ -196,8 +197,18 @@ controllerSocialContent.deleteContent = async (req, res) => {
 
 controllerSocialContent.getContent = async (req, res) => {
   try {
-    const image = await SocialContent.findByPk(req.params.id)
-    res.status(200).json(image)
+    const content = await SocialContent.findByPk(req.params.id)
+    console.log('Content:', content.dataValues)
+    const user = await getUserById(content.dataValues.userId)
+    const commentsPost = await Comments.findAll({
+      where: {
+        contentId: content.dataValues.id
+      }
+    })
+    console.log('Array comments', commentsPost)
+    const result = { ...user, ...content.dataValues, comments: commentsPost }
+    console.log(result)
+    res.status(200).json(result)
   } catch (error) {
     console.error(error)
     res.status(500).send(error)

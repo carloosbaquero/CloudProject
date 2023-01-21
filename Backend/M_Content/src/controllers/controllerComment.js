@@ -1,7 +1,7 @@
 import Comments from '../models/Comment.js'
 import SocialContent from '../models/SocialContent.js'
 import database from '../helpers/sequelize.js'
-import { getUserAuthenticated } from '../helpers/mUsers.js'
+import { getUserAuthenticated, getUserById } from '../helpers/mUsers.js'
 
 const controllerComments = {}
 
@@ -85,7 +85,9 @@ controllerComments.deleteComment = async (req, res) => {
 controllerComments.getComment = async (req, res) => {
   try {
     const comment = await Comments.findByPk(req.params.id)
-    res.status(200).json(comment)
+    const user = await getUserById(comment.dataValues.userId)
+    const result = { ...user, ...comment.dataValues }
+    res.status(200).json(result)
   } catch (error) {
     console.error(error)
     res.status(500).send(error)
