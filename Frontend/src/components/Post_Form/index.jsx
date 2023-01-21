@@ -16,14 +16,18 @@ export default function Post_Form() {
 
     const [description, setDescription] = useState('')
     const [image, setImage] = useState('')
+    const [imageName, setImageName] = useState('')
+    const [file, setFile] = useState(null)
 
-    const [succes, setSucces] = useState(false)
+    const [succesDB, setSuccesDB] = useState(false)
+    const [succesBuck, setSuccesBuck] = useState(false)
 
     const handleImage = (e) => {
-        const file = e.currentTarget.files[0]
-        const url = URL.createObjectURL(file)
+        setImageName(e.currentTarget.files[0].name)
+        setFile(e.currentTarget.files[0])
+        const file2 = e.currentTarget.files[0]
+        const url = URL.createObjectURL(file2)
         console.log(file)
-        console.log(url)
         setImage({url,
             file})
     }
@@ -31,9 +35,10 @@ export default function Post_Form() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try{
-            const res = await axios.post('http://localhost:3001/images', {name: image, description: description})
-            if (res.status === 204){
-                setSucces(true)
+            const res = await axios.post('http://localhost:3001/images', {name: imageName, description: description})
+            console.log(res.status)
+            if (res.status === 201){
+                setSuccesDB(true)
             }
         }catch(err){
             console.log(err)
@@ -43,8 +48,21 @@ export default function Post_Form() {
                 alert('User dont owe content')
             }
         }
-        console.log(image);
-        console.log(description)
+
+        try{
+            let formData = new FormData();
+            formData.append('newFile', file)
+            const res = await axios.post('http://localhost:3001/images/file', formData)
+            if (res.status === 201){
+                setSuccesBuck(true)
+            }
+        }catch(err){
+            console.log(err)
+
+        }
+        
+        
+
     }
 
     const navigate = useNavigate();
@@ -54,13 +72,15 @@ export default function Post_Form() {
         } 
 
     return (
-    <div className="SignIn">
-        {succes ? (
-            <div>
+    <div className="SigInr">
+        {succesDB && succesBuck ? (
+            <div className="auth-form-container">
                 <h1>You succesfully posted</h1>
+                <button className="link-btn" onClick={handleClick}>Go Back </button>
             </div>
         ) :(
 
+        <div>
         <div className="auth-form-container">
             <div className="logo">
                 <h2 className="border">Free Space</h2>
@@ -82,10 +102,11 @@ export default function Post_Form() {
                 </div>
             </form>
             <button className="link-btn" onClick={handleClick}>Go Back </button>
-        </div> )}
+        </div> 
       {/* VIEW POST */}
       {image == '' && <Post image={image} nickname='User' description={description}/>}
       {image != '' && <Post image={image.url} nickname='User' description={description}/>}
+    </div>)}
     </div>
     );
 

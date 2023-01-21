@@ -4,25 +4,45 @@ import { useEffect } from 'react';
 import Header from '../components/Header';
 import Post from '../components/Post';
 import styled from 'styled-components'
+import axios from 'axios'
 
 
 
-function listCharacters() {
+// function listCharacters() {
     
 
-    const [characters, setCharacters] = useState([])
+//     const [characters, setCharacters] = useState([])
+//     useEffect(() => {
+//         fetch("https://rickandmortyapi.com/api/character")
+//         .then(
+//             response => response.json()
+//         ).then(
+//             data => {setCharacters(data.results); console.log(data.results)}
+//         ).then(
+//             error => console.log(error)
+//         )
+//     }, [])
+//     return characters
+// }
+
+function listPosts() {
+    
+
+    const [content, setContent] = useState([])
     useEffect(() => {
-        fetch("https://rickandmortyapi.com/api/character")
+        fetch("http://localhost:3001/contents/users")
         .then(
             response => response.json()
         ).then(
-            data => {setCharacters(data.results); console.log(data.results)}
+            data => {setContent(data); console.log(data)}
         ).then(
             error => console.log(error)
         )
     }, [])
-    return characters
+    return content
 }
+
+
 
 
 export const Home = () => {
@@ -31,19 +51,35 @@ export const Home = () => {
         const initialValue = JSON.parse(saved);
         return initialValue || "";
     })
-    
-    
-    const characters = listCharacters()
 
+    
+
+    // const listPosts = async () => {
+    //     const [content, setContent] = useState([])
+    //     try{
+    //         const res = await axios.get('http://localhost:3001/contents/users')
+    //         console.log(res)
+    //         setContent(res.data)
+    //         console.log(res.data)
+    //     }catch(err) {
+    //         console.log(err)
+    //     }
+    //     console.log(content);
+    //     return content
+    // }
+
+    
+    
+    const posts = listPosts()
     return (
         <Div>
             <Div>
                 <Header/>
             </Div>
             <DivPost>
-                {characters.map(item => (
+                {posts.map(item => (
                     <div key={item.id}>
-                    <Post id={item.id} nickname= {item.name} image = {item.image}/>
+                    <Post id={item.id} type={item.contentType} name={item.name} userId={item.userId} username={item.userName} profilePicture={item.profilePicture} profileURL={item.profilePublicURL} description={item.description} image={item.publicURL} createdAt={item.createdAt} updateAt={item.updateAt}/>
                     </div>
                 ))}
             </DivPost>    

@@ -4,6 +4,7 @@ import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
 import { Home } from './screens/Home';
 import { SignIn } from './screens/SignIn';
 import { Upload } from './screens/Upload';
+import { Comments } from './screens/Comments';
 
 function App () {
 
@@ -29,6 +30,7 @@ function App () {
         <Route index element={<Home/>}/>
         <Route path='/home' element={<Home/>}/>
         <Route path='/signIn' element={<SignIn/>}/>
+        <Route path='/comments/:id' element={<Comments/>}/>
       </Routes>
     
     </BrowserRouter>
