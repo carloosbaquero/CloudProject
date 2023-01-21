@@ -1,4 +1,5 @@
 import SocialContent from '../models/SocialContent.js'
+import Comments from '../models/Comment.js'
 import { uploadFile, deleteFile, getPublicURL } from '../helpers/google.js'
 import database from '../helpers/sequelize.js'
 import { getUserAuthenticated, getUserById } from '../helpers/mUsers.js'
@@ -97,13 +98,13 @@ controllerSocialContent.createImageContent = async (req, res) => {
   const data = req.body
   const t = await database.transaction()
   try {
-    if (!data.name) throw new Error('Invalid fields')
+    if (!data.name) throw new Error('Invalid fields, there is no name or types are incorrect')
     const user = await getUserAuthenticated(req.headers.authorization)
     const description = typeof data?.description === 'undefined'
       ? null
       : data.description
     const name = data.name
-    if (typeof description !== 'string' || typeof name !== 'string') throw new Error('Invalid fields')
+    if (typeof description !== 'string' || typeof name !== 'string') throw new Error('Invalid fields, there is no name or types are incorrect')
     if (!checkNameExtensionContent('image', name)) throw new Error('Incorrect extension')
     const imageContent = SocialContent.build({ transaction: t })
     imageContent.name = name
@@ -116,8 +117,8 @@ controllerSocialContent.createImageContent = async (req, res) => {
   } catch (error) {
     await t.rollback()
     console.error(error)
-    if (error.message === 'Invalid fields') res.sendStatus(401)
-    else if (error.message === 'Incorrect extension') res.sendStatus(403)
+    if (error.message === 'Invalid fields, there is no name or types are incorrect') res.status(401).send('Invalid fields, there is no name or types are incorrect')
+    else if (error.message === 'Incorrect extension') res.status(403).send('Incorrect extension')
     else res.status(500).send(error)
   }
 }
@@ -126,13 +127,13 @@ controllerSocialContent.createVideoContent = async (req, res) => {
   const data = req.body
   const t = await database.transaction()
   try {
-    if (!data.name) throw new Error('Invalid fields')
+    if (!data.name) throw new Error('Invalid fields, there is no name or types are incorrect')
     const user = await getUserAuthenticated(req.headers.authorization)
     const description = typeof data?.description === 'undefined'
       ? null
       : data.description
     const name = data.name
-    if (typeof description !== 'string' || typeof name !== 'string') throw (new Error('Invalid fields'))
+    if (typeof description !== 'string' || typeof name !== 'string') throw (new Error('Invalid fields, there is no name or types are incorrect'))
     if (!checkNameExtensionContent('video', name)) throw new Error('Incorrect extension')
     const videoContent = SocialContent.build({ transaction: t })
     videoContent.name = name
@@ -145,8 +146,8 @@ controllerSocialContent.createVideoContent = async (req, res) => {
   } catch (error) {
     await t.rollback()
     console.error(error)
-    if (error.message === 'Invalid fields') res.sendStatus(403)
-    else if (error.message === 'Incorrect extension') res.sendStatus(401)
+    if (error.message === 'Invalid fields, there is no name or types are incorrect') res.status(403).send('Invalid fields, there is no name or types are incorrect')
+    else if (error.message === 'Incorrect extension') res.status(401).send('Incorrect extension')
     else res.status(500).send(error)
   }
 }
@@ -158,8 +159,8 @@ controllerSocialContent.updateContent = async (req, res) => {
     const content = await SocialContent.findByPk(req.params.id)
     if (!content) throw new Error('Content not found')
     const check = content.userId === user.id
-    if (!check) throw new Error('Invalid fields')
-    if (typeof data?.description !== 'string') throw new Error('Invalid fields')
+    if (!check) throw new Error('Invalid fields, the userId is wrong or description type is incorrect')
+    if (typeof data?.description !== 'string') throw new Error('Invalid fields, the userId is wrong or description type is incorrect')
     await SocialContent.update(data, {
       where: {
         id: req.params.id
@@ -171,8 +172,8 @@ controllerSocialContent.updateContent = async (req, res) => {
   } catch (error) {
     t.rollback()
     console.error(error)
-    if (error.message === 'Content not found') res.sendStatus(404)
-    else if (error.message === 'Invalid fields') res.sendStatus(403)
+    if (error.message === 'Content not found') res.status(404).send('Content not found')
+    else if (error.message === 'Invalid fields, the userId is wrong or description type is incorrect') res.status(403).send('Invalid fields, there userId is wrong or description type is incorrect')
     else res.status(500).send(error)
   }
 }
@@ -196,8 +197,18 @@ controllerSocialContent.deleteContent = async (req, res) => {
 
 controllerSocialContent.getContent = async (req, res) => {
   try {
-    const image = await SocialContent.findByPk(req.params.id)
-    res.status(200).json(image)
+    const content = await SocialContent.findByPk(req.params.id)
+    console.log('Content:', content.dataValues)
+    const user = await getUserById(content.dataValues.userId)
+    const commentsPost = await Comments.findAll({
+      where: {
+        contentId: content.dataValues.id
+      }
+    })
+    console.log('Array comments', commentsPost)
+    const result = { ...user, ...content.dataValues, comments: commentsPost }
+    console.log(result)
+    res.status(200).json(result)
   } catch (error) {
     console.error(error)
     res.status(500).send(error)
@@ -233,8 +244,8 @@ controllerSocialContent.saveContentFile = async (req, res) => {
     } catch (error) {
       await t.rollback()
       console.error(error)
-      if (error.message === 'Invalid request') res.sendStatus(403)
-      else if (error.message === 'Content not found') res.sendStatus(404)
+      if (error.message === 'Invalid request') res.status(403).send('Invalid request')
+      else if (error.message === 'Content not found') res.status(404).send('Content not found')
       else res.status(500).send(error)
     }
   }
@@ -255,12 +266,12 @@ controllerSocialContent.deleteContentFile = async (req, res) => {
       fields: ['publicURL']
     }, { transaction: t })
     await t.commit()
-    res.sendStatus(201)
+    res.sendStatus(204)
   } catch (error) {
     await t.rollback()
     console.error(error)
-    if (error.message === 'Invalid request') res.sendStatus(403)
-    else if (error.message === 'Not found') res.sendStatus(404)
+    if (error.message === 'Invalid request') res.status(403).send('Invalid request')
+    else if (error.message === 'Not found') res.status(404).send('Not found')
     else res.status(500).send(error)
   }
 }
@@ -274,7 +285,7 @@ controllerSocialContent.getPublicURLFile = async (req, res) => {
     res.status(200).json({ URL: publicUrl })
   } catch (error) {
     console.error(error)
-    if (error.message === 'Not found') res.sendStatus(404)
+    if (error.message === 'Not found') res.status(404).send('Not found')
     else res.status(500).send(error)
   }
 }
