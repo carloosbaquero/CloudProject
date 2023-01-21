@@ -40,7 +40,7 @@ controllerUser.createUser = async (req, res) => {
   const data = req.body
   const t = await database.transaction()
   try {
-    if (typeof data.name !== 'string' || typeof data.email !== 'string' || typeof data.password !== 'string') {
+    if (typeof data?.name !== 'string' || typeof data?.email !== 'string' || typeof data?.password !== 'string') {
       throw (new Error('Fail first check'))
     }
     const hashedPassword = await bcrypt.hash(data.password, 10)
@@ -64,8 +64,8 @@ controllerUser.updateUserToPro = async (req, res) => {
   const data = req.body
   const t = await database.transaction()
   try {
-    if (!data.numMonths) throw (new Error('Fields missing'))
-    const numMonths = Number(data.numMonths)
+    if (typeof data?.numMonths !== 'number') throw (new Error('Fields missing'))
+    const numMonths = data.numMonths
     if (numMonths <= 0) throw (new Error('Incorrect field'))
     await User.update({ proUser: true, proDate: Date.now(), numMonthsPro: numMonths }, {
       where: {
@@ -92,9 +92,12 @@ controllerUser.checkProStatus = async (req, res) => {
       where: {
         name: req.user.name
       },
-      attributes: ['proDate', 'numMonthsPro']
+      attributes: ['proUser', 'proDate', 'numMonthsPro']
     })
-    const limitDate = datefns.addMonths(user.proDate, user.numMonthsPro)
+    if (!user.dataValues.proUser) throw new Error('User is not pro')
+    const userProDate = user.dataValues.proDate
+    const userNumMonthsPro = user.dataValues.numMonthsPro
+    const limitDate = datefns.addMonths(userProDate, userNumMonthsPro)
     const check = datefns.isBefore(now, limitDate)
     if (!check) {
       await User.update({ proUser: false, proDate: null, numMonthsPro: null }, {
@@ -103,44 +106,37 @@ controllerUser.checkProStatus = async (req, res) => {
         },
         fields: ['proUser', 'proDate', 'numMontsPro']
       }, { transaction: t })
-      await t.commit()
-      res.sendStatus(201)
+      t.commit()
+      res.status(200).send('User is no longer pro')
     } else {
-      await t.commit()
-      res.senStatus(200)
+      res.status(200).send('User is still pro')
     }
   } catch (error) {
     await t.rollback()
     console.error(error)
-    res.status(500).send(error)
+    if (error.message === 'User is not pro') res.sendStatus(401)
+    else res.status(500).send(error)
   }
 }
 
 controllerUser.updateUserAuthenticated = async (req, res) => {
   const t = await database.transaction()
-  let newName = req.body?.name
-  let newEmail = req.body?.email
+  const newEmail = req.body?.email
   try {
-    const user = await User.findOne({
+    if (typeof newEmail !== 'string') throw new Error('Fields missing')
+    await User.update({ email: newEmail }, {
       where: {
         name: req.user.name
       },
-      attributes: ['name', 'email']
-    })
-    if (typeof newName === 'undefined') newName = user.name
-    if (typeof newEmail === 'undefined') newEmail = user.email
-    await User.update({ name: newName, email: newEmail }, {
-      where: {
-        name: req.user.name
-      },
-      fields: ['name', 'email']
+      fields: ['email']
     }, { transaction: t })
     await t.commit()
     res.sendStatus(204)
   } catch (error) {
     await t.rollback()
     console.error(error)
-    res.status(500).send(error)
+    if (error.message === 'Fields missing') res.sendStatus(401)
+    else res.status(500).send(error)
   }
 }
 
@@ -313,7 +309,6 @@ controllerUser.token = async (req, res) => {
         checkExpired.err = false
       }
     })
-    console.log(checkExpired)
     if (checkExpired.err && checkExpired.name !== 'TokenExpiredError') throw new Error('Forbiden')
     if (!checkExpired.err) throw new Error('Token valid')
     const user = await User.findOne({
