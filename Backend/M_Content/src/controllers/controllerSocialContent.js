@@ -204,7 +204,7 @@ controllerSocialContent.getContent = async (req, res) => {
         contentId: content.dataValues.id
       }
     })
-    const result = { ...user, ...content.dataValues, comments: commentsPost }
+    const result = { ...user, ...content.dataValues, userName: user.name, comments: commentsPost }
     res.status(200).json(result)
   } catch (error) {
     console.error(error)
