@@ -143,38 +143,6 @@ controllerUser.updateUserAuthenticated = async (req, res) => {
     res.status(500).send(error)
   }
 }
-controllerUser.updateProfileImageFile = async (req, res) => {
-  if (typeof req.files === 'undefined') res.status(400).send('The request must have an image to upload')
-  else if (typeof req.files.image === 'undefined') res.status(400).send('The file to upload must be in the field called image')
-  else {
-    const t = await database.transaction()
-    try {
-      const user = await User.findOne({
-        where: {
-          name: req.user.name
-        },
-        attributes: ['profilePicture']
-      })
-      const oldFileName = user.profilePicture
-      const newFileName = `${req.user.name}.${req.files.image.name.split('.').pop()}`
-      await deleteFile(oldFileName)
-      await uploadFile(req.files.image, newFileName)
-      const urlProfilePicture = getPublicURL(newFileName)
-      await User.update({ publicURL: urlProfilePicture, profilePicture: newFileName }, {
-        where: {
-          name: req.user.name
-        },
-        fields: ['publicURL', 'profilePicture']
-      }, { transaction: t })
-      await t.commit()
-      res.status(200).send('Profile picture updated')
-    } catch (error) {
-      await t.rollback()
-      console.error(error)
-      res.status(500).send(error)
-    }
-  }
-}
 
 controllerUser.deleteUserAuthenticated = async (req, res) => {
   const t = await database.transaction()
@@ -212,12 +180,12 @@ controllerUser.deleteUserById = async (req, res) => {
 
 controllerUser.saveProfileImageFile = async (req, res) => {
   if (typeof req.files === 'undefined') res.status(400).send('The request must have an image to upload')
-  else if (typeof req.files.image === 'undefined') res.status(400).send('The file to upload must be in the field called image')
+  else if (typeof req.files.newFile === 'undefined') res.status(400).send('The file to upload must be in the field called image')
   else {
     const t = await database.transaction()
     try {
-      const fileName = `${req.user.name}.${req.files.image.name.split('.').pop()}`
-      await uploadFile(req.files.image, fileName)
+      const fileName = `${req.user.name}-${req.files.newFile.name}`
+      await uploadFile(req.files.newFile, fileName)
       const urlProfilePicture = getPublicURL(fileName)
       await User.update({ publicURL: urlProfilePicture, profilePicture: fileName }, {
         where: {
@@ -226,7 +194,40 @@ controllerUser.saveProfileImageFile = async (req, res) => {
         fields: ['publicURL', 'profilePicture']
       }, { transaction: t })
       await t.commit()
-      res.status(200).send('Profile picture updated')
+      res.sendStatus(201)
+    } catch (error) {
+      await t.rollback()
+      console.error(error)
+      res.status(500).send(error)
+    }
+  }
+}
+
+controllerUser.updateProfileImageFile = async (req, res) => {
+  if (typeof req.files === 'undefined') res.status(400).send('The request must have an image to upload')
+  else if (typeof req.files.newFile === 'undefined') res.status(400).send('The file to upload must be in the field called image')
+  else {
+    const t = await database.transaction()
+    try {
+      const user = await User.findOne({
+        where: {
+          name: req.user.name
+        },
+        attributes: ['profilePicture']
+      })
+      const oldFileName = user.dataValues.profilePicture
+      const newFileName = `${req.user.name}-${req.files.newFile.name}`
+      await deleteFile(oldFileName)
+      await uploadFile(req.files.newFile, newFileName)
+      const urlProfilePicture = getPublicURL(newFileName)
+      await User.update({ publicURL: urlProfilePicture, profilePicture: newFileName }, {
+        where: {
+          name: req.user.name
+        },
+        fields: ['publicURL', 'profilePicture']
+      }, { transaction: t })
+      await t.commit()
+      res.sendStatus(204)
     } catch (error) {
       await t.rollback()
       console.error(error)
