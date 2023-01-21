@@ -36,9 +36,9 @@ controllerComments.createComment = async (req, res) => {
   } catch (error) {
     await t.rollback()
     console.error(error)
-    if (error.message === 'Fields missing') res.sendStatus(401)
-    else if (error.message === 'Content not found') res.sendStatus(404)
-    else if (error.message === 'Comment must belong to one image or video') res.sendStatus(403)
+    if (error.message === 'Fields missing') res.status(401).send('Fields missing')
+    else if (error.message === 'Content not found') res.status(404).send('Content not found')
+    else if (error.message === 'Comment must belong to one image or video') res.status(403).send('Comment must belong to one image or video')
     else res.status(500).send(error)
   }
 }
@@ -60,7 +60,7 @@ controllerComments.updateComment = async (req, res) => {
   } catch (error) {
     await t.rollback()
     console.error(error)
-    if (error.message === 'Missing fields') res.sendStatus(401)
+    if (error.message === 'Missing fields') res.status(401).send('Missing fields')
     else res.status(500).send(error)
   }
 }

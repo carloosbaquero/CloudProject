@@ -41,7 +41,7 @@ controllerUser.createUser = async (req, res) => {
   const t = await database.transaction()
   try {
     if (typeof data?.name !== 'string' || typeof data?.email !== 'string' || typeof data?.password !== 'string') {
-      throw (new Error('Fail first check'))
+      throw (new Error('Name or email or password types are incorrect'))
     }
     const hashedPassword = await bcrypt.hash(data.password, 10)
     const newUser = User.build({ transaction: t })
@@ -55,7 +55,7 @@ controllerUser.createUser = async (req, res) => {
   } catch (error) {
     await t.rollback()
     console.error(error)
-    if (error.message === 'Fail first check') res.sendStatus(401)
+    if (error.message === 'Name or email or password types are incorrect') res.status(401).send('Name or email or password types are incorrect')
     else res.status(500).send(error)
   }
 }
@@ -64,9 +64,9 @@ controllerUser.updateUserToPro = async (req, res) => {
   const data = req.body
   const t = await database.transaction()
   try {
-    if (typeof data?.numMonths !== 'number') throw (new Error('Fields missing'))
+    if (typeof data?.numMonths !== 'number') throw (new Error('numMonths type is wrong'))
     const numMonths = data.numMonths
-    if (numMonths <= 0) throw (new Error('Incorrect field'))
+    if (numMonths <= 0) throw (new Error('numMonths is incorrect'))
     await User.update({ proUser: true, proDate: Date.now(), numMonthsPro: numMonths }, {
       where: {
         name: req.user.name
@@ -78,8 +78,8 @@ controllerUser.updateUserToPro = async (req, res) => {
   } catch (error) {
     await t.rollback()
     console.error(error)
-    if (error.message === 'Fields missing') res.sendStatus(401)
-    else if (error.message === 'Incorrect field') res.sendStatus(404)
+    if (error.message === 'numMonths type is wrong') res.status(401).send('numMonths type is wrong')
+    else if (error.message === 'numMonths is incorrect') res.status(404).send('numMonths is incorrect')
     else res.status(500).send(error)
   }
 }
@@ -114,7 +114,7 @@ controllerUser.checkProStatus = async (req, res) => {
   } catch (error) {
     await t.rollback()
     console.error(error)
-    if (error.message === 'User is not pro') res.sendStatus(401)
+    if (error.message === 'User is not pro') res.status(401).send('User is not pro')
     else res.status(500).send(error)
   }
 }
@@ -123,7 +123,7 @@ controllerUser.updateUserAuthenticated = async (req, res) => {
   const t = await database.transaction()
   const newEmail = req.body?.email
   try {
-    if (typeof newEmail !== 'string') throw new Error('Fields missing')
+    if (typeof newEmail !== 'string') throw new Error('Email type is wrong')
     await User.update({ email: newEmail }, {
       where: {
         name: req.user.name
@@ -135,7 +135,7 @@ controllerUser.updateUserAuthenticated = async (req, res) => {
   } catch (error) {
     await t.rollback()
     console.error(error)
-    if (error.message === 'Fields missing') res.sendStatus(401)
+    if (error.message === 'Email type is wrong') res.status(401).send('Email type is wrong')
     else res.status(500).send(error)
   }
 }
@@ -260,35 +260,34 @@ controllerUser.deleteProfileImageFile = async (req, res) => {
 
 controllerUser.logIn = async (req, res) => {
   const data = req.body
-  if (!(data.name && data.password)) res.sendStatus(401)
-  else {
-    const t = await database.transaction()
-    try {
-      const user = await User.findOne({
-        where: {
-          name: data.name
-        }
-      })
-      if (!user) throw (new Error(`User ${data.name} don't exist`))
-      const validation = await bcrypt.compare(data.password, user.password)
-      if (!validation) throw (new Error('Invalid password'))
-      const newAccessToken = generateAccessToken({ name: user.name })
-      const newRefreshToken = jsonwebtoken.sign({ name: user.name }, REFRESH_TOKEN_SECRET)
-      await User.update({ refreshToken: newRefreshToken }, {
-        where: {
-          id: user.id
-        },
-        fields: ['refreshToken']
-      }, { transaction: t })
-      await t.commit()
-      res.status(200).json({ accessToken: newAccessToken, refreshToken: newRefreshToken })
-    } catch (error) {
-      await t.rollback()
-      console.error(error)
-      if (error.message === 'Invalid password') res.sendStatus(403)
-      else if (error.message === `User ${data.name} don't exist`) res.sendStatus(404)
-      else res.status(500).send(error)
-    }
+  const t = await database.transaction()
+  try {
+    if (!(data.name && data.password)) throw new Error('Name or password types are wrong')
+    const user = await User.findOne({
+      where: {
+        name: data.name
+      }
+    })
+    if (!user) throw (new Error(`User ${data.name} don't exist`))
+    const validation = await bcrypt.compare(data.password, user.password)
+    if (!validation) throw (new Error('Invalid password'))
+    const newAccessToken = generateAccessToken({ name: user.name })
+    const newRefreshToken = jsonwebtoken.sign({ name: user.name }, REFRESH_TOKEN_SECRET)
+    await User.update({ refreshToken: newRefreshToken }, {
+      where: {
+        id: user.id
+      },
+      fields: ['refreshToken']
+    }, { transaction: t })
+    await t.commit()
+    res.status(200).json({ accessToken: newAccessToken, refreshToken: newRefreshToken })
+  } catch (error) {
+    await t.rollback()
+    console.error(error)
+    if (error.message === 'Invalid password') res.status(403).send('Invalid password')
+    else if (error.message === 'Name or password types are wrong') res.status(401).send('Name or password types are wrong')
+    else if (error.message === `User ${data.name} don't exist`) res.status(404).send(`User ${data.name} don't exist`)
+    else res.status(500).send(error)
   }
 }
 
@@ -298,7 +297,7 @@ controllerUser.token = async (req, res) => {
   const accessToken = data?.accessToken
   const userName = data?.name
   try {
-    if (typeof refreshToken !== 'string' || typeof accessToken !== 'string' || typeof userName !== 'string') throw new Error('Missing fields')
+    if (typeof refreshToken !== 'string' || typeof accessToken !== 'string' || typeof userName !== 'string') throw new Error('Input values types are wrong')
     const checkExpired = { err: false, name: null }
     jsonwebtoken.verify(accessToken, ACCESS_TOKEN_SECRET, (err, user) => {
       if (err && err.name !== 'TokenExpiredError') {
@@ -309,14 +308,14 @@ controllerUser.token = async (req, res) => {
         checkExpired.err = false
       }
     })
-    if (checkExpired.err && checkExpired.name !== 'TokenExpiredError') throw new Error('Forbiden')
+    if (checkExpired.err && checkExpired.name !== 'TokenExpiredError') throw new Error('Token invalid')
     if (!checkExpired.err) throw new Error('Token valid')
     const user = await User.findOne({
       where: {
         name: data.name
       }
     })
-    if (!user || user.refreshToken === null) throw new Error('Forbiden')
+    if (!user || user.refreshToken === null) throw new Error('User or refreshToken not found')
     jsonwebtoken.verify(refreshToken, REFRESH_TOKEN_SECRET, (err, user) => {
       if (err) return res.sendStatus(403)
       const accessToken = generateAccessToken({ name: user.name })
@@ -325,11 +324,14 @@ controllerUser.token = async (req, res) => {
   } catch (error) {
     if (error.message !== 'Token valid') console.error(error)
     switch (error.message) {
-      case 'Forbiden':
-        res.sendStatus(403)
+      case 'Token invalid':
+        res.status(403).send('Token invalid')
         break
-      case 'Missing fields':
-        res.sendStatus(401)
+      case 'Input values types are wrong':
+        res.status(401).send('Input values types are wrong')
+        break
+      case 'User or refreshToken not found':
+        res.status(404).send('User or refreshToken not found')
         break
       case 'Token valid':
         res.status(200).json({ expired: false, token: null, name: req.body.name })
