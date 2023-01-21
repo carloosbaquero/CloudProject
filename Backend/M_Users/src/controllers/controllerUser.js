@@ -298,43 +298,36 @@ controllerUser.token = async (req, res) => {
   const userName = data?.name
   try {
     if (typeof refreshToken !== 'string' || typeof accessToken !== 'string' || typeof userName !== 'string') throw new Error('Input values types are wrong')
-    const checkExpired = { err: true, name: null }
-    jsonwebtoken.verify(accessToken, ACCESS_TOKEN_SECRET, (err, user) => {
-      console.log(err)
-      if (err && err.name !== 'TokenExpiredError') {
-        checkExpired.name = err.name
-      }
-      if (!err) {
-        checkExpired.err = false
-      }
-    })
-    if (checkExpired.err && checkExpired.name !== 'TokenExpiredError') throw new Error('Token invalid')
-    if (!checkExpired.err) throw new Error('Token valid')
     const user = await User.findOne({
       where: {
-        name: data.name
+        name: userName
       }
     })
     if (!user || user.refreshToken === null) throw new Error('User or refreshToken not found')
     jsonwebtoken.verify(refreshToken, REFRESH_TOKEN_SECRET, (err, user) => {
-      if (err) return res.sendStatus(403)
-      const accessToken = generateAccessToken({ name: user.name })
-      res.status(200).json({ expired: true, token: accessToken, name: data.name })
+      if (err) throw new Error('RefreshToken invalid')
     })
+    jsonwebtoken.verify(accessToken, ACCESS_TOKEN_SECRET)
+    res.status(200).json({ expired: false, token: null, name: req.body.name })
   } catch (error) {
     if (error.message !== 'Token valid') console.error(error)
     switch (error.message) {
-      case 'Token invalid':
+      case 'jwt expired':
+        // eslint-disable-next-line no-case-declarations
+        const accessToken = generateAccessToken({ name: userName })
+        res.status(200).json({ expired: true, token: accessToken, name: userName })
+        break
+      case 'invalid signature':
         res.status(403).send('Token invalid')
+        break
+      case 'RefreshToken invalid':
+        res.status(403).send('RefreshToken invalid')
         break
       case 'Input values types are wrong':
         res.status(401).send('Input values types are wrong')
         break
       case 'User or refreshToken not found':
         res.status(404).send('User or refreshToken not found')
-        break
-      case 'Token valid':
-        res.status(200).json({ expired: false, token: null, name: req.body.name })
         break
       default:
         res.status(500).send(error)
