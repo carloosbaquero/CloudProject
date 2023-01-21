@@ -5,7 +5,6 @@ import middlewareContent from '../middlewares/middlewareContent.js'
 const routesVideos = express()
 
 routesVideos.get('/videos', controllerSocialContent.indexVideoContents)
-routesVideos.get('/videos/:id', controllerSocialContent.getContent)
 routesVideos.get('/videos/user/:userId', controllerSocialContent.indexVideoContentUser)
 routesVideos.post('/videos',
   middlewareContent.authenticateToken,

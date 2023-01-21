@@ -198,16 +198,13 @@ controllerSocialContent.deleteContent = async (req, res) => {
 controllerSocialContent.getContent = async (req, res) => {
   try {
     const content = await SocialContent.findByPk(req.params.id)
-    console.log('Content:', content.dataValues)
     const user = await getUserById(content.dataValues.userId)
     const commentsPost = await Comments.findAll({
       where: {
         contentId: content.dataValues.id
       }
     })
-    console.log('Array comments', commentsPost)
     const result = { ...user, ...content.dataValues, comments: commentsPost }
-    console.log(result)
     res.status(200).json(result)
   } catch (error) {
     console.error(error)

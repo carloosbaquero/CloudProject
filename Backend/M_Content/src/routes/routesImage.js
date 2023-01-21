@@ -5,7 +5,6 @@ import middlewareContent from '../middlewares/middlewareContent.js'
 const routesImages = express()
 
 routesImages.get('/images', controllerSocialContent.indexImageContents)
-routesImages.get('/images/:id', controllerSocialContent.getContent)
 routesImages.get('/images/user/:userId', controllerSocialContent.indexImageContentsUser)
 routesImages.post('/images',
   middlewareContent.authenticateToken,

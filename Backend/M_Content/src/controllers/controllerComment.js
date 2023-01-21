@@ -26,6 +26,8 @@ controllerComments.createComment = async (req, res) => {
     const user = await getUserAuthenticated(req.headers.authorization)
     const content = await SocialContent.findByPk(contentId)
     if (!content) throw new Error('Content not found')
+    const userOwnerContent = await getUserById(content.dataValues.userId)
+    if (!userOwnerContent.proUser) throw new Error('Not a pro content')
     const comment = Comments.build({ transaction: t })
     comment.contentId = contentId
     comment.text = text
@@ -39,6 +41,7 @@ controllerComments.createComment = async (req, res) => {
     if (error.message === 'Fields missing') res.status(401).send('Fields missing')
     else if (error.message === 'Content not found') res.status(404).send('Content not found')
     else if (error.message === 'Comment must belong to one image or video') res.status(403).send('Comment must belong to one image or video')
+    else if (error.message === 'Not a pro content') res.status(403).send('Not a pro content')
     else res.status(500).send(error)
   }
 }
