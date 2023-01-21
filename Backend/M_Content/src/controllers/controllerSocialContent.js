@@ -1,5 +1,4 @@
 import SocialContent from '../models/SocialContent.js'
-import Comments from '../models/Comment.js'
 import { uploadFile, deleteFile, getPublicURL } from '../helpers/google.js'
 import database from '../helpers/sequelize.js'
 import { getUserAuthenticated, getUserById } from '../helpers/mUsers.js'
@@ -199,12 +198,7 @@ controllerSocialContent.getContent = async (req, res) => {
   try {
     const content = await SocialContent.findByPk(req.params.id)
     const user = await getUserById(content.dataValues.userId)
-    const commentsPost = await Comments.findAll({
-      where: {
-        contentId: content.dataValues.id
-      }
-    })
-    const result = { ...user, ...content.dataValues, userName: user.name, comments: commentsPost }
+    const result = { ...user, ...content.dataValues, userName: user.name }
     res.status(200).json(result)
   } catch (error) {
     console.error(error)

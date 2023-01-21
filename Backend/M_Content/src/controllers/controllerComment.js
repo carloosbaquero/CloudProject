@@ -99,12 +99,20 @@ controllerComments.getComment = async (req, res) => {
 
 controllerComments.getCommentsContent = async (req, res) => {
   try {
+    const result = []
     const comments = await Comments.findAll({
       where: {
         contentId: req.params.contentId
       }
     })
-    res.status(200).json(comments)
+    console.log(comments)
+    for (const comment of comments) {
+      console.log(comment)
+      const user = await getUserById(comment.dataValues.userId)
+      const obj = { ...user, ...comment.dataValues }
+      result.push(obj)
+    }
+    res.status(200).json(result)
   } catch (error) {
     console.error(error)
     res.status(500).send(error)
