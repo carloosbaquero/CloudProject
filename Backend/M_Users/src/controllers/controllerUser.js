@@ -298,10 +298,10 @@ controllerUser.token = async (req, res) => {
   const userName = data?.name
   try {
     if (typeof refreshToken !== 'string' || typeof accessToken !== 'string' || typeof userName !== 'string') throw new Error('Input values types are wrong')
-    const checkExpired = { err: false, name: null }
+    const checkExpired = { err: true, name: null }
     jsonwebtoken.verify(accessToken, ACCESS_TOKEN_SECRET, (err, user) => {
+      console.log(err)
       if (err && err.name !== 'TokenExpiredError') {
-        checkExpired.err = true
         checkExpired.name = err.name
       }
       if (!err) {
