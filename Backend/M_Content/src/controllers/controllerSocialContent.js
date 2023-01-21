@@ -16,12 +16,12 @@ controllerSocialContent.indexSocialContents = async (req, res) => {
   }
 }
 
-controllerSocialContent.indexSocialContentWithUser = async (req, res) => {
+controllerSocialContent.indexContentWithUser = async (req, res) => {
   try {
     const contents = await SocialContent.findAll()
     const result = []
     for (const content of contents) {
-      const user = await getUserById(content.userId)
+      const user = await getUserById(content.dataValues.userId)
       const element = { ...user, ...content.dataValues }
       element.userName = user.name
       element.profilePublicURL = user.publicURL
