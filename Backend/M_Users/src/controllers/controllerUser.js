@@ -124,6 +124,7 @@ controllerUser.updateUserAuthenticated = async (req, res) => {
   const newEmail = req.body?.email
   try {
     if (typeof newEmail !== 'string') throw new Error('Email type is wrong')
+    if (newEmail === '') throw new Error('Incorrect email')
     await User.update({ email: newEmail }, {
       where: {
         name: req.user.name
@@ -136,6 +137,7 @@ controllerUser.updateUserAuthenticated = async (req, res) => {
     await t.rollback()
     console.error(error)
     if (error.message === 'Email type is wrong') res.status(401).send('Email type is wrong')
+    else if (error.message === 'Incorrect email') res.status(403).send('Incorrect email')
     else res.status(500).send(error)
   }
 }
