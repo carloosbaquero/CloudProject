@@ -1,9 +1,0 @@
-services:
-  social:
-    build: Dockerfile.production
-    ports: 
-      - "3001:3001"
-    env_file:
-      - ./.env.production
-
-       

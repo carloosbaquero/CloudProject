@@ -1,0 +1,8 @@
+services:
+  free-space-users:
+    container_name: "free-space-users" 
+    build: .. 
+    ports: 
+      - "3002:3002"
+    env_file:
+      - ../.env.development
