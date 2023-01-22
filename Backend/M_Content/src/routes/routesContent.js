@@ -1,12 +1,12 @@
 import express from 'express'
 import controllerSocialContent from '../controllers/controllerSocialContent.js'
 
-const routesContents = express.Router()
+const routesContents = express()
 
-routesContents.get('/', controllerSocialContent.indexSocialContents)
-routesContents.get('/users',
+routesContents.get('/contents', controllerSocialContent.indexSocialContents)
+routesContents.get('/contents/users',
   controllerSocialContent.indexContentWithUser
 )
-routesContents.get('/:id', controllerSocialContent.getContent)
+routesContents.get('/contents/:id', controllerSocialContent.getContent)
 
 export default routesContents

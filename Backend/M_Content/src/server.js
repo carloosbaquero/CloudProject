@@ -21,4 +21,4 @@ app.listen(PORT, () => {
 app.use(routesImages)
 app.use(routesVideos)
 app.use(routesComments)
-app.use('/contents', routesContents)
+app.use(routesContents)
