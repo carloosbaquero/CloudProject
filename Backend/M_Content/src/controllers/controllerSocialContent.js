@@ -197,12 +197,14 @@ controllerSocialContent.deleteContent = async (req, res) => {
 controllerSocialContent.getContent = async (req, res) => {
   try {
     const content = await SocialContent.findByPk(req.params.id)
+    if (!content) throw new Error('Content not found')
     const user = await getUserById(content.dataValues.userId)
-    const result = { ...user, ...content.dataValues, userName: user.name }
+    const result = { ...user, ...content.dataValues, userName: user.name, profileURL: user.publicURL }
     res.status(200).json(result)
   } catch (error) {
     console.error(error)
-    res.status(500).send(error)
+    if (error.message === 'Content not found') res.status(404).send(error)
+    else res.status(500).send(error)
   }
 }
 
@@ -223,7 +225,6 @@ controllerSocialContent.saveContentFile = async (req, res) => {
       if (!type.startsWith(content.contentType)) throw new Error('Invalid request')
       await uploadFile(req.files.newFile, type)
       const URL = getPublicURL(contentName, type)
-      console.log(URL)
       await SocialContent.update({ publicURL: URL }, {
         where: {
           name: contentName

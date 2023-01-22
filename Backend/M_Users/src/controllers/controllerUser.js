@@ -318,16 +318,16 @@ controllerUser.token = async (req, res) => {
         res.status(200).json({ expired: true, token: accessToken, name: userName })
         break
       case 'invalid signature':
-        res.status(403).send('Token invalid')
+        res.status(403).send(error)
         break
       case 'RefreshToken invalid':
-        res.status(403).send('RefreshToken invalid')
+        res.status(403).send(error)
         break
       case 'Input values types are wrong':
-        res.status(401).send('Input values types are wrong')
+        res.status(401).send(error)
         break
       case 'User or refreshToken not found':
-        res.status(404).send('User or refreshToken not found')
+        res.status(404).send(error)
         break
       default:
         res.status(500).send(error)
