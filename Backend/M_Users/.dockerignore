@@ -1,9 +1,9 @@
 node_modules/
+docker/
 .dockerignore
+bucketKey-SocialContent.json
 .env.development
 .env.production
 .env.example
 .gitignore
-Dockerfile.development
-Dockerfile.production
-docker-compose.yml
+Dockerfile
