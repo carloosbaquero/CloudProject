@@ -4,6 +4,7 @@ import axios from "axios";
 import { useLocalStorage } from "../Login";
 import "./Header.css";
 import styled from 'styled-components'
+import {M_USERS} from '../../api/UsersHost.jsx'
 
 
 
@@ -36,7 +37,7 @@ const Header = () => {
             if(accessToken!==null){
                 try{
                     
-                    const res = await axios.delete("http://localhost:3002/users/logout")
+                    const res = await axios.delete(M_USERS + "/users/logout")
                     if (res.status === 204){
                         console.log("Prueba")
                         localStorage.removeItem('accessToken')
@@ -53,6 +54,25 @@ const Header = () => {
             navigate('/signin')
         } 
 
+        const handleClickPro = async () => {
+            if(accessToken!==null){
+                try{ 
+                    const res = await axios.put(M_USERS + "/users/pro/check")
+                    console.log(res)
+                    if (res.status === 401 || res.status === 500){
+                        navigate('/prouser')
+                    }else if(res.status === 200) {
+                        alert('You are already a ProUser')
+                    }
+                    
+                }catch(err){
+                    console.log(err)
+                    console.log(err.response.status)
+                } 
+            }      
+            
+        }
+
 
         return (
             <header className="header">
@@ -62,6 +82,13 @@ const Header = () => {
                 </div>
                 
                 <div className="buttons">
+
+                <nav className="uploadbutton">
+                <Button onClick={handleClickPro}>
+                    Get ProUser
+                </Button>
+                </nav>
+
                 <nav className="uploadbutton">
                 <Button onClick={handleClickUpload}>
                     Upload Post
