@@ -6,33 +6,42 @@ import { SignIn } from './screens/SignIn';
 import { Upload } from './screens/Upload';
 import { Comments } from './screens/Comments';
 import { ProUser } from './screens/ProUser';
+import { Profile } from './screens/Profile';
+import { ErrorPage } from './screens/ErrorPage';
 
 function App () {
-
-  const [user, setUser] = useState(null)
-
-  const login = () => {
-    setUser({
-      id:1,
-      name: "Admin"
-    })
-  }
-
-  const logout = () => setUser(null)
 
   return (
     <BrowserRouter>
       <Navigation/>
 
       <Routes>
-        {/*<Route element={<ProtectedRoute user={user}/>}>*/}
-        <Route path='/upload' element={<Upload/>}/>
-        {/* </Route> */}
+        <Route element={<ProtectedRoute/>}>
+          <Route path='/upload' element={<Upload/>}/>
+        </Route>
+
         <Route index element={<Home/>}/>
+
+        <Route element={<ProtectedRoute/>}>
         <Route path='/home' element={<Home/>}/>
+        </Route>
+
         <Route path='/signIn' element={<SignIn/>}/>
+
+        <Route element={<ProtectedRoute/>}>
         <Route path='/comments/:id' element={<Comments/>}/>
+        </Route>
+
+        <Route element={<ProtectedRoute/>}>
         <Route path='/prouser' element={<ProUser/>}/>
+        </Route>
+
+        <Route element={<ProtectedRoute/>}>
+        <Route path='/profile' element={<Profile/>}/>
+        </Route>
+
+        <Route path='*' element={<ErrorPage/>}/>
+
       </Routes>
     
     </BrowserRouter>

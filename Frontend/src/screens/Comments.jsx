@@ -40,7 +40,7 @@ export const Comments = () => {
     const navigate = useNavigate()
 
     const [accessToken, setAccessToken] = useState(()=>{
-        const saved = localStorage.getItem("accessToken");
+        const saved = sessionStorage.getItem("accessToken");
         const initialValue = JSON.parse(saved);
         return initialValue || "";
     })
@@ -52,6 +52,14 @@ export const Comments = () => {
     const [text, setText] = useState('')
 
     const info = listInfoPost(id)
+
+    if(info.length === 0){
+        alert("No content exists with this id")
+        useEffect(() => {
+            navigate('/')
+          });
+        
+    }
 
     const username = info.userName
     const description = info.description

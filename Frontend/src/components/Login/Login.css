@@ -58,3 +58,9 @@
     color: red;
     font-family: 'Shift', sans-serif;
   }
+
+  .success {
+    border: white;
+    color: beige;
+    font-family: 'Shift', sans-serif;
+  }

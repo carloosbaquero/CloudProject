@@ -48,7 +48,7 @@ function listPosts() {
 
 export const Home = () => {
     const [accessToken, setAccessToken] = useState(()=>{
-        const saved = localStorage.getItem("accessToken");
+        const saved = sessionStorage.getItem("accessToken");
         const initialValue = JSON.parse(saved);
         return initialValue || "";
     })

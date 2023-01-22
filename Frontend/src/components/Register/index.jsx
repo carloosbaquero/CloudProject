@@ -1,46 +1,34 @@
+import axios from 'axios';
 import React, {useState} from 'react'
 import { M_USERS } from '../../api/UsersHost';
 import './Register.css'
-
-function register(name, email, pass) {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    const raw = JSON.stringify({
-        "name": name,
-        "password": pass,
-        "email": email
-    });
-
-    const requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-    };
-
-    fetch(M_USERS + "/users", requestOptions)
-    .then(response => response.text())
-    .then(result => console.log(result))
-    .catch(error => console.log('error', error));
-}
 
 export const Register = (props) => {
     const [email, setEmail] = useState('')
     const [pass, setPass] = useState('')
     const [name, setName] = useState('')
+    const [succes, setSucces] = useState(false)
+    const [error, setError] = useState('')
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(email);
-        console.log(name)
-        console.log(pass)
-        
-        try{
-            register(name, email, pass)
-        }catch(err){
-            console.log(err)
+
+        if(email !== '' && pass !== '' && name !== '' ){
+            try{
+                const res = await axios.post(M_USERS + "/users", {"name": name, "password": pass, "email": email})
+                if (res.status === 201){
+                    setSucces(true)
+                }
+                console.log(res)
+            }catch(err){
+                setSucces(false)
+                console.log(err.response.status)
+                setError(err.response.status)
+            }
+        }else {
+            setError(1)
         }
+        
     }
     return (
         <div className="auth-form-container">
@@ -57,6 +45,15 @@ export const Register = (props) => {
                 <label htmlFor="password">password</label>
                 <input value={pass} onChange={(e) => setPass(e.target.value)} type="password" placeholder="**********" id="password" name="password"/>
                 <button type="submit">Register</button>
+                {succes && (
+                <h5 className='success'>User has been registered</h5>
+                )}
+                {error === 1 && (
+                <h5 className='error'>You need to fill all the form</h5>
+                )}
+                {error === 500 && (
+                <h5 className='error'>This user already exist</h5>
+                )}
             </form>
             <button className="link-btn" onClick={() => props.onFormSwitch('login')}>Already have an account? Log In here.</button>
         </div>

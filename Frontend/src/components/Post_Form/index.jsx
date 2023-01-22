@@ -8,7 +8,7 @@ import Post from "../Post";
 export default function Post_Form() {
 
     const [accessToken, setAccessToken] = useState(()=>{
-        const saved = localStorage.getItem("accessToken");
+        const saved = sessionStorage.getItem("accessToken");
         const initialValue = JSON.parse(saved);
         return initialValue || "";
     })
@@ -105,8 +105,8 @@ export default function Post_Form() {
             <button className="link-btn" onClick={handleClick}>Go Back </button>
         </div> 
       {/* VIEW POST */}
-      {image == '' && <Post image={image} nickname='User' description={description} test={true}/>}
-      {image != '' && <Post image={image.url} nickname='User' description={description} test={true}/>}
+      {image === '' && <Post image={image} nickname='User' description={description} test={true}/>}
+      {image !== '' && <Post image={image.url} nickname='User' description={description} test={true}/>}
     </div>)}
     </div>
     );
