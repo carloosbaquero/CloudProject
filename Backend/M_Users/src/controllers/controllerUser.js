@@ -114,7 +114,7 @@ controllerUser.checkProStatus = async (req, res) => {
   } catch (error) {
     await t.rollback()
     console.error(error)
-    if (error.message === 'User is not pro') res.status(401).send('User is not pro')
+    if (error.message === 'User is not pro') res.status(200).send('User is not pro')
     else res.status(500).send(error)
   }
 }
