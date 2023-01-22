@@ -5,6 +5,7 @@ import { Home } from './screens/Home';
 import { SignIn } from './screens/SignIn';
 import { Upload } from './screens/Upload';
 import { Comments } from './screens/Comments';
+import { ProUser } from './screens/ProUser';
 
 function App () {
 
@@ -31,6 +32,7 @@ function App () {
         <Route path='/home' element={<Home/>}/>
         <Route path='/signIn' element={<SignIn/>}/>
         <Route path='/comments/:id' element={<Comments/>}/>
+        <Route path='/prouser' element={<ProUser/>}/>
       </Routes>
     
     </BrowserRouter>

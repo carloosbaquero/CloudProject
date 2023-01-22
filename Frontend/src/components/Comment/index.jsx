@@ -1,9 +1,27 @@
-export const Comment = (id) => {
+import './Comment.css'
+
+export const Comment = (props) => {
+
+    const username = props.username
+    const profilePicture = props.profilePicture
+    const text = props.text
 
 
     return (
-        <div>
-            <h1>{id}</h1>
+
+        <div className="Post-user">
+        <div className="Post-user-profilepicture">
+
+                <img src={'https://storage.googleapis.com/cloudapp-social_content2/images/emptyAvatar.png'} alt={profilePicture}/>
+
+            </div>
+        <div className="descrip">
+
+            
+            <strong>{username} </strong> {text}
+            
+           
+            </div>
         </div>
     );
 }

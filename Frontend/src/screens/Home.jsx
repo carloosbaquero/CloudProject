@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import Post from '../components/Post';
 import styled from 'styled-components'
 import axios from 'axios'
+import { M_CONTENT } from '../api/ContentHost';
 
 
 
@@ -30,7 +31,7 @@ function listPosts() {
 
     const [content, setContent] = useState([])
     useEffect(() => {
-        fetch("http://localhost:3001/contents/users")
+        fetch(M_CONTENT + "/contents/users")
         .then(
             response => response.json()
         ).then(
@@ -79,7 +80,7 @@ export const Home = () => {
             <DivPost>
                 {posts.map(item => (
                     <div key={item.id}>
-                    <Post id={item.id} type={item.contentType} name={item.name} userId={item.userId} username={item.userName} profilePicture={item.profilePicture} profileURL={item.profilePublicURL} description={item.description} image={item.publicURL} createdAt={item.createdAt} updateAt={item.updateAt}/>
+                    <Post id={item.id} type={item.contentType} name={item.name} userId={item.userId} username={item.userName} profilePicture={item.profilePicture} profileURL={item.profilePublicURL} description={item.description} image={item.publicURL} createdAt={item.createdAt} updateAt={item.updateAt} test={false}/>
                     </div>
                 ))}
             </DivPost>    

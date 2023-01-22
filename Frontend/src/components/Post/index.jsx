@@ -17,7 +17,11 @@ const Post = (props) => {
     
     const navigate = useNavigate();
 
+    const test = props.test
+
     const id = props.id;
+
+    const userId = props.userId
 
     const name = props.name
 
@@ -42,7 +46,8 @@ const Post = (props) => {
 
 
     const handleClicked = () => {
-        navigate('/comments/' + {id})
+        console.log(id)
+        navigate(`/comments/${id}`)
     }
 
     return (
@@ -76,7 +81,7 @@ const Post = (props) => {
             <div className="Post-image-bg">
 
             
-            {image == '' && <img alt={name} src="https://www.lifewire.com/thmb/TRGYpWa4KzxUt1Fkgr3FqjOd6VQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/cloud-upload-a30f385a928e44e199a62210d578375a.jpg"/> }
+            {image === '' && <img alt={name} src="https://www.lifewire.com/thmb/TRGYpWa4KzxUt1Fkgr3FqjOd6VQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/cloud-upload-a30f385a928e44e199a62210d578375a.jpg"/> }
             <img alt={name} src={image}/>
             {/* {IsImage(image) && <img alt={nickname} src={image}/>}
             {!IsImage(image) && <video alt={nickname} src={image} type="video/mp4"/>} */}
@@ -93,9 +98,12 @@ const Post = (props) => {
 
         </div>
         
+        {!test &&
         <div className="end">
-                <button onClick={handleClicked} type="button" className="buttonComments" ><strong className="comments">comments...</strong></button>
-            </div>
+            <button onClick={handleClicked} type="button" className="buttonComments" ><strong className="comments">comments...</strong></button>
+        </div>
+        }
+        
 
     </article>
     </div>

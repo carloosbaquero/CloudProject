@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { M_CONTENT } from "../../api/ContentHost";
 import Post from "../Post";
 
 
@@ -35,7 +36,7 @@ export default function Post_Form() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try{
-            const res = await axios.post('http://localhost:3001/images', {name: imageName, description: description})
+            const res = await axios.post(M_CONTENT + '/images', {name: imageName, description: description})
             console.log(res.status)
             if (res.status === 201){
                 setSuccesDB(true)
@@ -52,7 +53,7 @@ export default function Post_Form() {
         try{
             let formData = new FormData();
             formData.append('newFile', file)
-            const res = await axios.post('http://localhost:3001/images/file', formData)
+            const res = await axios.post(M_CONTENT + '/images/file', formData)
             if (res.status === 201){
                 setSuccesBuck(true)
             }
@@ -104,8 +105,8 @@ export default function Post_Form() {
             <button className="link-btn" onClick={handleClick}>Go Back </button>
         </div> 
       {/* VIEW POST */}
-      {image == '' && <Post image={image} nickname='User' description={description}/>}
-      {image != '' && <Post image={image.url} nickname='User' description={description}/>}
+      {image == '' && <Post image={image} nickname='User' description={description} test={true}/>}
+      {image != '' && <Post image={image.url} nickname='User' description={description} test={true}/>}
     </div>)}
     </div>
     );

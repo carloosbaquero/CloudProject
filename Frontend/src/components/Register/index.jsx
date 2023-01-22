@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import { M_USERS } from '../../api/UsersHost';
 import './Register.css'
 
 function register(name, email, pass) {
@@ -18,7 +19,7 @@ function register(name, email, pass) {
         redirect: 'follow'
     };
 
-    fetch("http://localhost:3002/users", requestOptions)
+    fetch(M_USERS + "/users", requestOptions)
     .then(response => response.text())
     .then(result => console.log(result))
     .catch(error => console.log('error', error));
