@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-users-configmap
+data:
+  NODE_ENV: production
+  PORT: 3002
+  KUBERNETES_DATABASE_HOST: host.minikube.internal # ESTO VA A CAMBIAR A LA IP QUE LE DE KUBERNETES A STATEFULSET DE MYSQL
+  KUBERNETES_DATABASE_PORT: 3306
+  KUBERNETES_DATABASE_NAME: free_space_users
+  KUBERNETES_DATABASE_DIALECT: mariadb # ESTO LUEGO VA A TENER VALOR mysql 
+  TOKEN_EXPIRATION: 30m
+  M_USERS_HOST: host.minikube.internal # ESTO CAMBIARA A LA IP QUE LE DE EL SERVICE A M_USERS
+  M_USERS_PORT: 3001

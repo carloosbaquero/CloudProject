@@ -9,15 +9,16 @@ if (process.env.NODE_ENV !== 'production') {
 
 export const NODE_ENV = process.env.NODE_ENV || 'development'
 export const PORT = process.env.PORT || 3002
-export const DATABASE_HOST = process.env.DATABASE_HOST || 'localhost'
-export const DATABASE_PORT = process.env.DATABASE_PORT || 3306
-export const DATABASE_USERNAME = process.env.DATABASE_USERNAME || 'user'
-export const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD || 'password'
-export const DATABASE_NAME = process.env.DATABASE_NAME || 'free_space_users'
-export const DATABASE_DIALECT = process.env.DATABASE_DIALECT || 'mariadb'
+export const KUBERNETES_DATABASE_HOST = process.env.KUBERNETES_DATABASE_HOST || 'localhost'
+export const KUBERNETES_DATABASE_PORT = process.env.KUBERNETES_DATABASE_PORT || 3306
+export const KUBERNETES_DATABASE_USERNAME = process.env.KUBERNETES_DATABASE_USERNAME || 'user'
+export const KUBERNETES_DATABASE_PASSWORD = process.env.KUBERNETES_DATABASE_PASSWORD || 'password'
+export const KUBERNETES_DATABASE_NAME = process.env.KUBERNETES_DATABASE_NAME || 'free_space_users'
+export const KUBERNETES_DATABASE_DIALECT = process.env.KUBERNETES_DATABASE_DIALECT || 'mariadb'
 export const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET
 export const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET
 export const TOKEN_EXPIRATION_TIME = process.env.TOKEN_EXPIRATION_TIME || '30m'
-export const BUCKET_NAME = process.env.BUCKET_NAME
-export const GOOGLE_KEYFILE = process.env.GOOGLE_KEYFILE
-export const M_CONTENT_HOST = process.env.M_CONTENT_HOST
+export const BUCKET_NAME_USERS = process.env.BUCKET_NAME_USERS
+export const GOOGLE_KEYFILE_BUCKET = process.env.GOOGLE_KEYFILE_BUCKET
+export const M_CONTENT_HOST = process.env.M_CONTENT_HOST || 'http://localhost'
+export const M_CONTENT_PORT = process.env.M_CONTENT_PORT || '3001'

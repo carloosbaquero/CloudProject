@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-content-configmap
+data:
+  NODE_ENV: production
+  PORT: 3001
+  GOOGLE_DATABASE_HOST: host.minikube.internal # ESTO LUEGO VA A SER EL HOST A GOOGLE SQL CON CONEXION PRIVADA.
+  GOOGLE_DATABASE_PORT: 3306
+  GOOGLE_DATABASE_NAME: free_space_content
+  GOOGLE_DATABASE_DIALECT: mariadb # ESTO LUEGO VA A TENER VALOR mysql 
+  M_USERS_HOST: host.minikube.internal # ESTO CAMBIARA A LA IP QUE LE DE EL SERVICE A M_USERS
+  M_USERS_PORT: 3002

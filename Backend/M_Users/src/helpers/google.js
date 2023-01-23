@@ -1,12 +1,12 @@
-import { BUCKET_NAME, GOOGLE_KEYFILE } from '../config.js'
+import { BUCKET_NAME_USERS, GOOGLE_KEYFILE_BUCKET } from '../config.js'
 import { Storage } from '@google-cloud/storage'
 
 const storage = new Storage({
   // EN EL FUTURO AÑADIR PARAMETRO DEL NOMBRE DEL PROYECTO
-  keyFilename: GOOGLE_KEYFILE
+  keyFilename: GOOGLE_KEYFILE_BUCKET
 })
 
-const bucket = storage.bucket(BUCKET_NAME)
+const bucket = storage.bucket(BUCKET_NAME_USERS)
 
 async function uploadFile (file, fileName) {
   const options = {
