@@ -155,7 +155,9 @@ controllerUser.deleteUserAuthenticated = async (req, res) => {
     await deleteAllCommentsUser(user.dataValues.id)
     await deleteAllContentFilesUser(user.dataValues.id)
     await deleteAllContentUser(user.dataValues.id)
-    await deleteFile(user.dataValues.profilePicture)
+    if (user.dataValues.profilePicture !== null) {
+      await deleteFile(user.dataValues.profilePicture)
+    }
     await User.destroy({
       where: {
         name: req.user.name
@@ -173,6 +175,13 @@ controllerUser.deleteUserAuthenticated = async (req, res) => {
 controllerUser.deleteUserById = async (req, res) => {
   const t = await database.transaction()
   try {
+    const user = await User.findByPk(req.params.id)
+    await deleteAllCommentsUser(user.dataValues.id)
+    await deleteAllContentFilesUser(user.dataValues.id)
+    await deleteAllContentUser(user.dataValues.id)
+    if (user.dataValues.profilePicture !== null) {
+      await deleteFile(user.dataValues.profilePicture)
+    }
     await User.destroy({
       where: {
         id: req.params.id
