@@ -151,6 +151,7 @@ controllerUser.deleteUserAuthenticated = async (req, res) => {
         name: req.user.name
       }
     })
+    console.log(user)
     await deleteAllCommentsUser(user.dataValues.id)
     await deleteAllContentFilesUser(user.dataValues.id)
     await deleteAllContentUser(user.dataValues.id)

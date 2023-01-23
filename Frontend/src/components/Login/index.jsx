@@ -2,7 +2,6 @@ import React, {useState} from 'react'
 import './Login.css'
 import {useNavigate} from 'react-router-dom'
 import axios from 'axios'
-import jwt_decode from 'jwt-decode'
 import { M_USERS } from '../../api/UsersHost'
 
 
@@ -29,6 +28,7 @@ export const Login = (props) => {
 
     const [accessToken, setAccessToken] = useLocalStorage('accessToken', null)
     const [refreshToken, setRefreshToken] = useLocalStorage('refreshToken', null)
+    cosnt [loginName, setLoginName] = useLocalStorage('loginName', null)
 
     const [error, setError] = useState(null)
 

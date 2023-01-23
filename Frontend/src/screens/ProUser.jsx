@@ -17,20 +17,28 @@ export const ProUser = () => {
 
     const [numMonths, setNumMonths] = useState(3)
     const [success,setSuccess] = useState(false)
+    const [error, setError] = useState(false)
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        try{ 
-            const res = await axios.put(M_USERS + "/users/pro", {"numMonths": parseInt(numMonths)})
-            console.log(res)
-            if (res.status === 204){
-                setSuccess(true)
-            }
-            
-        }catch(err){
-            console.log(err)
-            console.log(err.response.status)
-        } 
+        if(parseInt(numMonths) > 0){
+            try{ 
+                const res = await axios.put(M_USERS + "/users/pro", {"numMonths": parseInt(numMonths)})
+                console.log(res)
+                if (res.status === 204){
+                    setSuccess(true)
+                    setError(false)
+                }
+                
+            }catch(err){
+                console.log(err)
+                console.log(err.response.status)
+            } 
+        }else{
+            setError(true)
+            setSuccess(false)
+        }
+        
     }
 
     const handleClicked = async () => {
@@ -54,8 +62,11 @@ export const ProUser = () => {
             <h2 className='tittle'>Get ProUser</h2>
             <form className="register-form" onSubmit={handleSubmit}>
                 <label htmlFor="months"><strong style={{color: "white"}}>Number of months you want to be a ProUser</strong></label>
-                <input value={numMonths} onChange={(e) => setNumMonths(e.target.value)} placeholder="..." id="numMonths" name="numMonths"/>
+                <input type="number" min={1} value={numMonths} onChange={(e) => setNumMonths(e.target.value)} placeholder="..." id="numMonths" name="numMonths"/>
                 <button type="submit">Get ProUser</button>
+                {error && (
+                <h5 className='error'>Number of months can not be 0 or less</h5>
+                )}
             </form>
             <button className='link-btn' onClick={handleClicked}>Go Back</button>
             </div>

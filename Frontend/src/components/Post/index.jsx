@@ -1,41 +1,29 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./Post.css";
-
-const IsImage = (image) => {
-    let res = false
-    const array = image.toString().split('.')
-    const extension = array[array.length -1]
-    if(extension == 'jpeg' || extension == 'jpg'|| extension == 'png'){
-        res = true
-    }
-    return res
-}
+import emptyContent from '../../public/emptyContent.jpg'
+import emptyAvatar from '../../public/emptyAvatar.png'
 
 
-const Post = (props) => {
-    
+const Post = (props) => {    
     const navigate = useNavigate();
+
+    const proUser = props.proUser
 
     const test = props.test
 
     const id = props.id;
 
-    const userId = props.userId
-
     const name = props.name
 
     const username = props.username;
 
-    //const description = this.props.description;
-
     const description = props.description;
 
-    
     const profilepicture= props.profilePicture;
     
 
-        let profileURL = 'https://ceslava.s3-accelerate.amazonaws.com/2016/04/mistery-man-gravatar-wordpress-avatar-persona-misteriosa-510x510.png'
+        let profileURL = emptyAvatar
         if(profilepicture!==null){
             profileURL = props.profileURL
         }
@@ -46,7 +34,6 @@ const Post = (props) => {
 
 
     const handleClicked = () => {
-        console.log(id)
         navigate(`/comments/${id}`)
     }
 
@@ -61,10 +48,7 @@ const Post = (props) => {
             <div className="Post-user">
 
             <div className="Post-user-profilepicture">
-
-                {/* <img src="https://t4.ftcdn.net/jpg/02/19/63/31/360_F_219633151_BW6TD8D1EA9OqZu4JgdmeJGg4JBaiAHj.jpg" alt="John D. Veloper" /> */}
                 <img src={profileURL} alt={profilepicture}/>
-
             </div>
 
             <div className="Post-user-nickname">
@@ -81,10 +65,9 @@ const Post = (props) => {
             <div className="Post-image-bg">
 
             
-            {image === '' && <img alt={name} src="https://www.lifewire.com/thmb/TRGYpWa4KzxUt1Fkgr3FqjOd6VQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/cloud-upload-a30f385a928e44e199a62210d578375a.jpg"/> }
-            <img alt={name} src={image}/>
-            {/* {IsImage(image) && <img alt={nickname} src={image}/>}
-            {!IsImage(image) && <video alt={nickname} src={image} type="video/mp4"/>} */}
+            {image === '' && <img alt={name} src={emptyContent}/> }
+            {name.slice(-1) !== '4' && image !== '' && <img alt={name} src={image}/>}
+            {name.slice(-1) === '4' && <video style={{width: '100%'}} autoPlay loop alt={name} src={image} type="video/mp4"/>} 
 
             </div>
 
@@ -97,14 +80,12 @@ const Post = (props) => {
            
 
         </div>
-        
-        {!test &&
+
+        {proUser && !test &&
         <div className="end">
             <button onClick={handleClicked} type="button" className="buttonComments" ><strong className="comments">comments...</strong></button>
         </div>
         }
-        
-
     </article>
     </div>
     );

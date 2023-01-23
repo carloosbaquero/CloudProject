@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { M_CONTENT } from '../api/ContentHost';
 import axios from 'axios'
+import emptyAvatar from '../public/emptyAvatar.png'
 
 function listInfoPost(contentId) {
     const [infoPost, setInfoPost] = useState([])
@@ -27,7 +28,7 @@ function listComments(contentId) {
         .then(
             response => response.json()
         ).then(
-            data => {setComments(data); console.log(data)}
+            data => {setComments(data)}
         ).then(
             error => console.log(error)
         )
@@ -53,20 +54,24 @@ export const Comments = () => {
 
     const info = listInfoPost(id)
 
-    if(info.length === 0){
-        alert("No content exists with this id")
-        useEffect(() => {
-            navigate('/')
-          });
-        
-    }
+
+    // if(info.length === 0){
+    //     if(info.id === undefined){
+    //         alert("No content exists with this id")
+    //         useEffect(() => {
+    //         navigate('/')
+    //     }); 
+    //     }
+          
+    // }
 
     const username = info.userName
     const description = info.description
     const profilePicture = info.profilePicture
-    
-    if(profilePicture === null){
-        profilePicture === 'https://storage.googleapis.com/cloudapp-social_content2/images/emptyAvatar.png'
+    let profileURL = emptyAvatar
+
+    if(profilePicture){
+        profileURL = info.profileURL
     }
 
     const comments = listComments(id)
@@ -75,7 +80,6 @@ export const Comments = () => {
     const handleSubmit = async (e) => {
 
         e.preventDefault();
-        console.log(text);
 
         try{
             const res = await axios.post(M_CONTENT + "/comments", {"text": text, "contentId": parseInt(id)})
@@ -102,11 +106,11 @@ export const Comments = () => {
             <form className="login-form" onSubmit={handleSubmit}>
             <label htmlFor="comment">comment...</label>
             <div style={{marginLeft: 40}}>
-                <Comment username={username} text={description} profilePicture={profilePicture}></Comment>
+                <Comment username={username} text={description} profileURL={profileURL}></Comment>
             </div>
             {comments.map(item => (
                     <div key={item.id}>
-                    <Comment username={item.name} profilePicture={item.publicURL}  text={item.text}/>
+                    <Comment username={item.name} profileURL={item.profileURL}  text={item.text}/>
                     </div>
                 ))}  
             <input value={text} onChange={(e) => setText(e.target.value)} placeholder="comment..." id="name" name="name" required/>

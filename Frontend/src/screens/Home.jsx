@@ -52,25 +52,7 @@ export const Home = () => {
         const initialValue = JSON.parse(saved);
         return initialValue || "";
     })
-
-    
-
-    // const listPosts = async () => {
-    //     const [content, setContent] = useState([])
-    //     try{
-    //         const res = await axios.get('http://localhost:3001/contents/users')
-    //         console.log(res)
-    //         setContent(res.data)
-    //         console.log(res.data)
-    //     }catch(err) {
-    //         console.log(err)
-    //     }
-    //     console.log(content);
-    //     return content
-    // }
-
-    
-    
+ 
     const posts = listPosts()
     return (
         <Div>
@@ -80,7 +62,7 @@ export const Home = () => {
             <DivPost>
                 {posts.map(item => (
                     <div key={item.id}>
-                    <Post id={item.id} type={item.contentType} name={item.name} userId={item.userId} username={item.userName} profilePicture={item.profilePicture} profileURL={item.profilePublicURL} description={item.description} image={item.publicURL} createdAt={item.createdAt} updateAt={item.updateAt} test={false}/>
+                    <Post id={item.id} type={item.contentType} name={item.name} userId={item.userId} username={item.userName} profilePicture={item.profilePicture} profileURL={item.profilePublicURL} description={item.description} image={item.publicURL} createdAt={item.createdAt} updateAt={item.updateAt} test={false} proUser={item.proUser}/>
                     </div>
                 ))}
             </DivPost>    
