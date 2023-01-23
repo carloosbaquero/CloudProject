@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router';
 import { M_CONTENT } from '../api/ContentHost';
 import axios from 'axios'
 import emptyAvatar from '../public/emptyAvatar.png'
+import { useLocalStorage } from '../components/Login';
 
 function listInfoPost(contentId) {
     const [infoPost, setInfoPost] = useState([])
@@ -40,13 +41,37 @@ export const Comments = () => {
 
     const navigate = useNavigate()
 
-    const [accessToken, setAccessToken] = useState(()=>{
-        const saved = sessionStorage.getItem("accessToken");
-        const initialValue = JSON.parse(saved);
-        return initialValue || "";
-    })
+    const getAccessToken = JSON.parse(sessionStorage.getItem('accessToken')) || ''
+    const getRefreshToken = JSON.parse(sessionStorage.getItem('refreshToken')) || ''
+    const getLoginName = JSON.parse(sessionStorage.getItem('loginName')) || ''
 
-    axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+    const [accessToken, setAccessToken] = useLocalStorage('accessToken', null)
+
+    useEffect( () => {
+
+        const myHeaders = new Headers()
+        myHeaders.append('Content-Type', 'application/json')
+
+        const raw = JSON.stringify({
+            name: getLoginName,
+            accessToken: getAccessToken,
+            refreshToken: getRefreshToken
+        })
+
+        const requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        }
+
+        fetch('http://localhost:3002/token', requestOptions)
+            .then(response => response.json())
+            .then(result => {if(result.expired){setAccessToken(result.token)}})
+            .catch(error => console.log('error', error))
+    }, [])
+
+    axios.defaults.headers.common['Authorization'] = `Bearer ${getAccessToken}`;
     
     const {id} = useParams()
 
@@ -75,6 +100,7 @@ export const Comments = () => {
     }
 
     const comments = listComments(id)
+    console.log(comments)
 
 
     const handleSubmit = async (e) => {
@@ -110,7 +136,7 @@ export const Comments = () => {
             </div>
             {comments.map(item => (
                     <div key={item.id}>
-                    <Comment username={item.name} profileURL={item.profileURL}  text={item.text}/>
+                    <Comment username={item.name} profileURL={item.profilePicture? item.publicURL : emptyAvatar}  text={item.text}/>
                     </div>
                 ))}  
             <input value={text} onChange={(e) => setText(e.target.value)} placeholder="comment..." id="name" name="name" required/>

@@ -67,7 +67,9 @@ const Header = () => {
                     }
                 }catch(err){
                     console.log(err)
-                    console.log(err.response.status)
+                    if(err.response.status === 403){
+                        alert('You are already a Pro User')
+                    }
                 } 
             }else{
                 alert('You need to log in')

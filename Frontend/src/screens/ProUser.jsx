@@ -1,17 +1,41 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { M_USERS } from "../api/UsersHost";
 
 export const ProUser = () => {
 
-    const [accessToken, setAccessToken] = useState(()=>{
-        const saved = sessionStorage.getItem("accessToken");
-        const initialValue = JSON.parse(saved);
-        return initialValue || "";
-    })
+    const getAccessToken = JSON.parse(sessionStorage.getItem('accessToken')) || ''
+    const getRefreshToken = JSON.parse(sessionStorage.getItem('refreshToken')) || ''
+    const getLoginName = JSON.parse(sessionStorage.getItem('loginName')) || ''
 
-    axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+    const [accessToken, setAccessToken] = useLocalStorage('accessToken', null)
+
+    useEffect( () => {
+
+        const myHeaders = new Headers()
+        myHeaders.append('Content-Type', 'application/json')
+
+        const raw = JSON.stringify({
+            name: getLoginName,
+            accessToken: getAccessToken,
+            refreshToken: getRefreshToken
+        })
+
+        const requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        }
+
+        fetch('http://localhost:3002/token', requestOptions)
+            .then(response => response.json())
+            .then(result => {if(result.expired){setAccessToken(result.token)}})
+            .catch(error => console.log('error', error))
+    }, [])
+
+    axios.defaults.headers.common['Authorization'] = `Bearer ${getAccessToken}`;
 
     const navigate = useNavigate()
 

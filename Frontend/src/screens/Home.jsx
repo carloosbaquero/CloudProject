@@ -6,25 +6,8 @@ import Post from '../components/Post';
 import styled from 'styled-components'
 import axios from 'axios'
 import { M_CONTENT } from '../api/ContentHost';
-
-
-
-// function listCharacters() {
-    
-
-//     const [characters, setCharacters] = useState([])
-//     useEffect(() => {
-//         fetch("https://rickandmortyapi.com/api/character")
-//         .then(
-//             response => response.json()
-//         ).then(
-//             data => {setCharacters(data.results); console.log(data.results)}
-//         ).then(
-//             error => console.log(error)
-//         )
-//     }, [])
-//     return characters
-// }
+import { M_USERS } from '../api/UsersHost';
+import { useLocalStorage } from '../components/Login';
 
 function listPosts() {
     
@@ -47,11 +30,36 @@ function listPosts() {
 
 
 export const Home = () => {
-    const [accessToken, setAccessToken] = useState(()=>{
-        const saved = sessionStorage.getItem("accessToken");
-        const initialValue = JSON.parse(saved);
-        return initialValue || "";
-    })
+    
+    const getAccessToken = JSON.parse(sessionStorage.getItem('accessToken')) || ''
+    const getRefreshToken = JSON.parse(sessionStorage.getItem('refreshToken')) || ''
+    const getLoginName = JSON.parse(sessionStorage.getItem('loginName')) || ''
+
+    const [accessToken, setAccessToken] = useLocalStorage('accessToken', null)
+
+    useEffect( () => {
+
+        const myHeaders = new Headers()
+        myHeaders.append('Content-Type', 'application/json')
+
+        const raw = JSON.stringify({
+            name: getLoginName,
+            accessToken: getAccessToken,
+            refreshToken: getRefreshToken
+        })
+
+        const requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        }
+
+        fetch('http://localhost:3002/token', requestOptions)
+            .then(response => response.json())
+            .then(result => {if(result.expired){setAccessToken(result.token)}})
+            .catch(error => console.log('error', error))
+    }, [])
  
     const posts = listPosts()
     return (

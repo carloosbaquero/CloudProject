@@ -28,7 +28,7 @@ export const Login = (props) => {
 
     const [accessToken, setAccessToken] = useLocalStorage('accessToken', null)
     const [refreshToken, setRefreshToken] = useLocalStorage('refreshToken', null)
-    cosnt [loginName, setLoginName] = useLocalStorage('loginName', null)
+    const [loginName, setLoginName] = useLocalStorage('loginName', null)
 
     const [error, setError] = useState(null)
 
@@ -75,6 +75,7 @@ export const Login = (props) => {
             const res = await axios.post(M_USERS + "/users/login", {name, password})
             setAccessToken(res.data.accessToken)
             setRefreshToken(res.data.refreshToken)
+            setLoginName(res.data.name)
             console.log(res.data.accessToken)
         }catch(err){
             console.log(err)
