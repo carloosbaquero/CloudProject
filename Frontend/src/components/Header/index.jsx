@@ -1,7 +1,6 @@
 import React, {useState} from "react";
 import {useNavigate} from 'react-router-dom'
 import axios from "axios";
-import { useLocalStorage } from "../Login";
 import "./Header.css";
 import styled from 'styled-components'
 import {M_USERS} from '../../api/UsersHost.jsx'
@@ -14,34 +13,33 @@ import {M_USERS} from '../../api/UsersHost.jsx'
 const Header = () => {
 
     const [accessToken, setAccessToken] = useState(()=>{
-        const saved = localStorage.getItem("accessToken");
+        const saved = sessionStorage.getItem("accessToken");
         const initialValue = JSON.parse(saved);
         return initialValue || "";
     })
-
-    // const [accessToken, setAccessToken] = useLocalStorage('accessToken', null)
-    // const [refreshToken, setRefreshToken] = useLocalStorage('refreshToken', null)
-
 
     axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 
         const navigate = useNavigate();
  
         const handleClickUpload = () => {
-            navigate('/upload');
+            accessToken ? (
+                navigate('/upload')
+            ) : (
+                alert('You need to log in')
+            )   
         } 
 
 
 
         const handleClickSignIn = async () => {
-            if(accessToken!==null){
+            if(accessToken){
                 try{
-                    
                     const res = await axios.delete(M_USERS + "/users/logout")
                     if (res.status === 204){
                         console.log("Prueba")
-                        localStorage.removeItem('accessToken')
-                        localStorage.removeItem('refreshToken')
+                        sessionStorage.removeItem('accessToken')
+                        sessionStorage.removeItem('refreshToken')
                         console.log(accessToken)
                         
                     }
@@ -55,23 +53,35 @@ const Header = () => {
         } 
 
         const handleClickPro = async () => {
-            if(accessToken!==null){
+            if(accessToken){
                 try{ 
                     const res = await axios.put(M_USERS + "/users/pro/check")
                     console.log(res)
-                    if (res.status === 401 || res.status === 500){
-                        navigate('/prouser')
-                    }else if(res.status === 200) {
+                    if (res.data === 'User is still pro'){
                         alert('You are already a ProUser')
+                        
+                    }else if(res.data === 'User is not pro') {
+                        navigate('/prouser')
+                    }else if(res.data === 'User is no longer pro') {
+                        navigate('/prouser')
                     }
-                    
                 }catch(err){
                     console.log(err)
                     console.log(err.response.status)
                 } 
-            }      
+            }else{
+                alert('You need to log in')
+            }  
             
         }
+
+        const handleClickEdit = () => {
+            accessToken ? (
+                navigate('/profile')
+            ) : (
+                alert('You need to log in')
+            )  
+        } 
 
 
         return (
@@ -86,6 +96,12 @@ const Header = () => {
                 <nav className="uploadbutton">
                 <Button onClick={handleClickPro}>
                     Get ProUser
+                </Button>
+                </nav>
+
+                <nav className="uploadbutton">
+                <Button onClick={handleClickEdit}>
+                    Edit Profile
                 </Button>
                 </nav>
 
