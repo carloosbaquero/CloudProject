@@ -20,3 +20,4 @@ export const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET
 export const TOKEN_EXPIRATION_TIME = process.env.TOKEN_EXPIRATION_TIME || '30m'
 export const BUCKET_NAME = process.env.BUCKET_NAME
 export const GOOGLE_KEYFILE = process.env.GOOGLE_KEYFILE
+export const M_CONTENT_HOST = process.env.M_CONTENT_HOST

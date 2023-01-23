@@ -119,4 +119,21 @@ controllerComments.getCommentsContent = async (req, res) => {
   }
 }
 
+controllerComments.deleteAllCommentsFromUser = async (req, res) => {
+  const t = await database.transaction()
+  try {
+    await Comments.destroy({
+      where: {
+        userId: req.params.userId
+      }
+    }, { transaction: t })
+    await t.commit()
+    res.sendStatus(204)
+  } catch (error) {
+    await t.rollback()
+    console.error(error)
+    res.status(500).send(error)
+  }
+}
+
 export default controllerComments

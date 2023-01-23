@@ -21,6 +21,7 @@
     "express-fileupload": "1.4.0",
     "jsonwebtoken": "9.0.0",
     "mysql2": "3.0.1",
+    "node-fetch": "3.3.0",
     "sequelize": "6.28.0"
   },
   "devDependencies": {
