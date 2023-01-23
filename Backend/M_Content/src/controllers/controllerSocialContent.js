@@ -216,6 +216,7 @@ controllerSocialContent.saveContentFile = async (req, res) => {
     try {
       const contentName = req.files.newFile.name
       const type = requestType(req.url)
+      console.log(contentName)
       const content = await SocialContent.findOne({
         where: {
           name: contentName

@@ -1,7 +1,8 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { M_CONTENT } from "../../api/ContentHost";
+import { M_USERS } from "../../api/UsersHost";
 import Post from "../Post";
 
 
@@ -23,6 +24,19 @@ export default function Post_Form() {
     const [succesDB, setSuccesDB] = useState(false)
     const [succesBuck, setSuccesBuck] = useState(false)
 
+    const [isPro, setIsPro] = useState(false)
+    useEffect(() => {
+        fetch(M_USERS + "/users", {headers: {'Authorization': 'Bearer ' + accessToken}})
+        .then(
+            response => response.json()
+        ).then(
+            data => {setIsPro(data.proUser)}
+        ).then(
+            error => console.log(error)
+        )
+    }, [])
+
+
     const handleImage = (e) => {
         setImageName(e.currentTarget.files[0].name)
         setFile(e.currentTarget.files[0])
@@ -35,35 +49,61 @@ export default function Post_Form() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try{
-            const res = await axios.post(M_CONTENT + '/images', {name: imageName, description: description})
-            console.log(res.status)
-            if (res.status === 201){
-                setSuccesDB(true)
+        if (imageName.slice(-1) !== '4' && image !== ''){
+            try{
+                const res = await axios.post(M_CONTENT + '/images', {name: imageName, description: description})
+                console.log(res.status)
+                if (res.status === 201){
+                    setSuccesDB(true)
+                }
+            }catch(err){
+                console.log(err)
+                if (err.status === 404){
+                    alert('Content not found')
+                } else if(err.status === 403) {
+                    alert('User dont owe content')
+                }
             }
-        }catch(err){
-            console.log(err)
-            if (err.status === 404){
-                alert('Content not found')
-            } else if(err.status === 403) {
-                alert('User dont owe content')
+    
+            try{
+                let formData = new FormData();
+                formData.append('newFile', file)
+                const res = await axios.post(M_CONTENT + '/images/file', formData)
+                if (res.status === 201){
+                    setSuccesBuck(true)
+                }
+            }catch(err){
+                console.log(err)
+    
+            }
+        }else if(imageName.slice(-1) === '4'){
+            try{
+                const res = await axios.post(M_CONTENT + '/videos', {name: imageName, description: description})
+                console.log(res.status)
+                if (res.status === 201){
+                    setSuccesDB(true)
+                }
+            }catch(err){
+                console.log(err)
+                if (err.status === 404){
+                    alert('Content not found')
+                } else if(err.status === 403) {
+                    alert('User dont owe content')
+                }
+            }
+    
+            try{
+                let formData = new FormData();
+                formData.append('newFile', file)
+                const res = await axios.post(M_CONTENT + '/videos/file', formData)
+                if (res.status === 201){
+                    setSuccesBuck(true)
+                }
+            }catch(err){
+                console.log(err)
+    
             }
         }
-
-        try{
-            let formData = new FormData();
-            formData.append('newFile', file)
-            const res = await axios.post(M_CONTENT + '/images/file', formData)
-            if (res.status === 201){
-                setSuccesBuck(true)
-            }
-        }catch(err){
-            console.log(err)
-
-        }
-        
-        
-
     }
 
     const navigate = useNavigate();
@@ -95,7 +135,8 @@ export default function Post_Form() {
                 
                 {/* INPUT IMAGES */}
                 <label htmlFor="image">Select Image or Video:</label>
-                <input onChange={(e) => handleImage(e)} placeholder="image" id="image" name="image" type="file" accept='.jpg, .png' required></input>
+                {!isPro && <input onChange={(e) => handleImage(e)} placeholder="image" id="image" name="image" type="file" accept='.jpg, .png' required></input>}
+                {isPro && <input onChange={(e) => handleImage(e)} placeholder="image" id="image" name="image" type="file" accept='.jpg, .png, .mp4' required></input>}
 
                 {/* SEND IMAGES TO BACKEND */}
                 <div>
@@ -105,8 +146,8 @@ export default function Post_Form() {
             <button className="link-btn" onClick={handleClick}>Go Back </button>
         </div> 
       {/* VIEW POST */}
-      {image === '' && <Post image={image} nickname='User' description={description} test={true}/>}
-      {image !== '' && <Post image={image.url} nickname='User' description={description} test={true}/>}
+      {image === '' && <Post image={image} name={imageName} description={description} test={true}/>}
+      {image !== '' && <Post image={image.url} name={imageName} description={description} test={true}/>}
     </div>)}
     </div>
     );
