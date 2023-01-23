@@ -17,8 +17,8 @@ export function sortContentWithUsers (elementLeft, elementRigh) {
   if (elementLeft.proUser > elementRigh.proUser) result = -1
   else if (elementLeft.proUser < elementRigh.proUser) result = 1
   else {
-    if (elementLeft.name < elementRigh.name) result = -1
-    else if (elementLeft.name > elementRigh.name) result = 1
+    if (elementLeft.createdAt > elementRigh.createdAt) result = -1
+    else if (elementLeft.createdAt < elementRigh.createdAt) result = 1
   }
   return result
 }
