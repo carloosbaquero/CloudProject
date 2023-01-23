@@ -35,9 +35,10 @@ export const Home = () => {
     const getRefreshToken = JSON.parse(sessionStorage.getItem('refreshToken')) || ''
     const getLoginName = JSON.parse(sessionStorage.getItem('loginName')) || ''
 
-    const [accessToken, setAccessToken] = useLocalStorage('accessToken', null)
+    
 
     if(getAccessToken){
+        const [accessToken, setAccessToken] = useLocalStorage('accessToken', null)
         useEffect( () => {
 
             const myHeaders = new Headers()
@@ -62,20 +63,35 @@ export const Home = () => {
                 .catch(error => console.log('error', error))
         }, [])
     }
+
     
- 
+    
     const posts = listPosts()
+
     return (
         <Div>
             <Div>
                 <Header/>
             </Div>
+            
             <DivPost>
-                {posts.map(item => (
-                    <div key={item.id}>
-                    <Post id={item.id} type={item.contentType} name={item.name} userId={item.userId} username={item.userName} profilePicture={item.profilePicture} profileURL={item.profilePublicURL} description={item.description} image={item.publicURL} createdAt={item.createdAt} updateAt={item.updateAt} test={false} proUser={item.proUser}/>
+                {posts.length === 0 ? (
+                    <div className='SignIn'>
+                        <div className='auth-form-container'>
+                            <h2>No post uploaded</h2>
+                        </div>  
                     </div>
-                ))}
+
+                    ) : (
+                    <div>
+                    {posts.map(item => (
+                        <div key={item.id}>
+                        <Post id={item.id} type={item.contentType} name={item.name} userId={item.userId} username={item.userName} profilePicture={item.profilePicture} profileURL={item.profilePublicURL} description={item.description} image={item.publicURL} createdAt={item.createdAt} updateAt={item.updateAt} test={false} proUser={item.proUser}/>
+                        </div>
+                    ))}
+                    </div>
+                )}
+                
             </DivPost>    
             
         </Div>
