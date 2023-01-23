@@ -299,4 +299,23 @@ controllerSocialContent.deleteAllContentFromUser = async (req, res) => {
   }
 }
 
+controllerSocialContent.deleteAllFilesContentFromUser = async (req, res) => {
+  try {
+    const contents = await SocialContent.findAll({
+      where: {
+        userId: req.params.userId
+      }
+    })
+    for (const content of contents) {
+      await deleteFile(content.dataValues.name, content.dataValues.contentType + 's')
+    }
+    res.sendStatus(204)
+  } catch (error) {
+    console.error(error)
+    if (error.message === 'Invalid request') res.status(403).send('Invalid request')
+    else if (error.message === 'Not found') res.status(404).send('Not found')
+    else res.status(500).send(error)
+  }
+}
+
 export default controllerSocialContent

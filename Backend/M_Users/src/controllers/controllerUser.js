@@ -5,7 +5,7 @@ import User from '../models/User.js'
 import database from '../helpers/sequelize.js'
 import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from '../config.js'
 import generateAccessToken from '../helpers/authorization.js'
-import { deleteAllCommentsUser, deleteAllContentUser } from '../helpers/mContent.js'
+import { deleteAllCommentsUser, deleteAllContentUser, deleteAllContentFilesUser } from '../helpers/mContent.js'
 import { deleteFile, getPublicURL, uploadFile } from '../helpers/google.js'
 
 const controllerUser = {}
@@ -152,7 +152,9 @@ controllerUser.deleteUserAuthenticated = async (req, res) => {
       }
     })
     await deleteAllCommentsUser(user.dataValues.id)
+    await deleteAllContentFilesUser(user.dataValues.id)
     await deleteAllContentUser(user.dataValues.id)
+    await deleteFile(user.dataValues.profilePicture)
     await User.destroy({
       where: {
         name: req.user.name
@@ -290,7 +292,7 @@ controllerUser.logIn = async (req, res) => {
       fields: ['refreshToken']
     }, { transaction: t })
     await t.commit()
-    res.status(200).json({ accessToken: newAccessToken, refreshToken: newRefreshToken })
+    res.status(200).json({ accessToken: newAccessToken, refreshToken: newRefreshToken, name: user.name })
   } catch (error) {
     await t.rollback()
     console.error(error)
