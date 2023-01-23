@@ -24,6 +24,8 @@ export default function Post_Form() {
     const [succesDB, setSuccesDB] = useState(false)
     const [succesBuck, setSuccesBuck] = useState(false)
 
+    const [error, setError] = useState(false)
+
     const [isPro, setIsPro] = useState(false)
     useEffect(() => {
         fetch(M_USERS + "/users", {headers: {'Authorization': 'Bearer ' + accessToken}})
@@ -58,10 +60,12 @@ export default function Post_Form() {
                 }
             }catch(err){
                 console.log(err)
-                if (err.status === 404){
+                if (err.response.status === 404){
                     alert('Content not found')
-                } else if(err.status === 403) {
+                } else if(err.response.status === 403) {
                     alert('User dont owe content')
+                } else if(err.response.status === 500){
+                    setError(true)
                 }
             }
     
@@ -74,6 +78,9 @@ export default function Post_Form() {
                 }
             }catch(err){
                 console.log(err)
+                if(err.response.status === 500){
+                    setError(true)
+                }
     
             }
         }else if(imageName.slice(-1) === '4'){
@@ -85,10 +92,12 @@ export default function Post_Form() {
                 }
             }catch(err){
                 console.log(err)
-                if (err.status === 404){
+                if (err.response.status === 404){
                     alert('Content not found')
-                } else if(err.status === 403) {
+                } else if(err.response.status === 403) {
                     alert('User dont owe content')
+                }else if(err.response.status === 500){
+                    setError(true)
                 }
             }
     
@@ -101,7 +110,9 @@ export default function Post_Form() {
                 }
             }catch(err){
                 console.log(err)
-    
+                if(err.response.status === 500){
+                    setError(true)
+                }
             }
         }
     }
@@ -137,7 +148,9 @@ export default function Post_Form() {
                 <label htmlFor="image">Select Image or Video:</label>
                 {!isPro && <input onChange={(e) => handleImage(e)} placeholder="image" id="image" name="image" type="file" accept='.jpg, .png' required></input>}
                 {isPro && <input onChange={(e) => handleImage(e)} placeholder="image" id="image" name="image" type="file" accept='.jpg, .png, .mp4' required></input>}
-
+                {error && (
+                <h5 className='error'>Change the name of the file and try it again</h5>
+                )}
                 {/* SEND IMAGES TO BACKEND */}
                 <div>
                 <button type="submit">Upload Post </button>

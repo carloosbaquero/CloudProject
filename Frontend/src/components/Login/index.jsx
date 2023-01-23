@@ -28,6 +28,7 @@ export const Login = (props) => {
 
     const [accessToken, setAccessToken] = useLocalStorage('accessToken', null)
     const [refreshToken, setRefreshToken] = useLocalStorage('refreshToken', null)
+    cosnt [loginName, setLoginName] = useLocalStorage('loginName', null)
 
     const [error, setError] = useState(null)
 
