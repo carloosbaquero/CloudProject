@@ -11,29 +11,32 @@ export const ProUser = () => {
 
     const [accessToken, setAccessToken] = useLocalStorage('accessToken', null)
 
-    useEffect( () => {
 
-        const myHeaders = new Headers()
-        myHeaders.append('Content-Type', 'application/json')
-
-        const raw = JSON.stringify({
-            name: getLoginName,
-            accessToken: getAccessToken,
-            refreshToken: getRefreshToken
-        })
-
-        const requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: raw,
-            redirect: 'follow'
-        }
-
-        fetch('http://localhost:3002/token', requestOptions)
-            .then(response => response.json())
-            .then(result => {if(result.expired){setAccessToken(result.token)}})
-            .catch(error => console.log('error', error))
-    }, [])
+    if(getAccessToken){
+        useEffect( () => {
+            const myHeaders = new Headers()
+            myHeaders.append('Content-Type', 'application/json')
+    
+            const raw = JSON.stringify({
+                name: getLoginName,
+                accessToken: getAccessToken,
+                refreshToken: getRefreshToken
+            })
+    
+            const requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            }
+    
+            fetch('http://localhost:3002/token', requestOptions)
+                .then(response => response.json())
+                .then(result => {if(result.expired){setAccessToken(result.token)}})
+                .catch(error => console.log('error', error))
+        }, [])
+    }
+    
 
     axios.defaults.headers.common['Authorization'] = `Bearer ${getAccessToken}`;
 
