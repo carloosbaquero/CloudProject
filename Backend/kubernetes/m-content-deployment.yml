@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: m-content-deployment
+  labels:
+    app: m-content
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: m-content
+  template:
+    metadata:
+      labels:
+        app: m-content
+    spec:
+      containers:
+      - name: m-content
+        image: #IMAGEN SUBIDA EN DOCKERHUB DE M_CONTENT
+        volumeMounts:
+        - name: bucketKey
+          mountPath: "/etc/bucketKey"
+          readOnly: true
+        ports:
+        - containerPort: 3001
+        env:
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: backend-content-configmap
+              key: NODE_ENV
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: backend-content-configmap
+              key: PORT
+        - name: GOOGLE_DATABASE_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: backend-content-configmap
+              key: GOOGLE_DATABASE_HOST
+        - name: GOOGLE_DATABASE_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: backend-content-configmap
+              key: GOOGLE_DATABASE_PORT
+        - name: GOOGLE_DATABASE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: backend-content-configmap
+              key: GOOGLE_DATABASE_NAME
+        - name: GOOGLE_DATABASE_DIALECT
+          valueFrom:
+            configMapKeyRef:
+              name: backend-content-configmap
+              key: GOOGLE_DATABASE_DIALECT
+        - name: M_USERS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: backend-content-configmap
+              key: M_USERS_HOST
+        - name: M_USERS_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: backend-content-configmap
+              key: M_USERS_PORT
+        - name: GOOGLE_DATABASE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: backend-google-secret
+              key: GOOGLE_DATABASE_USERNAME
+        - name: GOOGLE_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: backend-google-secret
+              key: GOOGLE_DATABASE_PASSWORD
+        - name: BUCKET_NAME_CONTENT
+          valueFrom:
+            secretKeyRef:
+              name: backend-google-secret
+              key: BUCKET_NAME_CONTENT
+        - name: ACCESS_TOKEN_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: backend-authorization-secret
+              key: ACCESS_TOKEN_SECRET
+      volumes:
+      - name: bucketKey
+        secret:
+          secretName: backend-google-secret
+          items:
+          - key: GOOGLE_KEYFILE_BUCKET
