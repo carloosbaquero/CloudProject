@@ -18,3 +18,12 @@ export function deleteAllContentUser (userId) {
   return fetch(`${M_CONTENT_HOST}/contents/users/${userId}`, requestOptions)
     .then(res => res.text())
 }
+
+export function deleteAllContentFilesUser (userId) {
+  const requestOptions = {
+    method: 'DELETE',
+    redirect: 'follow'
+  }
+  return fetch(`${M_CONTENT_HOST}/contents/users/file/${userId}`, requestOptions)
+    .then(res => res.text())
+}
