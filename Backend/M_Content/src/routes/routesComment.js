@@ -18,5 +18,8 @@ routesComments.delete('/comments/:id',
 routesComments.get('/comments/content/:contentId',
   controllerComments.getCommentsContent
 )
+routesComments.delete('/comments/users/:userId',
+  controllerComments.deleteAllCommentsFromUser
+)
 
 export default routesComments

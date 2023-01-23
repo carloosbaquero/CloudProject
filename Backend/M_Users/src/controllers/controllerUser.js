@@ -5,6 +5,7 @@ import User from '../models/User.js'
 import database from '../helpers/sequelize.js'
 import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from '../config.js'
 import generateAccessToken from '../helpers/authorization.js'
+import { deleteAllCommentsUser, deleteAllContentUser } from '../helpers/mContent.js'
 import { deleteFile, getPublicURL, uploadFile } from '../helpers/google.js'
 
 const controllerUser = {}
@@ -145,6 +146,13 @@ controllerUser.updateUserAuthenticated = async (req, res) => {
 controllerUser.deleteUserAuthenticated = async (req, res) => {
   const t = await database.transaction()
   try {
+    const user = await User.findOne({
+      where: {
+        name: req.user.name
+      }
+    })
+    await deleteAllCommentsUser(user.dataValues.id)
+    await deleteAllContentUser(user.dataValues.id)
     await User.destroy({
       where: {
         name: req.user.name

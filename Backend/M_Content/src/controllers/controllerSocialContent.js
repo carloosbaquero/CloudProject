@@ -282,4 +282,21 @@ controllerSocialContent.getPublicURLFile = async (req, res) => {
   }
 }
 
+controllerSocialContent.deleteAllContentFromUser = async (req, res) => {
+  const t = await database.transaction()
+  try {
+    await SocialContent.destroy({
+      where: {
+        userId: req.params.userId
+      }
+    }, { transaction: t })
+    await t.commit()
+    res.sendStatus(204)
+  } catch (error) {
+    await t.rollback()
+    console.error(error)
+    res.status(500).send(error)
+  }
+}
+
 export default controllerSocialContent
