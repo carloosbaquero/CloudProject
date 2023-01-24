@@ -19,7 +19,7 @@ spec:
         image: #IMAGEN SUBIDA EN DOCKERHUB DE M_CONTENT
         volumeMounts:
         - name: bucketKey
-          mountPath: "/etc/bucketKey"
+          mountPath: "/etc"
           readOnly: true
         ports:
         - containerPort: 3001
@@ -54,6 +54,11 @@ spec:
             configMapKeyRef:
               name: backend-content-configmap
               key: GOOGLE_DATABASE_DIALECT
+        - name: GOOGLE_KEYFILE_BUCKET_PATH
+          valueFrom:
+            configMapKeyRef:
+              name: backend-content-configmap
+              key: GOOGLE_KEYFILE_BUCKET_PATH
         - name: M_USERS_HOST
           valueFrom:
             configMapKeyRef:

@@ -19,6 +19,6 @@ export const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET
 export const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET
 export const TOKEN_EXPIRATION_TIME = process.env.TOKEN_EXPIRATION_TIME || '30m'
 export const BUCKET_NAME_USERS = process.env.BUCKET_NAME_USERS
-export const GOOGLE_KEYFILE_BUCKET = process.env.GOOGLE_KEYFILE_BUCKET
+export const GOOGLE_KEYFILE_BUCKET_PATH = process.env.GOOGLE_KEYFILE_BUCKET_PATH
 export const M_CONTENT_HOST = process.env.M_CONTENT_HOST || 'http://localhost'
 export const M_CONTENT_PORT = process.env.M_CONTENT_PORT || '3001'

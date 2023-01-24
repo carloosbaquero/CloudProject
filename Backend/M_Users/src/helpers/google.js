@@ -1,9 +1,9 @@
-import { BUCKET_NAME_USERS, GOOGLE_KEYFILE_BUCKET } from '../config.js'
+import { BUCKET_NAME_USERS, GOOGLE_KEYFILE_BUCKET_PATH } from '../config.js'
 import { Storage } from '@google-cloud/storage'
 
 const storage = new Storage({
   // EN EL FUTURO AÑADIR PARAMETRO DEL NOMBRE DEL PROYECTO
-  keyFilename: GOOGLE_KEYFILE_BUCKET
+  keyFilename: GOOGLE_KEYFILE_BUCKET_PATH
 })
 
 const bucket = storage.bucket(BUCKET_NAME_USERS)
