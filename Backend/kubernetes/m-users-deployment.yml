@@ -1,0 +1,108 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: m-users-deployment
+  labels:
+    app: m-users
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: m-users
+  template:
+    metadata:
+      labels:
+        app: m-users
+    spec:
+      containers:
+      - name: m-users
+        image: carloosbaquero/backend-free-space-users:v1
+        volumeMounts:
+        - name: bucketkey
+          mountPath: "/app/etc"
+          readOnly: true
+        ports:
+        - containerPort: 3002
+        env:
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: backend-users-configmap
+              key: NODE_ENV
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: backend-users-configmap
+              key: PORT
+        - name: KUBERNETES_DATABASE_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: backend-users-configmap
+              key: KUBERNETES_DATABASE_HOST
+        - name: KUBERNETES_DATABASE_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: backend-users-configmap
+              key: KUBERNETES_DATABASE_PORT
+        - name: KUBERNETES_DATABASE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: backend-users-configmap
+              key: KUBERNETES_DATABASE_NAME
+        - name: KUBERNETES_DATABASE_DIALECT
+          valueFrom:
+            configMapKeyRef:
+              name: backend-users-configmap
+              key: KUBERNETES_DATABASE_DIALECT
+        - name: GOOGLE_KEYFILE_BUCKET_PATH
+          valueFrom:
+            configMapKeyRef:
+              name: backend-users-configmap
+              key: GOOGLE_KEYFILE_BUCKET_PATH
+        - name: TOKEN_EXPIRATION_TIME
+          valueFrom:
+            configMapKeyRef:
+              name: backend-users-configmap
+              key: TOKEN_EXPIRATION_TIME
+        - name: M_CONTENT_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: backend-users-configmap
+              key: M_CONTENT_HOST
+        - name: M_CONTENT_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: backend-users-configmap
+              key: M_CONTENT_PORT
+        - name: KUBERNETES_DATABASE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: backend-db-kubernetes-secret
+              key: KUBERNETES_DATABASE_USERNAME
+        - name: KUBERNETES_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: backend-db-kubernetes-secret
+              key: KUBERNETES_DATABASE_PASSWORD
+        - name: BUCKET_NAME_USERS
+          valueFrom:
+            secretKeyRef:
+              name: backend-google-secret
+              key: BUCKET_NAME_USERS
+        - name: ACCESS_TOKEN_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: backend-authorization-secret
+              key: ACCESS_TOKEN_SECRET
+        - name: REFRES_TOKEN_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: backend-authorization-secret
+              key: REFRES_TOKEN_SECRET
+      volumes:
+      - name: bucketkey
+        secret:
+          secretName: backend-google-secret
+          items:
+          - key: GOOGLE_KEYFILE_BUCKET
+            path: "google-bucket"

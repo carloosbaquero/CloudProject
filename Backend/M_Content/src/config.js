@@ -9,13 +9,14 @@ if (process.env.NODE_ENV !== 'production') {
 
 export const NODE_ENV = process.env.NODE_ENV || 'development'
 export const PORT = process.env.PORT || 3001
-export const DATABASE_HOST = process.env.DATABASE_HOST || 'localhost'
-export const DATABASE_PORT = process.env.DATABASE_PORT || 3306
-export const DATABASE_USERNAME = process.env.DATABASE_USERNAME || 'user'
-export const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD || 'password'
-export const DATABASE_NAME = process.env.DATABASE_NAME || 'free_space_content'
-export const DATABASE_DIALECT = process.env.DATABASE_DIALECT || 'mariadb'
-export const BUCKET_NAME = process.env.BUCKET_NAME
-export const GOOGLE_KEYFILE = process.env.GOOGLE_KEYFILE
+export const GOOGLE_DATABASE_HOST = process.env.GOOGLE_DATABASE_HOST || 'localhost'
+export const GOOGLE_DATABASE_PORT = process.env.GOOGLE_DATABASE_PORT || 3306
+export const GOOGLE_DATABASE_USERNAME = process.env.GOOGLE_DATABASE_USERNAME || 'user'
+export const GOOGLE_DATABASE_PASSWORD = process.env.GOOGLE_DATABASE_PASSWORD || 'password'
+export const GOOGLE_DATABASE_NAME = process.env.GOOGLE_DATABASE_NAME || 'free_space_content'
+export const GOOGLE_DATABASE_DIALECT = process.env.GOOGLE_DATABASE_DIALECT || 'mariadb'
+export const BUCKET_NAME_CONTENT = process.env.BUCKET_NAME_CONTENT
+export const GOOGLE_KEYFILE_BUCKET_PATH = process.env.GOOGLE_KEYFILE_BUCKET_PATH
 export const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET
-export const M_USERS_HOST = process.env.M_USERS_HOST
+export const M_USERS_HOST = process.env.M_USERS_HOST || 'http://localhost'
+export const M_USERS_PORT = process.env.M_USERS_PORT || '3002'

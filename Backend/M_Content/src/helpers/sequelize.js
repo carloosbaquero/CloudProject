@@ -1,19 +1,21 @@
 import { Sequelize } from 'sequelize'
 import {
-  DATABASE_NAME,
-  DATABASE_USERNAME,
-  DATABASE_PASSWORD,
-  DATABASE_PORT,
-  DATABASE_HOST,
-  DATABASE_DIALECT
+  GOOGLE_DATABASE_NAME,
+  GOOGLE_DATABASE_USERNAME,
+  GOOGLE_DATABASE_PASSWORD,
+  GOOGLE_DATABASE_PORT,
+  GOOGLE_DATABASE_HOST,
+  GOOGLE_DATABASE_DIALECT
 } from '../config.js'
 
-const database = new Sequelize(DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD, {
-  host: DATABASE_HOST,
-  port: DATABASE_PORT,
-  dialect: DATABASE_DIALECT,
-  logging: false
-})
+const database = new Sequelize(GOOGLE_DATABASE_NAME,
+  GOOGLE_DATABASE_USERNAME,
+  GOOGLE_DATABASE_PASSWORD, {
+    host: GOOGLE_DATABASE_HOST,
+    port: GOOGLE_DATABASE_PORT,
+    dialect: GOOGLE_DATABASE_DIALECT,
+    logging: false
+  })
 
 database.sync({ force: true })
 

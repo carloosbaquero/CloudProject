@@ -1,0 +1,3 @@
+/kubernetes/backend-db-kubernetes-secret.yml
+/kubernetes/backend-google-secret.yml
+/kubernetes/backend-authorization-secret.yml

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-users-configmap
+data:
+  NODE_ENV: "production"
+  PORT: "3002"
+  KUBERNETES_DATABASE_HOST: "host.minikube.internal" # ESTO VA A CAMBIAR A LA IP QUE LE DE KUBERNETES A STATEFULSET DE MYSQL
+  KUBERNETES_DATABASE_PORT: "3306"
+  KUBERNETES_DATABASE_NAME: "free_space_users"
+  KUBERNETES_DATABASE_DIALECT: "mariadb" # ESTO LUEGO VA A TENER VALOR mysql 
+  GOOGLE_KEYFILE_BUCKET_PATH: "/app/etc/google-bucket/GOOGLE_KEYFILE_BUCKET"
+  TOKEN_EXPIRATION_TIME: "30m"
+  M_CONTENT_HOST: "m-content-service"
+  M_CONTENT_PORT: "3001"
