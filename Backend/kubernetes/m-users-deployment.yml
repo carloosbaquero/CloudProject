@@ -59,11 +59,11 @@ spec:
             configMapKeyRef:
               name: backend-users-configmap
               key: GOOGLE_KEYFILE_BUCKET_PATH
-        - name: TOKEN_EXPIRATION
+        - name: TOKEN_EXPIRATION_TIME
           valueFrom:
             configMapKeyRef:
               name: backend-users-configmap
-              key: TOKEN_EXPIRATION
+              key: TOKEN_EXPIRATION_TIME
         - name: M_CONTENT_HOST
           valueFrom:
             configMapKeyRef:
