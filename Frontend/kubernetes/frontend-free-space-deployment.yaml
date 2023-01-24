@@ -20,26 +20,26 @@ spec:
         ports:
         - containerPort: 80
         env:
-        - name: M_USERS_HOST
+        - name: VITE_M_USERS_HOST
           valueFrom:
             configMapKeyRef:
               name: frontend-free-space-configmap
-              key: M_USERS_HOST
-        - name: M_USERS_PORT
+              key: VITE_M_USERS_HOST
+        - name: VITE_M_USERS_PORT
           valueFrom:
             configMapKeyRef:
               name: frontend-free-space-configmap
-              key: M_USERS_PORT
-        - name: M_CONTENT_HOST
+              key: VITE_M_USERS_PORT
+        - name: VITE_M_CONTENT_HOST
           valueFrom:
             configMapKeyRef:
               name: frontend-free-space-configmap
-              key: M_CONTENT_HOST
-        - name: M_CONTENT_PORT
+              key: VITE_M_CONTENT_HOST
+        - name: VITE_M_CONTENT_PORT
           valueFrom:
             configMapKeyRef:
               name: frontend-free-space-configmap
-              key: M_CONTENT_PORT
+              key: VITE_M_CONTENT_PORT
 ---
 apiVersion: v1
 kind: Service
