@@ -26,13 +26,11 @@ kind: Service
 metadata:
   name: mysql
 spec:
-  type: NodePort
   selector:
     app: mysql
   ports:
     - port: 3306
       targetPort: 3306
-      nodePort: 30007
 ---	  
 apiVersion: apps/v1
 kind: Deployment
@@ -56,28 +54,28 @@ spec:
           claimName: mysql-pv-claim
       containers:
       - name: mysql
-        image: mysql:latest
+        image: mysql:5.7.41-oracle
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mysql-root-pass
-              key: password
+              name: backend-db-kubernetes-secret
+              key: KUBERNETES_DATABASE_ROOT_PASSWORD
         - name: MYSQL_DATABASE
           valueFrom:
-            secretKeyRef:
-              name: mysql-db-url
-              key: database
+            configMapKeyRef:
+              name: backend-users-configmap
+              key: KUBERNETES_DATABASE_NAME
         - name: MYSQL_USER
           valueFrom:
             secretKeyRef:
-              name: mysql-user-pass
-              key: username
+              name: backend-db-kubernetes-secret
+              key: KUBERNETES_DATABASE_USERNAME
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mysql-user-pass
-              key: password
+              name: backend-db-kubernetes-secret
+              key: KUBERNETES_DATABASE_PASSWORD
         volumeMounts:
         - name: mysql-pv
           mountPath: /var/lib/mysql
