@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-free-space-deployment
+  labels:
+    app: frontend-free-space
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend-free-space
+  template:
+    metadata:
+      labels:
+        app: frontend-free-space
+    spec:
+      containers:
+      - name: frontend-free-space
+        image: carloosbaquero/frontend-free-space:v2
+        ports:
+        - containerPort: 80
+        env:
+        - name: M_USERS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: frontend-free-space-configmap
+              key: M_USERS_HOST
+        - name: M_USERS_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: frontend-free-space-configmap
+              key: M_USERS_PORT
+        - name: M_CONTENT_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: frontend-free-space-configmap
+              key: M_CONTENT_HOST
+        - name: M_CONTENT_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: frontend-free-space-configmap
+              key: M_CONTENT_PORT
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-free-space-service
+  labels:
+    app:  frontend-free-space
+spec:
+  selector:
+    app: frontend-free-space
+  type: NodePort  
+  ports:
+    - protocol: TCP
+      name: http
+      port: 80
+      targetPort: 80
+      nodePort: 30000
+

@@ -106,3 +106,16 @@ spec:
           items:
           - key: GOOGLE_KEYFILE_BUCKET
             path: "google-bucket"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: m-users-service
+spec:
+  selector:
+    app: m-users-deployment
+  ports:
+    - protocol: TCP
+      port: 3002
+      targetPort: 3002
+
