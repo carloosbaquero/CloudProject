@@ -18,7 +18,7 @@ spec:
       - name: m-content
         image: carloosbaquero/backend-free-space-content:v1
         volumeMounts:
-        - name: bucketKey
+        - name: bucketkey
           mountPath: "/app/etc"
           readOnly: true
         ports:
@@ -90,8 +90,9 @@ spec:
               name: backend-authorization-secret
               key: ACCESS_TOKEN_SECRET
       volumes:
-      - name: bucketKey
+      - name: bucketkey
         secret:
           secretName: backend-google-secret
           items:
           - key: GOOGLE_KEYFILE_BUCKET
+            path: "google-bucket"
