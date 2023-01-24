@@ -1,1 +1,1 @@
-export const M_CONTENT = 'http://localhost:3001'
+export const M_CONTENT = host.minikube.internal + ':3001'

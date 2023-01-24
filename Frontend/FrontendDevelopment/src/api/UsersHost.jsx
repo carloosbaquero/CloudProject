@@ -1,1 +1,1 @@
-export const M_USERS = 'http://localhost:3002'
+export const M_USERS = host.minikube.internal + ':3002'
