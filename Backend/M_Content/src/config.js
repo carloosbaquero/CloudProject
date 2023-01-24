@@ -18,5 +18,5 @@ export const GOOGLE_DATABASE_DIALECT = process.env.GOOGLE_DATABASE_DIALECT || 'm
 export const BUCKET_NAME_CONTENT = process.env.BUCKET_NAME_CONTENT
 export const GOOGLE_KEYFILE_BUCKET_PATH = process.env.GOOGLE_KEYFILE_BUCKET_PATH
 export const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET
-export const M_USERS_HOST = process.env.M_USERS_HOST || 'http://localhost'
+export const M_USERS_HOST = 'http://' + process.env.M_USERS_HOST || 'http://localhost'
 export const M_USERS_PORT = process.env.M_USERS_PORT || '3002'
