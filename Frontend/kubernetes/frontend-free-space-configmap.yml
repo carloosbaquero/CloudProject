@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: frontend-free-space-configmap
 data:
-  M_USERS_HOST: m-users-service 
-  M_USERS_PORT: "3002"
-  M_CONTENT_HOST: m-content-service
-  M_CONTENT_PORT: "3001"
+  VITE_M_USERS_HOST: localhost 
+  VITE_M_USERS_PORT: "3002"
+  VITE_M_CONTENT_HOST: localhost
+  VITE_M_CONTENT_PORT: "3001"

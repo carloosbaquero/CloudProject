@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: m-users
-        image: carloosbaquero/backend-free-space-users:v1
+        image: carloosbaquero/backend-free-space-users:v2
         volumeMounts:
         - name: bucketkey
           mountPath: "/app/etc"
