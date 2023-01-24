@@ -3,6 +3,7 @@ import { Comment } from '../components/Comment';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { M_CONTENT } from '../api/ContentHost';
+import { M_USERS } from '../api/UsersHost';
 import axios from 'axios'
 import emptyAvatar from '../public/emptyAvatar.png'
 import { useLocalStorage } from '../components/Login';
@@ -66,7 +67,7 @@ export const Comments = () => {
                 redirect: 'follow'
             }
     
-            fetch('http://localhost:3002/token', requestOptions)
+            fetch(M_USERS + '/token', requestOptions)
                 .then(response => response.json())
                 .then(result => {if(result.expired){setAccessToken(result.token)}})
                 .catch(error => console.log('error', error))

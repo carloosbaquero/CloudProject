@@ -57,7 +57,7 @@ export const Home = () => {
                 redirect: 'follow'
             }
     
-            fetch('http://localhost:3002/token', requestOptions)
+            fetch(M_USERS + '/token', requestOptions)
                 .then(response => response.json())
                 .then(result => {if(result.expired){setAccessToken(result.token)}})
                 .catch(error => console.log('error', error))
