@@ -16,10 +16,10 @@ spec:
     spec:
       containers:
       - name: m-content
-        image: #IMAGEN SUBIDA EN DOCKERHUB DE M_CONTENT
+        image: carloosbaquero/backend-free-space-content:v1
         volumeMounts:
         - name: bucketKey
-          mountPath: "/etc"
+          mountPath: "/app/etc"
           readOnly: true
         ports:
         - containerPort: 3001

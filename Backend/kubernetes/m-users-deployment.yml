@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: m-users
-        image: #IMAGEN SUBIDA EN DOCKERHUB DE M_USERS
+        image: carloosbaquero/backend-free-space-users:v1
         volumeMounts:
         - name: bucketKey
           mountPath: "/etc"
