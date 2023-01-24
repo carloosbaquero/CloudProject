@@ -96,3 +96,15 @@ spec:
           items:
           - key: GOOGLE_KEYFILE_BUCKET
             path: "google-bucket"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: m-content-service
+spec:
+  selector:
+    app: m-content-deployment
+  ports:
+    - protocol: TCP
+      port: 3001
+      targetPort: 3001
