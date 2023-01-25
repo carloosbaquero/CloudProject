@@ -9,7 +9,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 export const NODE_ENV = process.env.NODE_ENV || 'development'
 export const PORT = process.env.PORT || 3002
-export const KUBERNETES_DATABASE_HOST = process.env.KUBERNETES_SERVICE_HOST || 'localhost'
+export const KUBERNETES_DATABASE_HOST = process.env.KUBERNETES_DATABASE_HOST || 'localhost'
 export const KUBERNETES_DATABASE_PORT = process.env.KUBERNETES_DATABASE_PORT || 3306
 export const KUBERNETES_DATABASE_USERNAME = process.env.KUBERNETES_DATABASE_USERNAME || 'user'
 export const KUBERNETES_DATABASE_PASSWORD = process.env.KUBERNETES_DATABASE_PASSWORD || 'password'

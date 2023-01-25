@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: m-users
-        image: carloosbaquero/backend-free-space-users:v3
+        image: carloosbaquero/backend-free-space-users:v4
         volumeMounts:
         - name: bucketkey
           mountPath: "/app/etc"
@@ -34,21 +34,26 @@ spec:
             configMapKeyRef:
               name: backend-users-configmap
               key: PORT
+        - name: KUBERNETES_DATABASE_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: backend-content-configmap
+              key: GOOGLE_DATABASE_HOST
         - name: KUBERNETES_DATABASE_PORT
           valueFrom:
             configMapKeyRef:
-              name: backend-users-configmap
-              key: KUBERNETES_DATABASE_PORT
+              name: backend-content-configmap
+              key: GOOGLE_DATABASE_PORT
         - name: KUBERNETES_DATABASE_NAME
           valueFrom:
             configMapKeyRef:
-              name: backend-users-configmap
-              key: KUBERNETES_DATABASE_NAME
+              name: backend-content-configmap
+              key: GOOGLE_DATABASE_NAME
         - name: KUBERNETES_DATABASE_DIALECT
           valueFrom:
             configMapKeyRef:
-              name: backend-users-configmap
-              key: KUBERNETES_DATABASE_DIALECT
+              name: backend-content-configmap
+              key: GOOGLE_DATABASE_DIALECT
         - name: GOOGLE_KEYFILE_BUCKET_PATH
           valueFrom:
             configMapKeyRef:
@@ -67,13 +72,13 @@ spec:
         - name: KUBERNETES_DATABASE_USERNAME
           valueFrom:
             secretKeyRef:
-              name: backend-db-kubernetes-secret
-              key: KUBERNETES_DATABASE_USERNAME
+              name: backend-google-secret
+              key: GOOGLE_DATABASE_USERNAME
         - name: KUBERNETES_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: backend-db-kubernetes-secret
-              key: KUBERNETES_DATABASE_PASSWORD
+              name: backend-google-secret
+              key: GOOGLE_DATABASE_PASSWORD
         - name: BUCKET_NAME_USERS
           valueFrom:
             secretKeyRef:
@@ -84,7 +89,7 @@ spec:
             secretKeyRef:
               name: backend-authorization-secret
               key: ACCESS_TOKEN_SECRET
-        - name: REFRES_TOKEN_SECRET
+        - name: REFRESH_TOKEN_SECRET
           valueFrom:
             secretKeyRef:
               name: backend-authorization-secret
