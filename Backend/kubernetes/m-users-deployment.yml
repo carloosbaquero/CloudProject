@@ -34,11 +34,6 @@ spec:
             configMapKeyRef:
               name: backend-users-configmap
               key: PORT
-        - name: KUBERNETES_DATABASE_HOST
-          valueFrom:
-            configMapKeyRef:
-              name: backend-users-configmap
-              key: KUBERNETES_DATABASE_HOST
         - name: KUBERNETES_DATABASE_PORT
           valueFrom:
             configMapKeyRef:
