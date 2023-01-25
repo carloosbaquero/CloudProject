@@ -333,26 +333,26 @@ controllerUser.token = async (req, res) => {
     res.status(200).json({ expired: false, token: null, name: req.body.name })
   } catch (error) {
     if (error.message !== 'Token valid') console.error(error)
-    switch (error.message) {
-      case 'jwt expired':
+    if (error.name === 'JsonWebTokenError') res.status(403).send(error.message)
+    else {
+      switch (error.message) {
+        case 'jwt expired':
         // eslint-disable-next-line no-case-declarations
-        const accessToken = generateAccessToken({ name: userName })
-        res.status(200).json({ expired: true, token: accessToken, name: userName })
-        break
-      case 'invalid signature':
-        res.status(403).send(error)
-        break
-      case 'RefreshToken invalid':
-        res.status(403).send(error)
-        break
-      case 'Input values types are wrong':
-        res.status(401).send(error)
-        break
-      case 'User or refreshToken not found':
-        res.status(404).send(error)
-        break
-      default:
-        res.status(500).send(error)
+          const accessToken = generateAccessToken({ name: userName })
+          res.status(200).json({ expired: true, token: accessToken, name: userName })
+          break
+        case 'RefreshToken invalid':
+          res.status(403).send(error.message)
+          break
+        case 'Input values types are wrong':
+          res.status(401).send(error.message)
+          break
+        case 'User or refreshToken not found':
+          res.status(404).send(error.message)
+          break
+        default:
+          res.status(500).send(error.message)
+      }
     }
   }
 }

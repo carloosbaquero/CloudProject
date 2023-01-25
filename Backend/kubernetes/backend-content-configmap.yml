@@ -10,5 +10,4 @@ data:
   GOOGLE_DATABASE_NAME: free_space_content
   GOOGLE_DATABASE_DIALECT: mariadb # ESTO LUEGO VA A TENER VALOR mysql 
   GOOGLE_KEYFILE_BUCKET_PATH: "/app/etc/google-bucket/GOOGLE_KEYFILE_BUCKET" 
-  M_USERS_HOST: localhost 
-  M_USERS_PORT: "3002"
+  M_USERS_HOST_DNS: m-users-service 

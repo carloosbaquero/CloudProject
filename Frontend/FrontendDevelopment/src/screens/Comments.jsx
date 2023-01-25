@@ -11,7 +11,7 @@ import { useLocalStorage } from '../components/Login';
 function listInfoPost(contentId) {
     const [infoPost, setInfoPost] = useState([])
     useEffect(() => {
-        fetch(M_CONTENT + "/contents/" + contentId)
+        fetch('/api/' + M_CONTENT + "/contents/" + contentId)
         .then(
             response => response.json()
         ).then(
@@ -26,7 +26,7 @@ function listInfoPost(contentId) {
 function listComments(contentId) {
     const [comments, setComments] = useState([])
     useEffect(() => {
-        fetch(M_CONTENT + "/comments/content/" + contentId)
+        fetch('/api/' + M_CONTENT + "/comments/content/" + contentId)
         .then(
             response => response.json()
         ).then(
@@ -113,7 +113,7 @@ export const Comments = () => {
         e.preventDefault();
 
         try{
-            const res = await axios.post(M_CONTENT + "/comments", {"text": text, "contentId": parseInt(id)})
+            const res = await axios.post('/api/' + M_CONTENT + "/comments", {"text": text, "contentId": parseInt(id)})
             if(res.status === 201){
                 window.location.replace('');
             }

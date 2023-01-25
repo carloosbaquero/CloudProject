@@ -59,16 +59,11 @@ spec:
             configMapKeyRef:
               name: backend-content-configmap
               key: GOOGLE_KEYFILE_BUCKET_PATH
-        - name: M_USERS_HOST
+        - name: M_USERS_HOST_DNS
           valueFrom:
             configMapKeyRef:
               name: backend-content-configmap
-              key: M_USERS_HOST
-        - name: M_USERS_PORT
-          valueFrom:
-            configMapKeyRef:
-              name: backend-content-configmap
-              key: M_USERS_PORT
+              key: M_USERS_HOST_DNS
         - name: GOOGLE_DATABASE_USERNAME
           valueFrom:
             secretKeyRef:

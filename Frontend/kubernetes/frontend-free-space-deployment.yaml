@@ -19,27 +19,6 @@ spec:
         image: carloosbaquero/frontend-free-space:v5
         ports:
         - containerPort: 80
-        env:
-        - name: VITE_M_USERS_HOST
-          valueFrom:
-            configMapKeyRef:
-              name: frontend-free-space-configmap
-              key: VITE_M_USERS_HOST
-        - name: VITE_M_USERS_PORT
-          valueFrom:
-            configMapKeyRef:
-              name: frontend-free-space-configmap
-              key: VITE_M_USERS_PORT
-        - name: VITE_M_CONTENT_HOST
-          valueFrom:
-            configMapKeyRef:
-              name: frontend-free-space-configmap
-              key: VITE_M_CONTENT_HOST
-        - name: VITE_M_CONTENT_PORT
-          valueFrom:
-            configMapKeyRef:
-              name: frontend-free-space-configmap
-              key: VITE_M_CONTENT_PORT
 ---
 apiVersion: v1
 kind: Service

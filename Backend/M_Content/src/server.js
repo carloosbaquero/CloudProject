@@ -6,6 +6,7 @@ import routesImages from './routes/routesImage.js'
 import routesVideos from './routes/routesVideo.js'
 import routesComments from './routes/routesComment.js'
 import routesContents from './routes/routesContent.js'
+import routesUsers from './routes/routesUser.js'
 
 const app = express()
 
@@ -18,7 +19,8 @@ app.listen(PORT, () => {
   console.log(`App Content MicroService listening on http://localhost:${PORT}`)
 })
 
-app.use(routesImages)
-app.use(routesVideos)
-app.use(routesComments)
-app.use(routesContents)
+app.use('/api', routesUsers)
+app.use('/api', routesImages)
+app.use('/api', routesVideos)
+app.use('/api', routesComments)
+app.use('/api', routesContents)

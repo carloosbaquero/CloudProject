@@ -14,7 +14,7 @@ function listPosts() {
 
     const [content, setContent] = useState([])
     useEffect(() => {
-        fetch(M_CONTENT + "/contents/users")
+        fetch('/api/' + M_CONTENT + "/contents/users")
         .then(
             response => response.json()
         ).then(

@@ -64,16 +64,11 @@ spec:
             configMapKeyRef:
               name: backend-users-configmap
               key: TOKEN_EXPIRATION_TIME
-        - name: M_CONTENT_HOST
+        - name: M_CONTENT_HOST_DNS
           valueFrom:
             configMapKeyRef:
               name: backend-users-configmap
-              key: M_CONTENT_HOST
-        - name: M_CONTENT_PORT
-          valueFrom:
-            configMapKeyRef:
-              name: backend-users-configmap
-              key: M_CONTENT_PORT
+              key: M_CONTENT_HOST_DNS
         - name: KUBERNETES_DATABASE_USERNAME
           valueFrom:
             secretKeyRef:

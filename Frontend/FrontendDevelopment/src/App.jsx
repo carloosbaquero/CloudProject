@@ -10,7 +10,6 @@ import { Profile } from './screens/Profile';
 import { ErrorPage } from './screens/ErrorPage';
 
 function App () {
-
   return (
     <BrowserRouter>
       <Navigation/>

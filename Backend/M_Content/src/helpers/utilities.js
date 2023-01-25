@@ -9,6 +9,7 @@ export function checkNameExtensionContent (contentType, name) {
 
 export function requestType (requestPath) {
   const pathElements = requestPath.split('/')
+  console.log(pathElements)
   return pathElements[1]
 }
 
