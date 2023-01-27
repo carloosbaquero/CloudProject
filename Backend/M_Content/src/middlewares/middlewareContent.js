@@ -8,7 +8,7 @@ middlewareContent.authenticateToken = (req, res, next) => {
   const token = authHeader && authHeader.split(' ')[1]
   if (typeof token === 'undefined') return res.sendStatus(401)
   jsonwebtoken.verify(token, ACCESS_TOKEN_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403)
+    if (err) return res.status(403).send(err.message)
     req.user = user
     next()
   })

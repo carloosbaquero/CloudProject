@@ -5,7 +5,7 @@ metadata:
 data:
   NODE_ENV: production
   PORT: "3001"
-  GOOGLE_DATABASE_HOST: "10.110.80.3" 
+  GOOGLE_DATABASE_HOST: "10.119.0.7" 
   GOOGLE_DATABASE_PORT: "3306"
   GOOGLE_DATABASE_NAME: free-space-content
   GOOGLE_DATABASE_DIALECT: mysql 

@@ -19,7 +19,7 @@ app.listen(PORT, () => {
   console.log(`App Content MicroService listening on http://localhost:${PORT}`)
 })
 
-app.use('/api', routesUsers)
+app.use('/api/users', routesUsers)
 app.use('/api', routesImages)
 app.use('/api', routesVideos)
 app.use('/api', routesComments)

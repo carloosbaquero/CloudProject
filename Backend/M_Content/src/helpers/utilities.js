@@ -23,3 +23,14 @@ export function sortContentWithUsers (elementLeft, elementRigh) {
   }
   return result
 }
+
+export function checkString (arrayStrings) {
+  let result = false
+  for (const str of arrayStrings) {
+    if (!str?.trim()) {
+      result = true
+      break
+    }
+  }
+  return result
+}

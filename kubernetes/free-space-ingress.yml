@@ -2,9 +2,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: free-space-ingress
-  namespace: default
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
 spec:
   rules:
   - host: freespace.com

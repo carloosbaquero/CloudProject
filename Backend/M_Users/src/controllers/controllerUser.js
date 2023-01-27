@@ -10,6 +10,18 @@ import { deleteFile, getPublicURL, uploadFile } from '../helpers/google.js'
 
 const controllerUser = {}
 
+controllerUser.getUsers = async (req, res) => {
+  try {
+    const result = await User.findAll({
+      attributes: ['id', 'name', 'email', 'publicURL', 'profilePicture', 'proUser']
+    })
+    res.status(200).json(result)
+  } catch (error) {
+    console.err(error)
+    res.status(500).send(error)
+  }
+}
+
 controllerUser.getUserAuthenticated = async (req, res) => {
   try {
     const user = await User.findOne({
@@ -44,6 +56,9 @@ controllerUser.createUser = async (req, res) => {
     if (typeof data?.name !== 'string' || typeof data?.email !== 'string' || typeof data?.password !== 'string') {
       throw (new Error('Name or email or password types are incorrect'))
     }
+    if (data.name.trim() === '' || data.email.trim() === '' || data.password.trim() === '') {
+      throw (new Error('Name or email or password types are incorrect'))
+    }
     const hashedPassword = await bcrypt.hash(data.password, 10)
     const newUser = User.build({ transaction: t })
     newUser.proUser = false
@@ -56,7 +71,7 @@ controllerUser.createUser = async (req, res) => {
   } catch (error) {
     await t.rollback()
     console.error(error)
-    if (error.message === 'Name or email or password types are incorrect') res.status(401).send('Name or email or password types are incorrect')
+    if (error.message === 'Name or email or password types are incorrect') res.status(401).send(error.message)
     else res.status(500).send(error)
   }
 }
@@ -95,6 +110,7 @@ controllerUser.checkProStatus = async (req, res) => {
       },
       attributes: ['proUser', 'proDate', 'numMonthsPro']
     })
+    if (!user) throw new Error('Not found')
     if (!user.dataValues.proUser) throw new Error('User is not pro')
     const userProDate = user.dataValues.proDate
     const userNumMonthsPro = user.dataValues.numMonthsPro
@@ -110,12 +126,13 @@ controllerUser.checkProStatus = async (req, res) => {
       t.commit()
       res.status(200).send('User is no longer pro')
     } else {
-      res.status(200).send('User is still pro')
+      res.status(200).send('User is pro')
     }
   } catch (error) {
     await t.rollback()
     console.error(error)
     if (error.message === 'User is not pro') res.status(200).send('User is not pro')
+    else if (error.message === 'Not found') res.status(404).send(error.message)
     else res.status(500).send(error)
   }
 }
@@ -124,8 +141,7 @@ controllerUser.updateUserAuthenticated = async (req, res) => {
   const t = await database.transaction()
   const newEmail = req.body?.email
   try {
-    if (typeof newEmail !== 'string') throw new Error('Email type is wrong')
-    if (newEmail === '') throw new Error('Incorrect email')
+    if (typeof newEmail !== 'string' || newEmail.trim() === '') throw new Error('Email type is wrong')
     await User.update({ email: newEmail }, {
       where: {
         name: req.user.name
@@ -151,7 +167,6 @@ controllerUser.deleteUserAuthenticated = async (req, res) => {
         name: req.user.name
       }
     })
-    console.log(user)
     await deleteAllCommentsUser(user.dataValues.id)
     await deleteAllContentFilesUser(user.dataValues.id)
     await deleteAllContentUser(user.dataValues.id)
@@ -198,7 +213,7 @@ controllerUser.deleteUserById = async (req, res) => {
 
 controllerUser.saveProfileImageFile = async (req, res) => {
   if (typeof req.files === 'undefined') res.status(400).send('The request must have an image to upload')
-  else if (typeof req.files.newFile === 'undefined') res.status(400).send('The file to upload must be in the field called image')
+  else if (typeof req.files?.newFile === 'undefined') res.status(400).send('The file to upload must be in the field called image')
   else {
     const t = await database.transaction()
     try {
@@ -222,8 +237,9 @@ controllerUser.saveProfileImageFile = async (req, res) => {
 }
 
 controllerUser.updateProfileImageFile = async (req, res) => {
+  console.log(req.files)
   if (typeof req.files === 'undefined') res.status(400).send('The request must have an image to upload')
-  else if (typeof req.files.newFile === 'undefined') res.status(400).send('The file to upload must be in the field called image')
+  else if (typeof req.files?.newFile === 'undefined') res.status(400).send('The file to upload must be in the field called image')
   else {
     const t = await database.transaction()
     try {

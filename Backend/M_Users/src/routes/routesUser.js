@@ -5,6 +5,7 @@ import middlewareUser from '../middlewares/middlewareUser.js'
 const routesUser = express()
 
 routesUser.post('/users', controllerUser.createUser)
+routesUser.get('/users/index', controllerUser.getUsers)
 routesUser.put('/users',
   middlewareUser.authenticateToken,
   controllerUser.updateUserAuthenticated
@@ -17,17 +18,19 @@ routesUser.put('/users/pro/check',
   middlewareUser.authenticateToken,
   controllerUser.checkProStatus
 )
+routesUser.delete('/profile',
+  middlewareUser.authenticateToken,
+  controllerUser.deleteProfileImageFile
+)
 routesUser.delete('/users',
   middlewareUser.authenticateToken,
   controllerUser.deleteUserAuthenticated
 )
-routesUser.delete('/users/:id', controllerUser.deleteUserById)
 routesUser.post('/users/login', controllerUser.logIn)
 routesUser.get('/users',
   middlewareUser.authenticateToken,
   controllerUser.getUserAuthenticated
 )
-routesUser.get('/users/:id', controllerUser.getUserById)
 routesUser.post('/profile',
   middlewareUser.authenticateToken,
   controllerUser.saveProfileImageFile
@@ -36,15 +39,12 @@ routesUser.put('/profile',
   middlewareUser.authenticateToken,
   controllerUser.updateProfileImageFile
 )
-// NO SE PQ EXPRESS NO RECONOCE LAS PETICIONES A ESTA RUTA "/users/profile" PERO SI LE CAMBIO EL NOMBRE SI
-routesUser.delete('/profile',
-  middlewareUser.authenticateToken,
-  controllerUser.deleteProfileImageFile
-)
 routesUser.post('/token', controllerUser.token)
 routesUser.delete('/users/logout',
   middlewareUser.authenticateToken,
   controllerUser.logOut
 )
+routesUser.get('/users/:id', controllerUser.getUserById)
+routesUser.delete('/users/:id', controllerUser.deleteUserById)
 
 export default routesUser
