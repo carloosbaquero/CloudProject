@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: m-content
-        image: carloosbaquero/backend-free-space-content:v4
+        image: carloosbaquero/backend-free-space-content:v5
         volumeMounts:
         - name: bucketkey
           mountPath: "/app/etc"
@@ -97,8 +97,9 @@ kind: Service
 metadata:
   name: m-content-service
 spec:
+  type: NodePort
   selector:
-    app: m-content-deployment
+    app: m-content
   ports:
     - protocol: TCP
       port: 3001

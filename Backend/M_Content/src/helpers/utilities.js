@@ -27,7 +27,7 @@ export function sortContentWithUsers (elementLeft, elementRigh) {
 export function checkString (arrayStrings) {
   let result = false
   for (const str of arrayStrings) {
-    if (!str?.trim()) {
+    if (typeof str !== 'string' || !str?.trim()) {
       result = true
       break
     }

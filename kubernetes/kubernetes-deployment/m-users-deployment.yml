@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: m-users
-        image: carloosbaquero/backend-free-space-users:v4
+        image: carloosbaquero/backend-free-space-users:v5
         volumeMounts:
         - name: bucketkey
           mountPath: "/app/etc"
@@ -108,9 +108,10 @@ metadata:
   name: m-users-service
 spec:
   selector:
-    app: m-users-deployment
+    app: m-users
   ports:
-    - protocol: TCP
+    - name: http
+      protocol: TCP
       port: 3002
       targetPort: 3002
 

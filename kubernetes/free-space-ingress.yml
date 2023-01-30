@@ -7,15 +7,15 @@ spec:
   - host: freespace.com
     http:
       paths:
-      - path: /
-        pathType: Exact  
+      - path: /*
+        pathType: ImplementationSpecific  
         backend:
           service:
             name: frontend-free-space-service
             port: 
               number: 80
-      - path: /api
-        pathType: Exact
+      - path: /api/*
+        pathType: ImplementationSpecific
         backend:
           service:
             name: m-content-service

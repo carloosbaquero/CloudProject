@@ -6,7 +6,7 @@ import database from '../helpers/sequelize.js'
 import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from '../config.js'
 import generateAccessToken from '../helpers/authorization.js'
 import { deleteAllCommentsUser, deleteAllContentUser, deleteAllContentFilesUser } from '../helpers/mContent.js'
-import { deleteFile, getPublicURL, uploadFile } from '../helpers/google.js'
+import { deleteFile, getPublicURL } from '../helpers/google.js'
 
 const controllerUser = {}
 
@@ -95,7 +95,7 @@ controllerUser.updateUserToPro = async (req, res) => {
     await t.rollback()
     console.error(error)
     if (error.message === 'numMonths type is wrong') res.status(401).send('numMonths type is wrong')
-    else if (error.message === 'numMonths is incorrect') res.status(404).send('numMonths is incorrect')
+    else if (error.message === 'numMonths is incorrect') res.status(403).send('numMonths is incorrect')
     else res.status(500).send(error)
   }
 }
@@ -212,75 +212,50 @@ controllerUser.deleteUserById = async (req, res) => {
 }
 
 controllerUser.saveProfileImageFile = async (req, res) => {
-  if (typeof req.files === 'undefined') res.status(400).send('The request must have an image to upload')
-  else if (typeof req.files?.newFile === 'undefined') res.status(400).send('The file to upload must be in the field called image')
-  else {
-    const t = await database.transaction()
-    try {
-      const fileName = `${req.user.name}-${req.files.newFile.name}`
-      await uploadFile(req.files.newFile, fileName)
-      const urlProfilePicture = getPublicURL(fileName)
-      await User.update({ publicURL: urlProfilePicture, profilePicture: fileName }, {
-        where: {
-          name: req.user.name
-        },
-        fields: ['publicURL', 'profilePicture']
-      }, { transaction: t })
-      await t.commit()
-      res.sendStatus(201)
-    } catch (error) {
-      await t.rollback()
-      console.error(error)
-      res.status(500).send(error)
-    }
+  const t = await database.transaction()
+  try {
+    const fileName = req.body.fileName
+    const urlProfilePicture = getPublicURL(fileName)
+    await User.update({ publicURL: urlProfilePicture, profilePicture: fileName }, {
+      where: {
+        name: req.user.name
+      },
+      fields: ['publicURL', 'profilePicture']
+    }, { transaction: t })
+    await t.commit()
+    res.sendStatus(201)
+  } catch (error) {
+    await t.rollback()
+    console.error(error)
+    res.status(500).send(error)
   }
 }
 
 controllerUser.updateProfileImageFile = async (req, res) => {
-  console.log(req.files)
-  if (typeof req.files === 'undefined') res.status(400).send('The request must have an image to upload')
-  else if (typeof req.files?.newFile === 'undefined') res.status(400).send('The file to upload must be in the field called image')
-  else {
-    const t = await database.transaction()
-    try {
-      const user = await User.findOne({
-        where: {
-          name: req.user.name
-        },
-        attributes: ['profilePicture']
-      })
-      const oldFileName = user.dataValues.profilePicture
-      const newFileName = `${req.user.name}-${req.files.newFile.name}`
-      await deleteFile(oldFileName)
-      await uploadFile(req.files.newFile, newFileName)
-      const urlProfilePicture = getPublicURL(newFileName)
-      await User.update({ publicURL: urlProfilePicture, profilePicture: newFileName }, {
-        where: {
-          name: req.user.name
-        },
-        fields: ['publicURL', 'profilePicture']
-      }, { transaction: t })
-      await t.commit()
-      res.sendStatus(204)
-    } catch (error) {
-      await t.rollback()
-      console.error(error)
-      res.status(500).send(error)
-    }
+  const t = await database.transaction()
+  try {
+    if (typeof req.body?.fileName !== 'string') throw new Error('Incorrect body')
+    const fileName = req.body.fileName
+    const urlProfilePicture = getPublicURL(fileName)
+    await User.update({ publicURL: urlProfilePicture, profilePicture: fileName }, {
+      where: {
+        name: req.user.name
+      },
+      fields: ['publicURL', 'profilePicture']
+    }, { transaction: t })
+    await t.commit()
+    res.sendStatus(204)
+  } catch (error) {
+    await t.rollback()
+    console.error(error)
+    if (error.message === 'Incorrect body') res.status(404).send('Incorrect body')
+    else res.status(500).send(error)
   }
 }
 
 controllerUser.deleteProfileImageFile = async (req, res) => {
   const t = await database.transaction()
   try {
-    const user = await User.findOne({
-      where: {
-        name: req.user.name
-      },
-      attributes: ['profilePicture']
-    })
-    const fileName = user.dataValues.profilePicture
-    await deleteFile(fileName)
     await User.update({ publicURL: null, profilePicture: null }, {
       where: {
         name: req.user.name

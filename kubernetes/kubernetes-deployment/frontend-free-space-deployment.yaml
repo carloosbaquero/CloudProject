@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: frontend-free-space
-        image: carloosbaquero/frontend-free-space:v6
+        image: carloosbaquero/frontend-free-space:v7
         ports:
         - containerPort: 80
 ---
@@ -27,11 +27,12 @@ metadata:
   labels:
     app:  frontend-free-space
 spec:
+  type: NodePort
   selector:
     app: frontend-free-space
   ports:
-    - protocol: TCP
-      name: http
+    - name: http
+      protocol: TCP
       port: 80
       targetPort: 80
 

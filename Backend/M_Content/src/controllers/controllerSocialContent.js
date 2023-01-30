@@ -1,5 +1,5 @@
 import SocialContent from '../models/SocialContent.js'
-import { uploadFile, deleteFile, getPublicURL } from '../helpers/google.js'
+import { uploadFileContent, deleteFileContent, getPublicURLContent } from '../helpers/google.js'
 import database from '../helpers/sequelize.js'
 import { getUserAuthenticated, getUserById } from '../helpers/mUsers.js'
 import { checkNameExtensionContent, requestType, sortContentWithUsers } from '../helpers/utilities.js'
@@ -224,8 +224,8 @@ controllerSocialContent.saveContentFile = async (req, res) => {
       })
       if (!content) throw new Error('Content not found')
       if (!type.startsWith(content.contentType)) throw new Error('Invalid request')
-      await uploadFile(req.files.newFile, type)
-      const URL = getPublicURL(contentName, type)
+      await uploadFileContent(req.files.newFile, type)
+      const URL = getPublicURLContent(contentName, type)
       await SocialContent.update({ publicURL: URL }, {
         where: {
           name: contentName
@@ -251,7 +251,7 @@ controllerSocialContent.deleteContentFile = async (req, res) => {
     const type = requestType(req.url)
     if (!content) throw new Error('Not found')
     if (!type.startsWith(content.contentType)) throw new Error('Invalid request')
-    await deleteFile(content.dataValues.name, type)
+    await deleteFileContent(content.dataValues.name, type)
     await SocialContent.update({ publicURL: null }, {
       where: {
         id: req.params.id
@@ -309,7 +309,7 @@ controllerSocialContent.deleteAllFilesContentFromUser = async (req, res) => {
     })
     for (const content of contents) {
       if (content.dataValues.publicURL !== null) {
-        await deleteFile(content.dataValues.name, content.dataValues.contentType + 's')
+        await deleteFileContent(content.dataValues.name, content.dataValues.contentType + 's')
       }
     }
     res.sendStatus(204)
