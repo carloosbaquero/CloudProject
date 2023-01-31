@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: m-content
-        image: carloosbaquero/backend-free-space-content:v5
+        image: carloosbaquero/backend-free-space-content:v6
         volumeMounts:
         - name: bucketkey
           mountPath: "/app/etc"
@@ -79,6 +79,11 @@ spec:
             secretKeyRef:
               name: backend-google-secret
               key: BUCKET_NAME_CONTENT
+        - name: BUCKET_NAME_USERS
+          valueFrom:
+            secretKeyRef:
+              name: backend-google-secret
+              key: BUCKET_NAME_USERS
         - name: ACCESS_TOKEN_SECRET
           valueFrom:
             secretKeyRef:
