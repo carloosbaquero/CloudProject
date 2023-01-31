@@ -5,9 +5,9 @@ metadata:
 data:
   NODE_ENV: production
   PORT: "3001"
-  GOOGLE_DATABASE_HOST: "10.119.0.7" 
+  GOOGLE_DATABASE_HOST: "10.119.0.7"
   GOOGLE_DATABASE_PORT: "3306"
   GOOGLE_DATABASE_NAME: free-space-content
-  GOOGLE_DATABASE_DIALECT: mysql 
-  GOOGLE_KEYFILE_BUCKET_PATH: "/app/etc/google-bucket/GOOGLE_KEYFILE_BUCKET" 
-  M_USERS_HOST_DNS: m-users-service 
+  GOOGLE_DATABASE_DIALECT: mysql
+  GOOGLE_KEYFILE_BUCKET_PATH: "/app/etc/google-bucket"
+  M_USERS_HOST_DNS: m-users-service
