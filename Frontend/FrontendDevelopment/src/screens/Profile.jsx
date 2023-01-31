@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { M_CONTENT } from "../api/ContentHost";
 import { M_USERS } from "../api/UsersHost";
 import { useLocalStorage } from "../components/Login";
 
@@ -32,7 +33,7 @@ export const Profile = () => {
                 redirect: 'follow'
             }
     
-            fetch(M_USERS + '/token', requestOptions)
+            fetch(M_CONTENT + 'api/users/token', requestOptions)
                 .then(response => response.json())
                 .then(result => {if(result.expired){setAccessToken(result.token)}})
                 .catch(error => console.log('error', error))
@@ -66,7 +67,7 @@ export const Profile = () => {
         e.preventDefault()
         try{ 
             console.log(email)
-            const res = await axios.put(M_USERS + "/users", {"email": email})
+            const res = await axios.put(M_CONTENT + "api/users", {"email": email})
             console.log(res)
             if (res.status === 204){
                 setSuccessEmail(true)
@@ -84,7 +85,7 @@ export const Profile = () => {
         try{
             let formData = new FormData();
             formData.append('newFile', file)
-            const res = await axios.post(M_USERS + '/profile', formData)
+            const res = await axios.post(M_CONTENT + 'api/users/profile', formData)
             if (res.status === 201){
                 setSuccessProf(true)
             }
@@ -97,7 +98,7 @@ export const Profile = () => {
 
     const handleDelete = async () => {
         try{ 
-            const res = await axios.delete(M_USERS + "/users")
+            const res = await axios.delete(M_CONTENT + "api/users")
             console.log(res)
             if (res.status === 204){
                 sessionStorage.removeItem('accessToken')

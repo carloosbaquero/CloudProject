@@ -11,7 +11,7 @@ import { useLocalStorage } from '../components/Login';
 function listInfoPost(contentId) {
     const [infoPost, setInfoPost] = useState([])
     useEffect(() => {
-        fetch('/api/' + M_CONTENT + "/contents/" + contentId)
+        fetch( M_CONTENT + "api/contents/" + contentId)
         .then(
             response => response.json()
         ).then(
@@ -26,7 +26,7 @@ function listInfoPost(contentId) {
 function listComments(contentId) {
     const [comments, setComments] = useState([])
     useEffect(() => {
-        fetch('/api/' + M_CONTENT + "/comments/content/" + contentId)
+        fetch(M_CONTENT + "api/comments/content/" + contentId)
         .then(
             response => response.json()
         ).then(
@@ -67,7 +67,7 @@ export const Comments = () => {
                 redirect: 'follow'
             }
     
-            fetch(M_USERS + '/token', requestOptions)
+            fetch(M_CONTENT + 'api/users/token', requestOptions)
                 .then(response => response.json())
                 .then(result => {if(result.expired){setAccessToken(result.token)}})
                 .catch(error => console.log('error', error))
@@ -113,7 +113,7 @@ export const Comments = () => {
         e.preventDefault();
 
         try{
-            const res = await axios.post('/api/' + M_CONTENT + "/comments", {"text": text, "contentId": parseInt(id)})
+            const res = await axios.post(M_CONTENT + "api/comments", {"text": text, "contentId": parseInt(id)})
             if(res.status === 201){
                 window.location.replace('');
             }

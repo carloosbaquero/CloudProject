@@ -34,7 +34,7 @@ export default function Post_Form() {
                 redirect: 'follow'
             }
     
-            fetch(M_USERS + '/token', requestOptions)
+            fetch(M_CONTENT + 'api/users/token', requestOptions)
                 .then(response => response.json())
                 .then(result => {if(result.expired){setAccessToken(result.token)}})
                 .catch(error => console.log('error', error))
@@ -56,7 +56,7 @@ export default function Post_Form() {
 
     const [isPro, setIsPro] = useState(false)
     useEffect(() => {
-        fetch(M_USERS + "/users", {headers: {'Authorization': 'Bearer ' + getAccessToken}})
+        fetch(M_CONTENT + "api/users", {headers: {'Authorization': 'Bearer ' + getAccessToken}})
         .then(
             response => response.json()
         ).then(
@@ -81,7 +81,7 @@ export default function Post_Form() {
         e.preventDefault();
         if (imageName.slice(-1) !== '4' && image !== ''){
             try{
-                const res = await axios.post('/api/' + M_CONTENT + '/images', {name: imageName, description: description})
+                const res = await axios.post( M_CONTENT + 'api/images', {name: imageName, description: description})
                 console.log(res.status)
                 if (res.status === 201){
                     setSuccesDB(true)
@@ -100,7 +100,7 @@ export default function Post_Form() {
             try{
                 let formData = new FormData();
                 formData.append('newFile', file)
-                const res = await axios.post('/api/' + M_CONTENT + '/images/file', formData)
+                const res = await axios.post( M_CONTENT + 'api/images/file', formData)
                 if (res.status === 201){
                     setSuccesBuck(true)
                 }
@@ -113,7 +113,7 @@ export default function Post_Form() {
             }
         }else if(imageName.slice(-1) === '4'){
             try{
-                const res = await axios.post('/api/' + M_CONTENT + '/videos', {name: imageName, description: description})
+                const res = await axios.post( M_CONTENT + 'api/videos', {name: imageName, description: description})
                 console.log(res.status)
                 if (res.status === 201){
                     setSuccesDB(true)
@@ -132,7 +132,7 @@ export default function Post_Form() {
             try{
                 let formData = new FormData();
                 formData.append('newFile', file)
-                const res = await axios.post('/api/' + M_CONTENT + '/videos/file', formData)
+                const res = await axios.post(M_CONTENT + 'api/videos/file', formData)
                 if (res.status === 201){
                     setSuccesBuck(true)
                 }

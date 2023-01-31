@@ -3,6 +3,7 @@ import './Login.css'
 import {useNavigate} from 'react-router-dom'
 import axios from 'axios'
 import { M_USERS } from '../../api/UsersHost'
+import { M_CONTENT } from '../../api/ContentHost'
 
 
 const useLocalStorage = (storageKey, fallbackState) => {
@@ -72,7 +73,7 @@ export const Login = (props) => {
         console.log(name);
 
         try{
-            const res = await axios.post(M_USERS + "/users/login", {name, password})
+            const res = await axios.post(M_CONTENT + "api/users/login", {name, password})
             setAccessToken(res.data.accessToken)
             setRefreshToken(res.data.refreshToken)
             setLoginName(res.data.name)

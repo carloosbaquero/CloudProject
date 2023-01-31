@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { M_USERS } from "../api/UsersHost";
+import { useLocalStorage } from "../components/Login";
+import { M_CONTENT } from "../api/ContentHost";
 
 export const ProUser = () => {
 
@@ -30,7 +32,7 @@ export const ProUser = () => {
                 redirect: 'follow'
             }
     
-            fetch(M_USERS + '/token', requestOptions)
+            fetch(M_CONTENT + 'api/users/token', requestOptions)
                 .then(response => response.json())
                 .then(result => {if(result.expired){setAccessToken(result.token)}})
                 .catch(error => console.log('error', error))
@@ -50,7 +52,7 @@ export const ProUser = () => {
         e.preventDefault()
         if(parseInt(numMonths) > 0){
             try{ 
-                const res = await axios.put(M_USERS + "/users/pro", {"numMonths": parseInt(numMonths)})
+                const res = await axios.put(M_CONTENT + "api/users/pro", {"numMonths": parseInt(numMonths)})
                 console.log(res)
                 if (res.status === 204){
                     setSuccess(true)

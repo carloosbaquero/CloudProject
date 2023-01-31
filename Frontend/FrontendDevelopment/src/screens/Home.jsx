@@ -14,7 +14,7 @@ function listPosts() {
 
     const [content, setContent] = useState([])
     useEffect(() => {
-        fetch('/api/' + M_CONTENT + "/contents/users")
+        fetch(M_CONTENT + "api/contents/users")
         .then(
             response => response.json()
         ).then(
@@ -57,7 +57,7 @@ export const Home = () => {
                 redirect: 'follow'
             }
     
-            fetch(M_USERS + '/token', requestOptions)
+            fetch(M_CONTENT + 'api/users/token', requestOptions)
                 .then(response => response.json())
                 .then(result => {if(result.expired){setAccessToken(result.token)}})
                 .catch(error => console.log('error', error))

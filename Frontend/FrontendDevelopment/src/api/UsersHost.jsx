@@ -1,1 +1,1 @@
-export const M_USERS = import.meta.env.VITE_M_USERS_DNS
+export const M_USERS = 'http://localhost:3002/'

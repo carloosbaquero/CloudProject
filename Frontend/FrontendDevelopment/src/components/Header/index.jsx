@@ -4,6 +4,7 @@ import axios from "axios";
 import "./Header.css";
 import styled from 'styled-components'
 import {M_USERS} from '../../api/UsersHost.jsx'
+import { M_CONTENT } from "../../api/ContentHost";
 
 
 
@@ -35,7 +36,7 @@ const Header = () => {
         const handleClickSignIn = async () => {
             if(accessToken){
                 try{
-                    const res = await axios.delete(M_USERS + "/users/logout")
+                    const res = await axios.delete(M_CONTENT + "api/users/logout")
                     if (res.status === 204){
                         console.log("Prueba")
                         sessionStorage.removeItem('accessToken')
@@ -55,7 +56,7 @@ const Header = () => {
         const handleClickPro = async () => {
             if(accessToken){
                 try{ 
-                    const res = await axios.put(M_USERS + "/users/pro/check")
+                    const res = await axios.put(M_CONTENT + "api/users/check")
                     console.log(res)
                     if (res.data === 'User is still pro'){
                         alert('You are already a ProUser')

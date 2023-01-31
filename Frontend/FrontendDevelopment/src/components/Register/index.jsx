@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, {useState} from 'react'
+import { M_CONTENT } from '../../api/ContentHost';
 import { M_USERS } from '../../api/UsersHost';
 import './Register.css'
 
@@ -15,7 +16,7 @@ export const Register = (props) => {
 
         if(email !== '' && pass !== '' && name !== '' ){
             try{
-                const res = await axios.post(M_USERS + "/users", {"name": name, "password": pass, "email": email})
+                const res = await axios.post(M_CONTENT + "api/users", {"name": name, "password": pass, "email": email})
                 if (res.status === 201){
                     setSucces(true)
                 }
