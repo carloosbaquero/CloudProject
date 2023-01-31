@@ -191,6 +191,7 @@ controllerUser.deleteUserById = async (req, res) => {
   const t = await database.transaction()
   try {
     const user = await User.findByPk(req.params.id)
+    if (!user) throw new Error('Not found')
     await deleteAllCommentsUser(user.dataValues.id)
     await deleteAllContentFilesUser(user.dataValues.id)
     await deleteAllContentUser(user.dataValues.id)
@@ -207,7 +208,8 @@ controllerUser.deleteUserById = async (req, res) => {
   } catch (error) {
     await t.rollback()
     console.error(error)
-    res.status(500).send(error)
+    if (error.message === 'Not found') res.status(404).send('Not found')
+    else res.status(500).send(error)
   }
 }
 

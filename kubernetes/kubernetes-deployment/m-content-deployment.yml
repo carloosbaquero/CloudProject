@@ -101,11 +101,27 @@ apiVersion: v1
 kind: Service
 metadata:
   name: m-content-service
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
+    cloud.google.com/backend-config: '{"default": "mcontent-backendconfig"}'
 spec:
   type: NodePort
   selector:
     app: m-content
   ports:
-    - protocol: TCP
-      port: 3001
+    - name: http
+      protocol: TCP
+      port: 80
       targetPort: 3001
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: mcontent-backendconfig
+  namespace: default
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3001
+    type: HTTP
+    requestPath: /api/contents
