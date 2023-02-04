@@ -109,7 +109,7 @@ middlewareUser.authenticateToken = (req, res, next) => {
 }
 ```
 
-in the authorization process of our application when the user logs into the application we check that his credentials are correct, username and password, and then we give him a token with an expiration of 30 minutes and an indefinite token. The expiring token is the one that will authenticate the user at all times and every 30 minutes the user will have to access a specific resource with the indefinite token to refresh the expired token.
+In the authorization process of our application when the user logs into the application we check that his credentials are correct, username and password, and then we give him a token with an expiration time of 30 minutes and an indefinite token. The expiring token is the one that will authenticate the user at all times and every 30 minutes the user will have to access a specific resource with the indefinite token to refresh the expired token.
 ### User Interface Microservice
 > TODO: EXPLANATION ABOUT USER INTERFACE MICROSERVICE 
 
@@ -329,6 +329,12 @@ FreeSpace has an api with which you can interact with all the elements of the ap
 ---
 
 ## Problems
+
+- Connection of private microservices with the outside of the cluster
+- Connection between the frontend and backend microservices
+- Management of JWT tokens in the frontend
+- Deployment of microservices on Google Kubernetes Engine
+- Terraform
 [Back to the top](#cloudproject-freespace)
 
 ---
