@@ -335,6 +335,7 @@ FreeSpace has an api with which you can interact with all the elements of the ap
 - Management of JWT tokens in the frontend
 - Deployment of microservices on Google Kubernetes Engine
 - Terraform
+
 [Back to the top](#cloudproject-freespace)
 
 ---
