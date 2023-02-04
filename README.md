@@ -65,7 +65,10 @@ FreeSpace is composed of three different microservice that are in charge of the 
   And we can also separate SQL code from our application, using only javascript in the backend at all times.
 
 - Frontend:
-  > TODO: INTRODUCTION MICROSERVICE FRONTEND
+
+  The FreeSpace frontend has been developed using the build tool Vite, which uses React javascript framework. Frontend microservice was built as a single page application using Express.js from Node.js.
+
+  Frontend can make request to the different microservices in Backend using the http-based library Axios.
 
 ### Content Microservice
 
@@ -128,7 +131,28 @@ In the authorization process of our application when the user logs into the appl
 
 #### Production:
 
-  For the production, Express.js, a web application framework for Node.js, was used in order to structure and route the application, using a static build created by Vite. Learn what Express.js is all about on [here](https://expressjs.com/en/guide/routing.html)
+  For the production, Express.js, a web application framework for Node.js, was used in order to structure and route the application, using a static build created by Vite. 
+
+  Here how it is done in the file server.js, using the build located in the directory /dist:
+
+  ```javascript
+
+const express = require('express')
+
+const app = express()
+
+app.use(express.static(__dirname + '/dist'))
+
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/dist/index.html')
+})
+
+app.listen(80, () => {
+  console.log('estoy escuchando por el purto 80')
+})
+```  
+  
+  Learn what Express.js is all about on [here](https://expressjs.com/en/guide/routing.html)
 
 
 [Back to the top](#cloudproject-freespace)
@@ -352,6 +376,7 @@ FreeSpace has an api with which you can interact with all the elements of the ap
 - Management of JWT tokens in the frontend
 - Deployment of microservices on Google Kubernetes Engine
 - Terraform
+
 [Back to the top](#cloudproject-freespace)
 
 ---
