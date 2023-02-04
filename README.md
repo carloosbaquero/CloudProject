@@ -52,8 +52,24 @@ All the information of the users are controlled by the other microservice that m
 ### Content Microservice
 
 ### User Microservice
-### User Interface Microservice
-> TODO: EXPLANATION ABOUT USER INTERFACE MICROSERVICE 
+### Frontend Microservice
+
+#### Dependencies:
+- **React**. A JavaScript library for building user interfaces. Learn what React is all about on [here](https://reactjs.org)
+
+- **Vite**. A build tool that aims to provide a faster and leaner development experience for modern web projects. Learn what Vite is all about on [here](https://vitejs.dev/guide/)
+
+- **React-DOM**. A package that provides DOM-specific methods that can be used at the top level of your app and as an escape hatch to get outside the React model if you need to. Learn what React-DOM is all about on [here](https://reactjs.org/docs/react-dom.html)
+
+- **Axios**. A promise-based HTTP library for Node.js that lets developers make requests to either their own or a third-party server to fetch data. Learn what Axios is all about on [here](https://axios-http.com/docs/intro)
+
+- **React Router DOM**. A fully-featured client and server-side routing library for React. Learn what React Router DOM is all about on [here](https://reactrouter.com/en/main/start/overview)
+
+- **Styled Components**. A React-specific CSS-in-JS styling solution that creates a platform for developers to write actual CSS code to style React components, as well as in React Native. Learn what Styled Components is all about on [here](https://styled-components.com/)
+
+#### Production:
+
+    For the production, Express.js, a web application framework for Node.js, was used in order to structure and route the application, using a static build created by Vite. Learn what Express.js is all about on [here](https://expressjs.com/en/guide/routing.html)
 
 
 [Back to the top](#cloudproject-freespace)
