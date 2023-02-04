@@ -128,7 +128,7 @@ In the authorization process of our application when the user logs into the appl
 
 #### Production:
 
-    For the production, Express.js, a web application framework for Node.js, was used in order to structure and route the application, using a static build created by Vite. Learn what Express.js is all about on [here](https://expressjs.com/en/guide/routing.html)
+  For the production, Express.js, a web application framework for Node.js, was used in order to structure and route the application, using a static build created by Vite. Learn what Express.js is all about on [here](https://expressjs.com/en/guide/routing.html)
 
 
 [Back to the top](#cloudproject-freespace)
