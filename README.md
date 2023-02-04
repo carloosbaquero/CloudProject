@@ -91,6 +91,7 @@ async function uploadFileUser (file, fileName) {
 }
 ```
 ### User Microservice
+
 The most important tasks of the user microservice is the encryption of user passwords and the saving of encrypted values in the database. For the encryption tasks we use the **bycript** library which is a NodeJs implementation of password-hashing function bycript, where we also add a salt to protect users against rainbow tables. And generate and refresh the JWT tokens that serve to authorize which resources users can access.
 
 To summarize this microservice is in charge of authentication and authorization of users, plus all the management of their private data.
@@ -110,8 +111,24 @@ middlewareUser.authenticateToken = (req, res, next) => {
 ```
 
 In the authorization process of our application when the user logs into the application we check that his credentials are correct, username and password, and then we give him a token with an expiration time of 30 minutes and an indefinite token. The expiring token is the one that will authenticate the user at all times and every 30 minutes the user will have to access a specific resource with the indefinite token to refresh the expired token.
-### User Interface Microservice
-> TODO: EXPLANATION ABOUT USER INTERFACE MICROSERVICE 
+### Frontend Microservice
+
+#### Dependencies:
+- **React**. A JavaScript library for building user interfaces. Learn what React is all about on [here](https://reactjs.org)
+
+- **Vite**. A build tool that aims to provide a faster and leaner development experience for modern web projects. Learn what Vite is all about on [here](https://vitejs.dev/guide/)
+
+- **React-DOM**. A package that provides DOM-specific methods that can be used at the top level of your app and as an escape hatch to get outside the React model if you need to. Learn what React-DOM is all about on [here](https://reactjs.org/docs/react-dom.html)
+
+- **Axios**. A promise-based HTTP library for Node.js that lets developers make requests to either their own or a third-party server to fetch data. Learn what Axios is all about on [here](https://axios-http.com/docs/intro)
+
+- **React Router DOM**. A fully-featured client and server-side routing library for React. Learn what React Router DOM is all about on [here](https://reactrouter.com/en/main/start/overview)
+
+- **Styled Components**. A React-specific CSS-in-JS styling solution that creates a platform for developers to write actual CSS code to style React components, as well as in React Native. Learn what Styled Components is all about on [here](https://styled-components.com/)
+
+#### Production:
+
+  For the production, Express.js, a web application framework for Node.js, was used in order to structure and route the application, using a static build created by Vite. Learn what Express.js is all about on [here](https://expressjs.com/en/guide/routing.html)
 
 
 [Back to the top](#cloudproject-freespace)
