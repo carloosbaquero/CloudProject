@@ -24,11 +24,16 @@ Where the main objective is to create a healthy social network without all the t
 Official installation guide [here](https://mariadb.org/download)
 - **Optional** *Docker* (if you want to use the custom docker images that are implemented). Official installation guide [here](https://www.docker.com/products/docker-desktop/)
 
-The first step in the installation on the localhost from the application source code, is the configuration of the environment that the application would use. 
+The first step in the installation on the localhost from the application source code, is to download the source code from GitHub and the configuration of the environment that FreeSpace would use. 
 
-> All the different variables that FreeSpace need are defined in the file _.env.example_ of each microservice. 
+``` bash
+git clone https://github.com/carloosbaquero/CloudProject.git
+```
 
-Then we have to do the installation of all the dependencies of each respective microservice, which are defined in their respective package.json files. Where we used the node packager manager npm.
+> If the user does not have **git** installed on his machine he can always download the code directly from the Github repository. And all the different environmental variables that FreeSpace need are defined in the file _.env.example_ of each microservice. 
+
+
+Then we have to do the installation of all the dependencies of each respective microservice, which are defined in their respective _package.json_ files. Where we used the node packager manager npm.
 
 
 ``` bash 
@@ -43,15 +48,69 @@ npm install
 
 FreeSpace is composed of three different microservice that are in charge of the management of the web application. Where two of them form the backend and the last one is in charge of exposing the frontend to all users. 
 
-The content of the social network images, videos and comments are managed by one single microservice. 
+- Backend
 
-All the information of the users are controlled by the other microservice that make up the application.
+  The content of the social network, images, videos and comments are managed by one single microservice. And all the information of the users are controlled by the other microservice that make up the application backend.
 
-> TODO: INTRODUCTION MICROSERVICE FRONTEND
+  Both microservice are an api built on the NodeJs environment with Express, using JavaScript as the programming language.
+
+  We have decided to use NodeJs since most of the service execution time is spent on the I/O operations, waiting for database requests, making requests to other microservices or making request to google cloud services, and the complexity of the other operations is not very high.
+
+  Thanks to the NodeJs architecture where you have a single non-blocking thread where all possible non-blocking code is executed and then different secondary threads from the thread pool take care of the necessary asynchronous requests and when they have been resolved the principal thread terminates the request to the backend and sends the response.
+
+  We have used Express because it is a lightweight framework, fast and easy to learn and implement in the NodeJs environment. And it is already adapted to efficiently use the internal structure of NodeJs to be as efficient as possible.
+  And also because it is already tested in many different web applications and is one of the most used NodeJs frameworks for web applications.
+
+  The database connection throughout the application is managed by the ORM Sequelize. It supports many different systems to manage relational databases, such as MySQL, PostgreSQL or MariaDB. thanks to Sequelize we can greatly ensure the interaction between the backend and the database and also gain the ability to handle automatic transactions with the database to maintain data consistency.
+  And we can also separate SQL code from our application, using only javascript in the backend at all times.
+
+- Frontend:
+  > TODO: INTRODUCTION MICROSERVICE FRONTEND
 
 ### Content Microservice
 
+All files, which can be jpg, png or mp4, are controlled by this microservice. The files are saved using the google cloud service to save objects, where we have a bucket to save the post files and another one to save the user files.
+
+Code example for uploading files to Google Storage:
+
+``` javascript
+const bucketContent = storage.bucket(BUCKET_NAME_CONTENT)
+const bucketUser = storage.bucket(BUCKET_NAME_USERS)
+
+async function uploadFileUser (file, fileName) {
+  const options = {
+    gzip: true
+  }
+  const blob = bucketUser.file(fileName)
+  const blobStream = blob.createWriteStream(options)
+
+  blobStream.on('finish', () => {
+    console.log(`File ${fileName} uploaded`)
+  })
+  blobStream.end(file.data)
+}
+```
 ### User Microservice
+
+The most important tasks of the user microservice is the encryption of user passwords and the saving of encrypted values in the database. For the encryption tasks we use the **bycript** library which is a NodeJs implementation of password-hashing function bycript, where we also add a salt to protect users against rainbow tables. And generate and refresh the JWT tokens that serve to authorize which resources users can access.
+
+To summarize this microservice is in charge of authentication and authorization of users, plus all the management of their private data.
+
+Code example of the middleware which authenticate users:
+``` javascript
+middlewareUser.authenticateToken = (req, res, next) => {
+  const authHeader = req.headers.authorization
+  const token = authHeader && authHeader.split(' ')[1]
+  if (typeof token === 'undefined') return res.sendStatus(401)
+  jsonwebtoken.verify(token, ACCESS_TOKEN_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403)
+    req.user = user
+    next()
+  })
+}
+```
+
+In the authorization process of our application when the user logs into the application we check that his credentials are correct, username and password, and then we give him a token with an expiration time of 30 minutes and an indefinite token. The expiring token is the one that will authenticate the user at all times and every 30 minutes the user will have to access a specific resource with the indefinite token to refresh the expired token.
 ### Frontend Microservice
 
 #### Dependencies:
@@ -287,6 +346,12 @@ FreeSpace has an api with which you can interact with all the elements of the ap
 ---
 
 ## Problems
+
+- Connection of private microservices with the outside of the cluster
+- Connection between the frontend and backend microservices
+- Management of JWT tokens in the frontend
+- Deployment of microservices on Google Kubernetes Engine
+- Terraform
 [Back to the top](#cloudproject-freespace)
 
 ---
