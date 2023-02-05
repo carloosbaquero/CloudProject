@@ -372,9 +372,34 @@ FreeSpace has an api with which you can interact with all the elements of the ap
 ## Problems
 
 - Connection of private microservices with the outside of the cluster
+
+  W
 - Connection between the frontend and backend microservices
 - Management of JWT tokens in the frontend
 - Deployment of microservices on Google Kubernetes Engine
+
+  One of the biggest problems we had when deploying the application on GKE was configuring the **Kubernetes Ingress** object to expose an entry point for all the microservices in the cluster. 
+  From the first moment we tried to use the Ingress Controller provided by Google Cloud, but it always gave us a 404 Not Found response. 
+  
+  The first step to fix it was to adapt the Kubernetes Service objects of the microservices that were connected to the outside by the Ingress, because to use the default Google Cloud Controller the service has to be of type NodePort to work and the pathType of the Ingress Implementation has to be ImplementationSpecific. 
+  
+  After fixing that problem, when we tried to access the cluster from the internet only the microservice that served the frontend worked fine and the service that served the API to interact with the backend was inoperative. And in the end we found that the failure was that although all the microservices that made up the backend were working fine, there was no specific rule defined so that google cloud could _check that everything was fine_, and without that information google cloud did not let access to the last microservice that was exposed.
+
+  We had to add this object that checks the health of the backend.
+  ``` yaml
+  apiVersion: cloud.google.com/v1
+  kind: BackendConfig
+  metadata:
+    name: mcontent-backendconfig
+    namespace: default
+  spec:
+    healthCheck:
+      checkIntervalSec: 30
+      port: 3001
+      type: HTTP
+      requestPath: /api/contents
+
+  ```
 - Terraform
 
 [Back to the top](#cloudproject-freespace)
