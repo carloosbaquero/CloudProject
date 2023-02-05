@@ -1,10 +1,10 @@
 # CloudProject: FreeSpace
+![FreeSpace Logo](./README-Files/FreeSpace-Logo.png)
+
 ## What is it?
 FreeSpace is a cloud native web application intended to be used on computers. Specifically, it is a social network for sharing images and videos among all its users. 
 
 Where the main objective is to create a healthy social network without all the toxicity and deception that accompanies most of the social networks used today. 
-
-> TODO: EXPLICATION ABOUT THE OBJECTS OF THE SOCIAL NETWORK AND MORE INFORMATION ABOUT IT, MAYBE PICTURES OF THE USER INTERFACE AND THE LOGO OF THE APPLICATION
 
 ---
 ## Sections
@@ -185,9 +185,6 @@ app.listen(80, () => {
   console.log('estoy escuchando por el purto 80')
 })
 ```  
-  
-  Learn what Express.js is all about on [here](https://expressjs.com/en/guide/routing.html)
-
 
 [Back to the top](#cloudproject-freespace)
 
@@ -399,6 +396,51 @@ FreeSpace has an api with which you can interact with all the elements of the ap
 ---
 
 ## Cloud Architecture
+
+To deploy the application in the cloud, we have used the Google Cloud provider. We chose this provider over Amazon Web Service or Microsoft Azure because of the bonuses for students given in the course.
+
+In the cloud we have deployed a total of 3 different services. Two Google Buckets, to store the different files that our application needs, one MySql database, where we have all the persistent information, and finally a Google Kubernetes Engine cluster where all the application logic is executed and where users can access it.
+
+<figure>
+  <img src="./README-Files/ArchitectureDiagram.jpeg" width="700" height="500">
+  <figcaption>Architecture diagram describing how the Google Cloud service is configured for our project</figcaption>
+</figure>
+
+> The Mysql database is privately deployed so that no one outside the Google Cloud ecosystem can access it, but the Buckets are not private, in order to serve the files to the users without problems, and that is why we needed a service account to interact with the Google Buckets.
+
+Within Kubernetes Engine cluster we have deployed several kubernetes components.
+
+- **Ingress**
+
+  Kubernetes object that serves as an entry point for the entire cluster from the outside, and also provides more interesting services such as SSL/TLS, load balancing and name-based virtual hosting. 
+
+  For his deployment in our application we used the implementation of the Ingress Controller Google Cloud has by default and we added our rules in order to define how they should behave.
+- **Deployment**
+
+  Kubernetes object where you define declaratively what should be the desired state of the application at all times.  And the deployment will be in charge of maintaining that state.
+
+  Here we also define the pods that are managed by each deployment, where we have used images stored in DockerHub to tell them what code they have to execute. 
+
+  We have deployed a total of _three Deployments_.
+
+- **Service**
+
+  Kubernetes object which functions as an abstract way to expose an application running on a set of Pods as a network service. We have deployed one Service for each of the Deployments, that's a total of _three Services_. 
+
+- **ConfigMap**
+
+  Kubernetes object used to store non-confidential data in key-value pairs. This object is used for all the environmental variables and configuration that we needed. We needed _two ConfigMaps_ for our application.
+
+- **Secrets**
+
+  Kubernetes object used to store confidential data in key value pairs. This object is the same as ConfigMaps but all the information that it stores is secret. We have used it for database passwords, JWT secrets and google keyfiles to connect with Google Buckets.
+
+- **BackendConfig**
+
+  Kubernetes object that we needed to fix one of the problems we had when deploying ingress. Its use is defined in the problems section.
+
+   
+
 [Back to the top](#cloudproject-freespace)
 
 ---
@@ -431,7 +473,7 @@ FreeSpace has an api with which you can interact with all the elements of the ap
       .then(res => res.json())
   }
   ```
-- Connection between the frontend and backend microservices
+- Connection between frontend and backend microservices
 
   In order to connect frontend and backend, we needed to know the ip of the content microservice to make requests.
 
