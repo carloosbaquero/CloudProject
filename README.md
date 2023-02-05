@@ -373,7 +373,30 @@ FreeSpace has an api with which you can interact with all the elements of the ap
 
 - Connection of private microservices with the outside of the cluster
 
-  W
+  When we planned the architecture of the microservices deployed in GKE, one of the objectives was to have the microservice in charge of managing user information and security as a private microservice that could not be accessed from outside the cluster.
+
+  And due to a lack of understanding of how the framework express worked we thought that using the functionality it has implemented to redirect requests to other destinations we could use the microservice exposing the API as a kind of proxy server with the private microservice.
+
+  But this implementation did not work well and we had to change a bit the functionality of the backend microservices, although the main objectives of keeping the security functionality and the user data management private were maintained.
+
+  To implement this communication between the different microservices we use the npm module node-fetch to be able to use the functionalities of the Web API Fetch in the NodeJs environment and to be able to call the microservice in charge of the users.
+
+  ``` javascript
+  import fetch, { Headers } from 'node-fetch'
+  import { M_USERS_HOST_DNS } from '../config.js'
+  
+  export function getUserAuthenticated (token) {
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+    const requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    }
+    return fetch(`http://${M_USERS_HOST_DNS}/users`, requestOptions)
+      .then(res => res.json())
+  }
+  ```
 - Connection between the frontend and backend microservices
 - Management of JWT tokens in the frontend
 - Deployment of microservices on Google Kubernetes Engine
