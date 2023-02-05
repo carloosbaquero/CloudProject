@@ -398,7 +398,23 @@ FreeSpace has an api with which you can interact with all the elements of the ap
   }
   ```
 - Connection between the frontend and backend microservices
+
+  In order to connect frontend and backend, we needed to know the ip of the content microservice to make requests.
+
+  We tried to use environmnet variables from the GKE cluster to know the ip and port of the backend services, but after, we realized that the build tool Vite that we used had a special way to make the imports of the environment variables.
+
+  When we fixed that we deployed our application in GKE and noticed that the requests to the backend were being made to an undefined ip, so we received a 404 not found error.
+
+  Finally, we fixed this by using the same ip for the frontend and backend but different routes.
+
 - Management of JWT tokens in the frontend
+
+  We, for the first time, started using JWT tokens to authenticate users to let them do exclusive functions.
+  
+  At first, we had the problem in the frontend that after doing the login, we did not know how to store the tokens, because we needed them in all the routes of the application. 
+  
+  We wanted to do global variables, but after doing some research we realized that we just had to use the session storage, which is accessible from every route in the application
+
 - Deployment of microservices on Google Kubernetes Engine
 
   One of the biggest problems we had when deploying the application on GKE was configuring the **Kubernetes Ingress** object to expose an entry point for all the microservices in the cluster. 
@@ -441,8 +457,8 @@ For the deployment of this application we used the following tools that google c
 
 - 2 Standard Storage Buckets [**$0.025 GB/month** for each]:
 
-  One bucket is used for storage the images and videos of the contents that users upload.
-  The other one is used to storage the profile pictures of the users
+  One bucket is used for store the images and videos of the contents that users upload.
+  The other one is used to store the profile pictures of the users
 
 - 2 MySQL databases [**$6.64 GB/month** for each]:
  
