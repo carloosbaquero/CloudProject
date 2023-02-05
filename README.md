@@ -382,4 +382,24 @@ FreeSpace has an api with which you can interact with all the elements of the ap
 ---
 
 ## Costs
+
+For the deployment of this application we used the following tools that google cloud provides:
+
+      (All the following prices are in europe-west6 Zurich)
+
+- 1 Cluster in Google Kubernetes Engine [**$45.479/month**]:
+
+  We used it for deploying all the three microservices and for making to of them accessibles from internet to everyone using an Ingress
+
+- 2 Standard Storage Buckets [**$0.025 GB/month** for each]:
+
+  One bucket is used for storage the images and videos of the contents that users upload.
+  The other one is used to storage the profile pictures of the users
+
+- 2 MySQL databases [**$6.64 GB/month** for each]:
+ 
+  One used for information related to users and the other for information related to contents uploaded
+
+**To sum up, the total price per GB/month is $58.809**
+
 [Back to the top](#cloudproject-freespace)
