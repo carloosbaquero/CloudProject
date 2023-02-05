@@ -71,6 +71,23 @@ FreeSpace is composed of three different microservice that are in charge of the 
   Frontend can make request to the different microservices in Backend using the http-based library Axios.
 
 ### Content Microservice
+#### Dependencies:
+- **Express**. Web Applications Express is a minimal and flexible Node.js web application framework. Learn what Express is all about on [here](https://expressjs.com/)
+
+- **Sequelize**. Sequelize is a modern TypeScript and Node.js ORM for Oracle, Postgres, MySQL, MariaDB, SQLite and SQL Server. Learn what Sequelize is all about on [here](https://sequelize.org/)
+
+- **Mysql2**. MySQL client for Node.js with focus on performance. 
+
+- **Cors**. CORS is a node.js package for providing a Connect/Express middleware that can be used to enable CORS with various options. 
+
+- **Express-FileUpload**. Simple express middleware for uploading files.
+
+- **JsonWebToken**. An implementation of Json Web Tokens for the NodeJs environment.
+
+- **Node-Fetch**. A light-weight module that brings Fetch API to Node.js.
+
+- **Google-Cloud/Storage**. Node.js idiomatic client for Cloud Storage.
+
 
 All files, which can be jpg, png or mp4, are controlled by this microservice. The files are saved using the google cloud service to save objects, where we have a bucket to save the post files and another one to save the user files.
 
@@ -94,6 +111,23 @@ async function uploadFileUser (file, fileName) {
 }
 ```
 ### User Microservice
+
+#### Dependencies:
+- **Express**. Web Applications Express is a minimal and flexible Node.js web application framework. Learn what Express is all about on [here](https://expressjs.com/)
+
+- **Sequelize**. Sequelize is a modern TypeScript and Node.js ORM for Oracle, Postgres, MySQL, MariaDB, SQLite and SQL Server. Learn what Sequelize is all about on [here](https://sequelize.org/)
+
+- **Mysql2**. MySQL client for Node.js with focus on performance. 
+
+- **Cors**. CORS is a node.js package for providing a Connect/Express middleware that can be used to enable CORS with various options. 
+
+- **JsonWebToken**. An implementation of Json Web Tokens for the NodeJs environment.
+
+- **Node-Fetch**. A light-weight module that brings Fetch API to Node.js.
+
+- **Date-FNS**. Date-fns provides the most comprehensive, yet simple and consistent tool set for manipulating JavaScript dates in a browser & Node.js.
+
+- **Bcrypt**. A library to help you hash passwords.
 
 The most important tasks of the user microservice is the encryption of user passwords and the saving of encrypted values in the database. For the encryption tasks we use the **bycript** library which is a NodeJs implementation of password-hashing function bycript, where we also add a salt to protect users against rainbow tables. And generate and refresh the JWT tokens that serve to authorize which resources users can access.
 
@@ -384,7 +418,7 @@ FreeSpace has an api with which you can interact with all the elements of the ap
   ``` javascript
   import fetch, { Headers } from 'node-fetch'
   import { M_USERS_HOST_DNS } from '../config.js'
-  
+
   export function getUserAuthenticated (token) {
     const myHeaders = new Headers()
     myHeaders.append('Authorization', token)
@@ -401,7 +435,7 @@ FreeSpace has an api with which you can interact with all the elements of the ap
 
   In order to connect frontend and backend, we needed to know the ip of the content microservice to make requests.
 
-  We tried to use environmnet variables from the GKE cluster to know the ip and port of the backend services, but after, we realized that the build tool Vite that we used had a special way to make the imports of the environment variables.
+  We tried to use environment variables from the GKE cluster to know the ip and port of the backend services, but after, we realized that the build tool Vite that we used had a special way to make the imports of the environment variables.
 
   When we fixed that we deployed our application in GKE and noticed that the requests to the backend were being made to an undefined ip, so we received a 404 not found error.
 
@@ -441,6 +475,8 @@ FreeSpace has an api with which you can interact with all the elements of the ap
   ```
 - Terraform
 
+  To deploy the application using _infrastructure as a code_ with the Terraform tool we found information about deploying a cluster with a series of nodes in GKE using Terraform, but when we tried to automate also the deployment of all the Kubernetes objects we needed: Ingress, Deployments, ConfigMaps, Services and Secrets. We couldn't find a way to make it work well. 
+
 [Back to the top](#cloudproject-freespace)
 
 ---
@@ -453,7 +489,7 @@ For the deployment of this application we used the following tools that google c
 
 - 1 Cluster in Google Kubernetes Engine [**$45.479/month**]:
 
-  We used it for deploying all the three microservices and for making to of them accessibles from internet to everyone using an Ingress
+  We used it for deploying all the three microservices and for making two of them accessible from internet to everyone using an Ingress
 
 - 2 Standard Storage Buckets [**$0.025 GB/month** for each]:
 
